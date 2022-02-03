@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+    api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }
 
 detekt {
