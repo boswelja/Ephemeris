@@ -15,4 +15,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Ephemeris"
-include(":core")
+include(
+    ":core",
+    ":compose",
+    ":sample"
+)
