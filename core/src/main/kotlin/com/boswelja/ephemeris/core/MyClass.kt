@@ -1,4 +1,3 @@
 package com.boswelja.ephemeris.core
 
-class MyClass {
-}
+class MyClass
