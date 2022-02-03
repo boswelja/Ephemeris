@@ -12,6 +12,8 @@ android {
         minSdk = 23
     }
 
+    compileOptions.isCoreLibraryDesugaringEnabled = true
+
     buildFeatures.compose = true
     composeOptions {
         kotlinCompilerExtensionVersion = "1.2.0-alpha02"
@@ -19,6 +21,8 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+
     api(project(":core"))
     implementation("androidx.compose.animation:animation:1.2.0-alpha02")
     implementation("androidx.compose.ui:ui:1.2.0-alpha02")

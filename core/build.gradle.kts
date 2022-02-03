@@ -11,9 +11,13 @@ android {
         targetSdk = 32
         minSdk = 23
     }
+
+    compileOptions.isCoreLibraryDesugaringEnabled = true
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+
     api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }
 
