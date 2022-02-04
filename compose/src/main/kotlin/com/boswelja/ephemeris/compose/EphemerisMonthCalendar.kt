@@ -5,25 +5,39 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.DayState
-import com.boswelja.ephemeris.core.YearMonth
 import com.boswelja.ephemeris.core.buildCalendarMonth
 import com.boswelja.ephemeris.core.plusMonths
-import com.boswelja.ephemeris.core.toYearMonth
-import kotlinx.datetime.Clock
+import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.DayOfWeek
 
 @Composable
-fun EphemerisCalendar(
+fun EphemerisMonthCalendar(
+    calendarState: CalendarState,
     modifier: Modifier = Modifier,
-    startMonth: YearMonth = Clock.System.now().toYearMonth(),
     dayContent: @Composable RowScope.(DayState) -> Unit
 ) {
-    InfiniteHorizontalPager(modifier) {
+    // Grab the initial value of currentMonth to act as a starting index
+    val initialMonth = remember(calendarState) {
+        calendarState.currentMonth
+    }
+
+    val pagerState = rememberInfinitePagerState()
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.page }.collect {
+            calendarState.currentMonth = initialMonth.plusMonths(it)
+        }
+    }
+    InfiniteHorizontalPager(
+        modifier = modifier,
+        state = pagerState
+    ) {
         val month = remember(it) {
-            startMonth.plusMonths(it)
+            initialMonth.plusMonths(it)
         }
         val monthData = remember(month) {
             month.buildCalendarMonth(DayOfWeek.MONDAY)
