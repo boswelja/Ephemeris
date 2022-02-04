@@ -5,7 +5,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
@@ -22,42 +25,77 @@ import kotlinx.coroutines.flow.filterNot
 @Composable
 fun InfiniteHorizontalPager(
     modifier: Modifier = Modifier,
+    state: InfinitePagerState = rememberInfinitePagerState(),
     content: @Composable (page: Int) -> Unit
 ) {
-    val centerOffset = Int.MAX_VALUE / 2
-    val state = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
     LaunchedEffect(state) {
         // Scroll to the middle
-        state.scrollToItem(centerOffset)
+        lazyListState.scrollToItem(state.internalStartPage)
     }
-    LaunchedEffect(key1 = state) {
-        val snapOffsetThreshold = state.layoutInfo.viewportEndOffset / 2
-        snapshotFlow { state.isScrollInProgress }
+    LaunchedEffect(state) {
+        val snapOffsetThreshold = lazyListState.layoutInfo.viewportEndOffset / 2
+        snapshotFlow { lazyListState.isScrollInProgress }
             .filterNot { it }
             .collect {
                 // Smooth scroll to the "nearest" item
-                val itemIndex = if (state.firstVisibleItemScrollOffset < snapOffsetThreshold) {
-                    state.firstVisibleItemIndex
+                val itemIndex = if (lazyListState.firstVisibleItemScrollOffset < snapOffsetThreshold) {
+                    lazyListState.firstVisibleItemIndex
                 } else {
-                    state.firstVisibleItemIndex + 1
+                    lazyListState.firstVisibleItemIndex + 1
                 }
-                state.animateScrollToItem(itemIndex)
+                state.page = state.calculatePageFromInternal(itemIndex)
+                lazyListState.animateScrollToItem(itemIndex)
             }
     }
 
     LazyRow(
         modifier = modifier,
-        state = state
+        state = lazyListState
     ) {
         items(
-            count = Int.MAX_VALUE,
-            key = { it - centerOffset }
+            count = state.pageCount,
+            key = state::calculatePageFromInternal
         ) { index ->
             // Map the page to start at centered value of 0
-            val actualPage = remember(index) { index - centerOffset }
+            val actualPage = state.calculatePageFromInternal(index)
             Box(modifier) {
                 content(actualPage)
             }
         }
+    }
+}
+
+abstract class InfinitePagerState {
+
+    abstract val pageCount: Int
+
+    abstract var page: Int
+        internal set
+
+    internal abstract val internalStartPage: Int
+
+    internal abstract fun calculatePageFromInternal(internalPage: Int): Int
+}
+
+internal class DefaultInfinitePagerState(
+    startPage: Int
+) : InfinitePagerState() {
+
+    override val internalStartPage: Int = Int.MAX_VALUE / 2
+
+    override val pageCount: Int = Int.MAX_VALUE
+
+    override var page: Int by mutableStateOf(startPage)
+
+    override fun calculatePageFromInternal(internalPage: Int): Int {
+        return internalPage - internalStartPage
+    }
+}
+
+@Composable
+fun rememberInfinitePagerState(startPage: Int = 0): InfinitePagerState {
+    return remember(startPage) {
+        DefaultInfinitePagerState(startPage)
     }
 }
