@@ -1,6 +1,7 @@
 package com.boswelja.ephemeris.compose
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 fun InfiniteHorizontalPager(
     modifier: Modifier = Modifier,
     state: InfinitePagerState = rememberInfinitePagerState(),
+    contentPadding: PaddingValues = PaddingValues(),
     content: @Composable (page: Int) -> Unit
 ) {
     val lazyListState = rememberLazyListState(
@@ -39,7 +41,8 @@ fun InfiniteHorizontalPager(
     LazyRow(
         modifier = modifier,
         state = lazyListState,
-        flingBehavior = rememberSnapperFlingBehavior(lazyListState)
+        flingBehavior = rememberSnapperFlingBehavior(lazyListState),
+        contentPadding = contentPadding
     ) {
         items(
             count = state.pageCount,
