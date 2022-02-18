@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.boswelja.ephemeris.core.YearMonth
+import com.boswelja.ephemeris.core.model.YearMonth
 
 interface CalendarState {
     var currentMonth: YearMonth

@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.core
+package com.boswelja.ephemeris.core.model
 
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant

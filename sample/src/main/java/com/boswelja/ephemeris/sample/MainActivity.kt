@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.boswelja.ephemeris.compose.EphemerisMonthCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
-import com.boswelja.ephemeris.core.toYearMonth
+import com.boswelja.ephemeris.core.model.toYearMonth
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.Clock

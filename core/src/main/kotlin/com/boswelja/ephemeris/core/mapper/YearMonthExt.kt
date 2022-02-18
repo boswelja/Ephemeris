@@ -1,5 +1,8 @@
-package com.boswelja.ephemeris.core
+package com.boswelja.ephemeris.core.mapper
 
+import com.boswelja.ephemeris.core.model.DisplayMonth
+import com.boswelja.ephemeris.core.model.DisplayWeek
+import com.boswelja.ephemeris.core.model.YearMonth
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate

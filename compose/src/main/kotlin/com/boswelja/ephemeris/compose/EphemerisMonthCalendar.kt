@@ -9,8 +9,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import com.boswelja.ephemeris.core.DayState
-import com.boswelja.ephemeris.core.toDisplayMonth
+import com.boswelja.ephemeris.core.model.DayState
+import com.boswelja.ephemeris.core.mapper.toDisplayMonth
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.DayOfWeek
 
