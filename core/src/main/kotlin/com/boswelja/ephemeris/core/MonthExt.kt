@@ -18,6 +18,19 @@ fun YearMonth.buildCalendarMonth(
         .chunked(DayOfWeek.values().size)
 }
 
+fun YearMonth.toDisplayMonth(
+    firstDayOfWeek: DayOfWeek
+): DisplayMonth {
+    val firstDisplayedDate = calculateStartDate(this, firstDayOfWeek)
+    val lastDisplayedDate = calculateEndDate(this, firstDisplayedDate)
+    val weeks = (firstDisplayedDate..lastDisplayedDate)
+        .toList()
+        .chunked(DayOfWeek.values().size)
+        .map { DisplayWeek(it.toSet()) }
+        .toSet()
+    return DisplayMonth(this, weeks)
+}
+
 private fun calculateStartDate(yearMonth: YearMonth, firstDayOfWeek: DayOfWeek): LocalDate {
     // If we're already on the first day of the week, we don't need to do anything
     if (yearMonth.startDate.dayOfWeek == firstDayOfWeek) return yearMonth.startDate
