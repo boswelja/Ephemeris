@@ -11,7 +11,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.DayState
 import com.boswelja.ephemeris.core.buildCalendarMonth
-import com.boswelja.ephemeris.core.plusMonths
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.DayOfWeek
 

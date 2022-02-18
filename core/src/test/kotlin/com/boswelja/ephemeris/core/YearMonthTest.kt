@@ -3,6 +3,7 @@ package com.boswelja.ephemeris.core
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class YearMonthTest {
@@ -41,6 +42,14 @@ class YearMonthTest {
             LocalDate(2100, Month.APRIL, 30),
             YearMonth(2100, Month.APRIL)
         )
+    }
+
+    @Test
+    fun plusMonths_updatesValues() {
+        val initialMonth = YearMonth(2000, Month.FEBRUARY)
+        val newMonth = initialMonth.plusMonths(10)
+        assertNotEquals(initialMonth.startDate, newMonth.startDate)
+        assertNotEquals(initialMonth.endDate, newMonth.endDate)
     }
 
     private fun assertEndDate(
