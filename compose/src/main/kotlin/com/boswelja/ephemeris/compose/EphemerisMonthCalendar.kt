@@ -11,6 +11,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.DayState
 import com.boswelja.ephemeris.core.mapper.toDisplayMonth
+import com.boswelja.ephemeris.core.model.MonthDayState
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.DayOfWeek
 
@@ -48,7 +49,7 @@ fun EphemerisMonthCalendar(
                 ) {
                     week.days.forEach { date ->
                         dayContent(
-                            DayState(
+                            MonthDayState(
                                 date,
                                 date.month == month.month
                             )
