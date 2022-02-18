@@ -9,11 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNot
+import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 
 /**
  * A lazy pager implementation that has a maximum range of [Int.MAX_VALUE] / 2 before and after the starting
@@ -28,30 +26,20 @@ fun InfiniteHorizontalPager(
     state: InfinitePagerState = rememberInfinitePagerState(),
     content: @Composable (page: Int) -> Unit
 ) {
-    val lazyListState = rememberLazyListState()
-    LaunchedEffect(state) {
-        // Scroll to the middle
-        lazyListState.scrollToItem(state.internalStartPage)
-    }
-    LaunchedEffect(state) {
-        val snapOffsetThreshold = lazyListState.layoutInfo.viewportEndOffset / 2
-        snapshotFlow { lazyListState.isScrollInProgress }
-            .filterNot { it }
-            .collect {
-                // Smooth scroll to the "nearest" item
-                val itemIndex = if (lazyListState.firstVisibleItemScrollOffset < snapOffsetThreshold) {
-                    lazyListState.firstVisibleItemIndex
-                } else {
-                    lazyListState.firstVisibleItemIndex + 1
-                }
-                state.page = state.calculatePageFromInternal(itemIndex)
-                lazyListState.animateScrollToItem(itemIndex)
-            }
+    val lazyListState = rememberLazyListState(
+        initialFirstVisibleItemIndex = state.internalStartPage
+    )
+
+    LaunchedEffect(lazyListState.isScrollInProgress) {
+        if (!lazyListState.isScrollInProgress) {
+            state.page = state.calculatePageFromInternal(lazyListState.firstVisibleItemIndex)
+        }
     }
 
     LazyRow(
         modifier = modifier,
-        state = lazyListState
+        state = lazyListState,
+        flingBehavior = rememberSnapperFlingBehavior(lazyListState)
     ) {
         items(
             count = state.pageCount,

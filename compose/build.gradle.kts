@@ -27,7 +27,7 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.2.0-alpha02")
     implementation("androidx.compose.ui:ui:1.2.0-alpha02")
     implementation("androidx.compose.foundation:foundation:1.2.0-alpha02")
-    implementation("dev.chrisbanes.snapper:snapper:0.1.2")
+    implementation("dev.chrisbanes.snapper:snapper:0.2.0")
 }
 
 detekt {
