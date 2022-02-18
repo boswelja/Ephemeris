@@ -2,6 +2,7 @@ package com.boswelja.ephemeris.core.data
 
 import com.boswelja.ephemeris.core.endOfWeek
 import com.boswelja.ephemeris.core.model.DisplayRow
+import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.startOfWeek
 import com.boswelja.ephemeris.core.toList
@@ -16,7 +17,7 @@ import kotlinx.datetime.toLocalDateTime
 class DefaultCalendarPagingSource(
     private val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     private val firstDayOfWeek: DayOfWeek
-) : CalendarDisplaySource {
+) : CalendarPagingSource {
     private val daysInWeek = DayOfWeek.values().size
 
     override fun loadPage(page: Long, pageSize: PageSize): Set<DisplayRow> {

@@ -15,9 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.boswelja.ephemeris.compose.EphemerisMonthCalendar
+import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
 import com.boswelja.ephemeris.core.data.DefaultCalendarPagingSource
+import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.toYearMonth
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.coroutines.flow.collect
@@ -37,15 +38,18 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Column {
-                        val state = rememberCalendarState(startMonth = Clock.System.now().toYearMonth())
+                        val state = rememberCalendarState(
+                            startMonth = Clock.System.now().toYearMonth(),
+                            initialPageSize = PageSize.MONTH
+                        )
                         LaunchedEffect(state) {
                             snapshotFlow { state.currentMonth }.collect {
                                 Log.d("CurrentMonth", it.month.name)
                             }
                         }
-                        EphemerisMonthCalendar(
+                        EphemerisCalendar(
                             calendarState = state,
-                            calendarDisplaySource = DefaultCalendarPagingSource(
+                            calendarPagingSource = DefaultCalendarPagingSource(
                                 Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
                                 DayOfWeek.MONDAY
                             ),
