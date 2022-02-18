@@ -7,12 +7,15 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
 fun LocalDate.startOfWeek(firstDayOfWeek: DayOfWeek): LocalDate {
+    if (dayOfWeek == firstDayOfWeek) return this
     val offset = dayOfWeek.minus(firstDayOfWeek.value.toLong()).value
     return minus(offset, DateTimeUnit.DAY)
 }
 
 fun LocalDate.endOfWeek(firstDayOfWeek: DayOfWeek): LocalDate {
-    val offset = firstDayOfWeek.minus(dayOfWeek.value.toLong()).value
+    val lastDayOfWeek = firstDayOfWeek.minus(1)
+    if (dayOfWeek == lastDayOfWeek) return this
+    val offset = lastDayOfWeek.minus(dayOfWeek.value.toLong()).value
     return plus(offset, DateTimeUnit.DAY)
 }
 
