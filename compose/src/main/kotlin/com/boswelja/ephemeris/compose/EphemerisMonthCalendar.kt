@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.DayState
-import com.boswelja.ephemeris.core.buildCalendarMonth
+import com.boswelja.ephemeris.core.toDisplayMonth
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.DayOfWeek
 
@@ -39,14 +39,14 @@ fun EphemerisMonthCalendar(
             initialMonth.plusMonths(it)
         }
         val monthData = remember(month) {
-            month.buildCalendarMonth(DayOfWeek.MONDAY)
+            month.toDisplayMonth(DayOfWeek.MONDAY)
         }
         Column {
-            monthData.forEach { days ->
+            monthData.weeks.forEach { week ->
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    days.forEach { date ->
+                    week.days.forEach { date ->
                         dayContent(
                             DayState(
                                 date,

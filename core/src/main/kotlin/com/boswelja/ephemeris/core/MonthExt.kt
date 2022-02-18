@@ -7,17 +7,6 @@ import kotlinx.datetime.daysUntil
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
-fun YearMonth.buildCalendarMonth(
-    firstDayOfWeek: DayOfWeek
-): List<List<LocalDate>> {
-    val firstDisplayedDate = calculateStartDate(this, firstDayOfWeek)
-    val lastDisplayedDate = calculateEndDate(this, firstDisplayedDate)
-
-    return (firstDisplayedDate..lastDisplayedDate)
-        .toList()
-        .chunked(DayOfWeek.values().size)
-}
-
 fun YearMonth.toDisplayMonth(
     firstDayOfWeek: DayOfWeek
 ): DisplayMonth {
