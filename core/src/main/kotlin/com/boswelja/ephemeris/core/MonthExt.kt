@@ -27,7 +27,7 @@ private fun calculateStartDate(yearMonth: YearMonth, firstDayOfWeek: DayOfWeek):
 }
 
 private fun calculateEndDate(yearMonth: YearMonth, firstDisplayedDate: LocalDate): LocalDate {
-    val monthEndDate = yearMonth.startDate.plus(yearMonth.days - 1, DateTimeUnit.DAY)
+    val monthEndDate = yearMonth.endDate
     val daysRemainder = firstDisplayedDate.daysUntil(monthEndDate.plus(1, DateTimeUnit.DAY)) % 7
     if (daysRemainder == 0) return monthEndDate
 
