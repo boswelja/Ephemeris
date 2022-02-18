@@ -11,7 +11,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.data.CalendarPagingSource
 import com.boswelja.ephemeris.core.model.DayState
-import com.boswelja.ephemeris.core.model.MonthDayState
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -41,7 +40,7 @@ fun EphemerisCalendar(
                 ) {
                     week.dates.forEach { date ->
                         dayContent(
-                            MonthDayState(
+                            DayState(
                                 date,
                                 true
                             )
