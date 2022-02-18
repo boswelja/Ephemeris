@@ -13,6 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.boswelja.ephemeris.compose.EphemerisCalendar
@@ -60,8 +61,7 @@ class MainActivity : ComponentActivity() {
                             Text(
                                 text = dayState.date.dayOfMonth.toString(),
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
+                                    .align(Alignment.Center)
                                     .padding(16.dp)
                             )
                         }

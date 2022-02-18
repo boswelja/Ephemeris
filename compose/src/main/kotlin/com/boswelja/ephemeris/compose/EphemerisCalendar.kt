@@ -1,9 +1,9 @@
 package com.boswelja.ephemeris.compose
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -18,7 +18,7 @@ fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
     calendarPagingSource: CalendarPagingSource,
-    dayContent: @Composable RowScope.(DayState) -> Unit
+    dayContent: @Composable BoxScope.(DayState) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()
     LaunchedEffect(pagerState) {
@@ -35,16 +35,16 @@ fun EphemerisCalendar(
         }
         Column {
             pageData.forEach { week ->
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
+                Row {
                     week.dates.forEach { date ->
-                        dayContent(
-                            DayState(
-                                date,
-                                true
+                        Box(Modifier.weight(1f)) {
+                            dayContent(
+                                DayState(
+                                    date,
+                                    true
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
