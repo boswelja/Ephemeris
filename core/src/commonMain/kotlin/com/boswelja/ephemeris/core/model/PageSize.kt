@@ -1,6 +1,6 @@
 package com.boswelja.ephemeris.core.model
 
-enum class PageSize {
+public enum class PageSize {
     MONTH,
     WEEK
 }

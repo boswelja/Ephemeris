@@ -17,7 +17,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
-class DefaultCalendarPagingSource(
+public class DefaultCalendarPagingSource(
     private val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     private val firstDayOfWeek: DayOfWeek
 ) : CalendarPagingSource {

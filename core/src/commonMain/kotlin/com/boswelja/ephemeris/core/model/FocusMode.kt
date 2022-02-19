@@ -1,6 +1,6 @@
 package com.boswelja.ephemeris.core.model
 
-enum class FocusMode {
+public enum class FocusMode {
     ALL,
     WEEKDAYS,
     CURRENT_MONTH
