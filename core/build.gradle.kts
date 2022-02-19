@@ -9,9 +9,7 @@ kotlin {
 
     android()
     jvm()
-    js {
-        useCommonJs()
-    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
