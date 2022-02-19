@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity() {
                             calendarState = state,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .aspectRatio(1f)
                         ) { dayState ->
                             Text(
                                 text = dayState.date.dayOfMonth.toString(),
