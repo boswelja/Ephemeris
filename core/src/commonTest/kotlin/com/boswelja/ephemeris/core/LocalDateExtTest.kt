@@ -1,10 +1,10 @@
 package com.boswelja.ephemeris.core
 
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import java.time.DayOfWeek
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class LocalDateExtTest {
 

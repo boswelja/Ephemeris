@@ -1,12 +1,29 @@
 plugins {
+    kotlin("multiplatform")
     id("com.android.library")
-    id("kotlin-android")
     id("io.gitlab.arturbosch.detekt")
+}
+
+kotlin {
+    android()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+    }
 }
 
 android {
     compileSdk = 32
-
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         targetSdk = 32
         minSdk = 23
@@ -17,10 +34,6 @@ android {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
-
-    api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
-
-    testImplementation("junit:junit:4.13.2")
 }
 
 detekt {

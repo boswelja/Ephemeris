@@ -4,6 +4,7 @@ import com.boswelja.ephemeris.core.endOfWeek
 import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
+import com.boswelja.ephemeris.core.plusMonths
 import com.boswelja.ephemeris.core.startOfWeek
 import com.boswelja.ephemeris.core.toList
 import kotlinx.datetime.Clock
@@ -29,7 +30,7 @@ class DefaultCalendarPagingSource(
 
     override fun monthFor(page: Long, pageSize: PageSize): YearMonth {
         val month = when (pageSize) {
-            PageSize.MONTH -> YearMonth(startDate.year, startDate.month.plus(page))
+            PageSize.MONTH -> YearMonth(startDate.year, startDate.month.plusMonths(page))
             PageSize.WEEK -> {
                 val day = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
                     .startOfWeek(firstDayOfWeek)
@@ -51,7 +52,7 @@ class DefaultCalendarPagingSource(
     }
 
     private fun loadMonthPage(page: Long): Set<DisplayRow> {
-        val month = YearMonth(startDate.year, startDate.month.plus(page))
+        val month = YearMonth(startDate.year, startDate.month.plusMonths(page))
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
         return (firstDisplayedDate..lastDisplayedDate)

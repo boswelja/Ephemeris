@@ -15,12 +15,6 @@ data class YearMonth(
 ) {
     val startDate: LocalDate = LocalDate(year, month, 1)
     val endDate: LocalDate = startDate.plus(DateTimeUnit.MONTH).minus(1, DateTimeUnit.DAY)
-
-    fun plusMonths(months: Int): YearMonth {
-        return copy(
-            month = month.plus(months.toLong())
-        )
-    }
 }
 
 fun Instant.toYearMonth(): YearMonth {
