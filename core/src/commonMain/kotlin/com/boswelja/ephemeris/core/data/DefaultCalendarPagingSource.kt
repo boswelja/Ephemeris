@@ -1,6 +1,7 @@
 package com.boswelja.ephemeris.core.data
 
 import com.boswelja.ephemeris.core.endOfWeek
+import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
@@ -45,6 +46,7 @@ class DefaultCalendarPagingSource(
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
             .toList()
+            .map { DisplayDate(it, true) }
             .toSet()
         return setOf(
             DisplayRow(weekDays)
@@ -58,7 +60,9 @@ class DefaultCalendarPagingSource(
         return (firstDisplayedDate..lastDisplayedDate)
             .toList()
             .chunked(daysInWeek)
-            .map { DisplayRow(it.toSet()) }
+            .map {
+                DisplayRow(it.map { DisplayDate(it, true) }.toSet())
+            }
             .toSet()
     }
 }
