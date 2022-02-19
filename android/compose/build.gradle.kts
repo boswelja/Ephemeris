@@ -24,10 +24,11 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     api(project(":core"))
-    implementation("androidx.compose.animation:animation:1.2.0-alpha02")
-    implementation("androidx.compose.ui:ui:1.2.0-alpha02")
-    implementation("androidx.compose.foundation:foundation:1.2.0-alpha02")
+    implementation("androidx.compose.animation:animation:1.2.0-alpha03")
+    implementation("androidx.compose.ui:ui:1.2.0-alpha03")
+    implementation("androidx.compose.foundation:foundation:1.2.0-alpha03")
     implementation("dev.chrisbanes.snapper:snapper:0.2.0")
+    implementation("com.google.accompanist:accompanist-pager:0.24.2-alpha")
 }
 
 detekt {

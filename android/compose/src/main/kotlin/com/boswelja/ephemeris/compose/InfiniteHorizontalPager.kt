@@ -1,18 +1,20 @@
 package com.boswelja.ephemeris.compose
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.flow.collect
 
 /**
  * A lazy pager implementation that has a maximum range of [Int.MAX_VALUE] / 2 before and after the starting
@@ -20,7 +22,7 @@ import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
  * @param modifier A [Modifier] that is applied to the Pager. Note each page will use the size from this.
  * @param content The page content to display. THe page index is provided, which may be positive or negative.
  */
-@OptIn(ExperimentalSnapperApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun InfiniteHorizontalPager(
     modifier: Modifier = Modifier,
@@ -28,31 +30,25 @@ fun InfiniteHorizontalPager(
     contentPadding: PaddingValues = PaddingValues(),
     content: @Composable (page: Int) -> Unit
 ) {
-    val lazyListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = state.internalStartPage
-    )
+    val pagerState = rememberPagerState(state.internalStartPage)
 
-    LaunchedEffect(lazyListState.isScrollInProgress) {
-        if (!lazyListState.isScrollInProgress) {
-            state.page = state.calculatePageFromInternal(lazyListState.firstVisibleItemIndex)
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect {
+            state.page = state.calculatePageFromInternal(it)
         }
     }
 
-    LazyRow(
-        modifier = modifier,
-        state = lazyListState,
-        flingBehavior = rememberSnapperFlingBehavior(lazyListState),
-        contentPadding = contentPadding
-    ) {
-        items(
-            count = state.pageCount,
-            key = state::calculatePageFromInternal
-        ) { index ->
-            // Map the page to start at centered value of 0
-            val actualPage = state.calculatePageFromInternal(index)
-            Box(modifier) {
-                content(actualPage)
-            }
+    HorizontalPager(
+        modifier = modifier.animateContentSize(),
+        state = pagerState,
+        count = state.pageCount,
+        contentPadding = contentPadding,
+        key = state::calculatePageFromInternal
+    ) { index ->
+        // Map the page to start at centered value of 0
+        val actualPage = state.calculatePageFromInternal(index)
+        Box(modifier) {
+            content(actualPage)
         }
     }
 }

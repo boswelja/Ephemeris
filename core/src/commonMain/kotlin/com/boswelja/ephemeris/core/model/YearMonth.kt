@@ -24,3 +24,6 @@ fun Instant.toYearMonth(): YearMonth {
         localDateTime.month
     )
 }
+
+val LocalDate.yearMonth: YearMonth
+    get() = YearMonth(year, month)
