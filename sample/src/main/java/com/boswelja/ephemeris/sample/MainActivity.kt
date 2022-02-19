@@ -18,15 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
-import com.boswelja.ephemeris.core.data.DefaultCalendarPagingSource
 import com.boswelja.ephemeris.core.model.PageSize
-import com.boswelja.ephemeris.core.model.toYearMonth
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import java.time.DayOfWeek
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +38,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         val state = rememberCalendarState(
-                            startMonth = Clock.System.now().toYearMonth(),
+                            startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                            firstDayOfWeek = DayOfWeek.MONDAY,
                             initialPageSize = PageSize.MONTH
                         )
                         LaunchedEffect(state) {
@@ -50,10 +49,6 @@ class MainActivity : ComponentActivity() {
                         }
                         EphemerisCalendar(
                             calendarState = state,
-                            calendarPagingSource = DefaultCalendarPagingSource(
-                                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                                DayOfWeek.MONDAY
-                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(1f)

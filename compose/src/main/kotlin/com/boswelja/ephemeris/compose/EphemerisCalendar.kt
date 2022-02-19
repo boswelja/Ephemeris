@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.data.CalendarPagingSource
+import com.boswelja.ephemeris.core.data.DefaultCalendarPagingSource
 import com.boswelja.ephemeris.core.model.DayState
 import kotlinx.coroutines.flow.collect
 
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.collect
 fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
-    calendarPagingSource: CalendarPagingSource,
+    calendarPagingSource: CalendarPagingSource = DefaultCalendarPagingSource(calendarState.startDate, calendarState.firstDayOfWeek),
     dayContent: @Composable BoxScope.(DayState) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()

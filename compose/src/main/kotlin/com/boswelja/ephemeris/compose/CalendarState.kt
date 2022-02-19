@@ -8,24 +8,35 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
+import com.boswelja.ephemeris.core.model.yearMonth
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 
 interface CalendarState {
+    val startDate: LocalDate
+    val firstDayOfWeek: DayOfWeek
+
     var currentMonth: YearMonth
     var pageSize: PageSize
 }
 
 internal class DefaultCalendarState(
-    startMonth: YearMonth,
+    override val startDate: LocalDate,
+    override val firstDayOfWeek: DayOfWeek,
     initialPageSize: PageSize
 ) : CalendarState {
-    override var currentMonth: YearMonth by mutableStateOf(startMonth)
+    override var currentMonth: YearMonth by mutableStateOf(startDate.yearMonth)
     override var pageSize: PageSize by mutableStateOf(initialPageSize)
 }
 
 @Composable
 @Stable
-fun rememberCalendarState(startMonth: YearMonth, initialPageSize: PageSize): CalendarState {
-    return remember(startMonth) {
-        DefaultCalendarState(startMonth, initialPageSize)
+fun rememberCalendarState(
+    startDate: LocalDate,
+    firstDayOfWeek: DayOfWeek,
+    initialPageSize: PageSize
+): CalendarState {
+    return remember(startDate, firstDayOfWeek, initialPageSize) {
+        DefaultCalendarState(startDate, firstDayOfWeek, initialPageSize)
     }
 }
