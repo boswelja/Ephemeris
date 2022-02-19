@@ -18,5 +18,6 @@ rootProject.name = "Ephemeris"
 include(
     ":core",
     ":compose",
-    ":sample"
+    ":sample",
+    ":benchmark"
 )
