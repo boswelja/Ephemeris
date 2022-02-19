@@ -53,7 +53,7 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
-    implementation(project(":compose"))
+    implementation(project(":android:compose"))
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.compose.ui:ui:1.2.0-alpha02")
     implementation("androidx.compose.material3:material3:1.0.0-alpha04")
