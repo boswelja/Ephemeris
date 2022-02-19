@@ -3,6 +3,7 @@ package com.boswelja.ephemeris.core.data
 import com.boswelja.ephemeris.core.endOfWeek
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
+import com.boswelja.ephemeris.core.model.FocusMode
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.plusMonths
@@ -21,11 +22,12 @@ class DefaultCalendarPagingSource(
     private val firstDayOfWeek: DayOfWeek
 ) : CalendarPagingSource {
     private val daysInWeek = DayOfWeek.values().size
+    private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-    override fun loadPage(page: Long, pageSize: PageSize): Set<DisplayRow> {
+    override fun loadPage(page: Long, pageSize: PageSize, focusMode: FocusMode): Set<DisplayRow> {
         return when (pageSize) {
-            PageSize.MONTH -> loadMonthPage(page)
-            PageSize.WEEK -> loadWeekPage(page)
+            PageSize.MONTH -> loadMonthPage(page, focusMode)
+            PageSize.WEEK -> loadWeekPage(page, focusMode)
         }
     }
 
@@ -41,19 +43,26 @@ class DefaultCalendarPagingSource(
         return month
     }
 
-    private fun loadWeekPage(page: Long): Set<DisplayRow> {
+    private fun loadWeekPage(page: Long, focusMode: FocusMode): Set<DisplayRow> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
             .toList()
-            .map { DisplayDate(it, true) }
+            .map {
+                val focused = when (focusMode) {
+                    FocusMode.ALL -> true
+                    FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
+                    FocusMode.CURRENT_MONTH -> true
+                }
+                DisplayDate(it, focused)
+            }
             .toSet()
         return setOf(
             DisplayRow(weekDays)
         )
     }
 
-    private fun loadMonthPage(page: Long): Set<DisplayRow> {
+    private fun loadMonthPage(page: Long, focusMode: FocusMode): Set<DisplayRow> {
         val month = YearMonth(startDate.year, startDate.month.plusMonths(page))
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
@@ -61,7 +70,16 @@ class DefaultCalendarPagingSource(
             .toList()
             .chunked(daysInWeek)
             .map {
-                DisplayRow(it.map { DisplayDate(it, true) }.toSet())
+                DisplayRow(
+                    it.map { date ->
+                        val focused = when (focusMode) {
+                            FocusMode.ALL -> true
+                            FocusMode.WEEKDAYS -> !weekends.contains(date.dayOfWeek)
+                            FocusMode.CURRENT_MONTH -> date.month == month.month
+                        }
+                        DisplayDate(date, focused)
+                    }.toSet()
+                )
             }
             .toSet()
     }

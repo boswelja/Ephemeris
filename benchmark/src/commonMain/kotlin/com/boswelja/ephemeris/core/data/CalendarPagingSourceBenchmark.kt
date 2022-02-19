@@ -1,5 +1,6 @@
 package com.boswelja.ephemeris.core.data
 
+import com.boswelja.ephemeris.core.model.FocusMode
 import com.boswelja.ephemeris.core.model.PageSize
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkMode
@@ -23,12 +24,12 @@ abstract class CalendarPagingSourceBenchmark {
 
     @Benchmark
     fun loadWeekPage() {
-        pagingSource.loadPage(11, PageSize.WEEK)
+        pagingSource.loadPage(11, PageSize.WEEK, FocusMode.WEEKDAYS)
     }
 
     @Benchmark
     fun loadMonthPage() {
-        pagingSource.loadPage(5, PageSize.MONTH)
+        pagingSource.loadPage(5, PageSize.MONTH, FocusMode.CURRENT_MONTH)
     }
 
     @Benchmark

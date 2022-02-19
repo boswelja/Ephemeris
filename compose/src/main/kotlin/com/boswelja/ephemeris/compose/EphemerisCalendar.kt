@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.data.CalendarPagingSource
 import com.boswelja.ephemeris.core.data.DefaultCalendarPagingSource
 import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.FocusMode
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -32,7 +33,7 @@ fun EphemerisCalendar(
         state = pagerState
     ) {
         val pageData = remember(it, calendarState.pageSize) {
-            calendarPagingSource.loadPage(it.toLong(), calendarState.pageSize)
+            calendarPagingSource.loadPage(it.toLong(), calendarState.pageSize, FocusMode.WEEKDAYS)
         }
         Column {
             pageData.forEach { week ->

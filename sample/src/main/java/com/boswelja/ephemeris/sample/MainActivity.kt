@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     Column {
                         val state = rememberCalendarState(
                             startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                            firstDayOfWeek = DayOfWeek.MONDAY,
+                            firstDayOfWeek = DayOfWeek.SUNDAY,
                             initialPageSize = PageSize.MONTH
                         )
                         LaunchedEffect(state) {
@@ -53,6 +54,8 @@ class MainActivity : ComponentActivity() {
                         ) { dayState ->
                             Text(
                                 text = dayState.date.dayOfMonth.toString(),
+                                color = if (dayState.isFocusedDate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                                fontWeight = if (dayState.isFocusedDate) FontWeight.Bold else FontWeight.Normal,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .padding(16.dp)
