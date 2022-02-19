@@ -19,19 +19,21 @@ import kotlinx.datetime.toLocalDateTime
 
 public class DefaultCalendarPagingSource(
     private val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    private val firstDayOfWeek: DayOfWeek
+    private val firstDayOfWeek: DayOfWeek,
+    override val focusMode: FocusMode,
+    override val pageSize: PageSize
 ) : CalendarPagingSource {
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-    override fun loadPage(page: Long, pageSize: PageSize, focusMode: FocusMode): Set<DisplayRow> {
+    override fun loadPage(page: Long): Set<DisplayRow> {
         return when (pageSize) {
             PageSize.MONTH -> loadMonthPage(page, focusMode)
             PageSize.WEEK -> loadWeekPage(page, focusMode)
         }
     }
 
-    override fun monthFor(page: Long, pageSize: PageSize): YearMonth {
+    override fun monthFor(page: Long): YearMonth {
         val month = when (pageSize) {
             PageSize.MONTH -> YearMonth(startDate.year, startDate.month.plusMonths(page))
             PageSize.WEEK -> {

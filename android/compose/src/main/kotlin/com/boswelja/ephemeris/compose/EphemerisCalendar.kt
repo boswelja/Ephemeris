@@ -19,13 +19,18 @@ import kotlinx.coroutines.flow.collect
 fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
-    calendarPagingSource: CalendarPagingSource = DefaultCalendarPagingSource(calendarState.startDate, calendarState.firstDayOfWeek),
+    calendarPagingSource: CalendarPagingSource = DefaultCalendarPagingSource(
+        calendarState.startDate,
+        calendarState.firstDayOfWeek,
+        FocusMode.WEEKDAYS,
+        calendarState.pageSize
+    ),
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.page }.collect {
-            calendarState.currentMonth = calendarPagingSource.monthFor(it.toLong(), calendarState.pageSize)
+            calendarState.currentMonth = calendarPagingSource.monthFor(it.toLong())
         }
     }
     InfiniteHorizontalPager(
@@ -33,7 +38,7 @@ fun EphemerisCalendar(
         state = pagerState
     ) {
         val pageData = remember(it, calendarState.pageSize) {
-            calendarPagingSource.loadPage(it.toLong(), calendarState.pageSize, FocusMode.WEEKDAYS)
+            calendarPagingSource.loadPage(it.toLong())
         }
         Column {
             pageData.forEach { week ->

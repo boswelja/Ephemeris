@@ -33,6 +33,5 @@ benchmark {
     }
     targets {
         register("jvm")
-        register("js")
     }
 }

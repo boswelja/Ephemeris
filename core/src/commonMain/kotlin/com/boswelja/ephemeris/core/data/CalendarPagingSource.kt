@@ -6,11 +6,12 @@ import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
 
 public interface CalendarPagingSource {
-    public fun loadPage(
-        page: Long,
-        pageSize: PageSize,
-        focusMode: FocusMode
-    ): Set<DisplayRow>
 
-    public fun monthFor(page: Long, pageSize: PageSize): YearMonth
+    public val pageSize: PageSize
+
+    public val focusMode: FocusMode
+
+    public fun loadPage(page: Long): Set<DisplayRow>
+
+    public fun monthFor(page: Long): YearMonth
 }
