@@ -5,7 +5,7 @@ import com.boswelja.ephemeris.core.model.FocusMode
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
 
-public interface CalendarPagingSource {
+public interface CalendarPageSource {
 
     public val pageSize: PageSize
 
