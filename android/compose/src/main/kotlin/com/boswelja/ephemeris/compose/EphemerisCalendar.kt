@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.DefaultCalendarPageSource
 import com.boswelja.ephemeris.core.model.DisplayDate
-import com.boswelja.ephemeris.core.model.FocusMode
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -22,7 +21,7 @@ fun EphemerisCalendar(
     calendarPageSource: CalendarPageSource = DefaultCalendarPageSource(
         calendarState.startDate,
         calendarState.firstDayOfWeek,
-        FocusMode.WEEKDAYS,
+        calendarState.focusMode,
         calendarState.pageSize
     ),
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit

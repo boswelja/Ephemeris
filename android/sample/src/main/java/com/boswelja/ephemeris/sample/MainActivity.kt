@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
+import com.boswelja.ephemeris.core.model.FocusMode
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.coroutines.flow.collect
@@ -40,7 +41,8 @@ class MainActivity : ComponentActivity() {
                         val state = rememberCalendarState(
                             startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
                             firstDayOfWeek = DayOfWeek.SUNDAY,
-                            initialPageSize = PageSize.MONTH
+                            initialPageSize = PageSize.MONTH,
+                            FocusMode.WEEKDAYS
                         )
                         LaunchedEffect(state) {
                             snapshotFlow { state.currentMonth }.collect {
