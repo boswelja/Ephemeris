@@ -9,8 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
-import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.model.DisplayDate
 import kotlinx.coroutines.flow.collect
 
@@ -18,25 +16,20 @@ import kotlinx.coroutines.flow.collect
 fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
-    calendarPageSource: CalendarPageSource = CalendarMonthPageSource(
-        calendarState.startDate,
-        calendarState.firstDayOfWeek,
-        calendarState.focusMode
-    ),
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.page }.collect {
-            calendarState.currentMonth = calendarPageSource.monthFor(it.toLong())
+            calendarState.currentMonth = calendarState.calendarPageLoader.monthFor(it.toLong())
         }
     }
     InfiniteHorizontalPager(
         modifier = modifier,
         state = pagerState
     ) {
-        val pageData = remember(it, calendarState.pageSize) {
-            calendarPageSource.loadPage(it.toLong())
+        val pageData = remember(it, calendarState.calendarPageLoader) {
+            calendarState.calendarPageLoader.loadPage(it.toLong())
         }
         Column {
             pageData.forEach { week ->

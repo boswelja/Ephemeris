@@ -6,8 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.boswelja.ephemeris.core.data.FocusMode
-import com.boswelja.ephemeris.core.model.PageSize
+import com.boswelja.ephemeris.core.data.CalendarPageLoader
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.yearMonth
 import kotlinx.datetime.DayOfWeek
@@ -17,31 +16,27 @@ interface CalendarState {
     val startDate: LocalDate
     val firstDayOfWeek: DayOfWeek
 
+    var calendarPageLoader: CalendarPageLoader
     var currentMonth: YearMonth
-    var pageSize: PageSize
-    var focusMode: FocusMode
 }
 
 internal class DefaultCalendarState(
     override val startDate: LocalDate,
     override val firstDayOfWeek: DayOfWeek,
-    initialPageSize: PageSize,
-    initialFocusMode: FocusMode
+    calendarPageLoader: CalendarPageLoader
 ) : CalendarState {
     override var currentMonth: YearMonth by mutableStateOf(startDate.yearMonth)
-    override var pageSize: PageSize by mutableStateOf(initialPageSize)
-    override var focusMode: FocusMode by mutableStateOf(initialFocusMode)
+    override var calendarPageLoader: CalendarPageLoader by mutableStateOf(calendarPageLoader)
 }
 
 @Composable
 @Stable
 fun rememberCalendarState(
-    startDate: LocalDate,
     firstDayOfWeek: DayOfWeek,
-    initialPageSize: PageSize,
-    initialFocusMode: FocusMode
+    startDate: LocalDate,
+    calendarPageLoader: CalendarPageLoader
 ): CalendarState {
-    return remember(startDate, firstDayOfWeek, initialPageSize, initialFocusMode) {
-        DefaultCalendarState(startDate, firstDayOfWeek, initialPageSize, initialFocusMode)
+    return remember(startDate, firstDayOfWeek, calendarPageLoader) {
+        DefaultCalendarState(startDate, firstDayOfWeek, calendarPageLoader)
     }
 }
