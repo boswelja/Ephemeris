@@ -6,7 +6,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import kotlin.math.abs
 
 public data class YearMonth(
     val year: Int,
@@ -20,10 +19,14 @@ public val LocalDate.yearMonth: YearMonth
     get() = YearMonth(year, month)
 
 public fun YearMonth.plus(months: Long): YearMonth {
-    val yearChange = abs(months) / allMonths.size
-    val newYear = if (months >= 0) year + yearChange else year - yearChange
+    val monthDelta = month.ordinal + months
+    val yearDelta = if (monthDelta < 0) {
+        (monthDelta / allMonths.size) - 1
+    } else {
+        (monthDelta / allMonths.size)
+    }
     return copy(
-        year = newYear.toInt(),
+        year = (yearDelta + year).toInt(),
         month = month.plusMonths(months)
     )
 }

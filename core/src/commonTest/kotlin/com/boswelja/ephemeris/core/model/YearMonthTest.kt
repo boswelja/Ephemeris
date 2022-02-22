@@ -22,31 +22,82 @@ class YearMonthTest {
     @Test
     fun endDate_isCorrect() {
         // Check leap day
-        assertEndDate(
+        assertEquals(
             LocalDate(2000, Month.FEBRUARY, 29),
-            YearMonth(2000, Month.FEBRUARY)
+            YearMonth(2000, Month.FEBRUARY).endDate
         )
         // Check normal Feb
-        assertEndDate(
+        assertEquals(
             LocalDate(2001, Month.FEBRUARY, 28),
-            YearMonth(2001, Month.FEBRUARY)
+            YearMonth(2001, Month.FEBRUARY).endDate
         )
         // Check 31 days
-        assertEndDate(
+        assertEquals(
             LocalDate(2019, Month.JANUARY, 31),
-            YearMonth(2019, Month.JANUARY)
+            YearMonth(2019, Month.JANUARY).endDate
         )
         // Check 30 days
-        assertEndDate(
+        assertEquals(
             LocalDate(2100, Month.APRIL, 30),
-            YearMonth(2100, Month.APRIL)
+            YearMonth(2100, Month.APRIL).endDate
         )
     }
 
-    private fun assertEndDate(
-        expected: LocalDate,
-        yearMonth: YearMonth
-    ) {
-        assertEquals(expected, yearMonth.endDate)
+    @Test
+    fun plus_adjustsMonthCorrectly() {
+        // Check passing 0
+        assertEquals(
+            Month.JULY,
+            YearMonth(2021, Month.JULY).plus(0).month
+        )
+        // Check incrementing by 1
+        assertEquals(
+            Month.JULY,
+            YearMonth(2021, Month.JUNE).plus(1).month
+        )
+        // Check decrementing by 1
+        assertEquals(
+            Month.MAY,
+            YearMonth(2021, Month.JUNE).plus(-1).month
+        )
+        // Check incrementing by a large number
+        assertEquals(
+            Month.OCTOBER,
+            YearMonth(2021, Month.JUNE).plus(100).month
+        )
+        // Check decrementing by a large number
+        assertEquals(
+            Month.MARCH,
+            YearMonth(2021, Month.JULY).plus(-100).month
+        )
+    }
+
+    @Test
+    fun plus_adjustsYearCorrectly() {
+        // Check passing 0
+        assertEquals(
+            2021,
+            YearMonth(2021, Month.JULY).plus(0).year
+        )
+        // Check incrementing into new year by 1
+        assertEquals(
+            2022,
+            YearMonth(2021, Month.DECEMBER).plus(1).year
+        )
+        // Check decrementing into new year by 1
+        assertEquals(
+            2021,
+            YearMonth(2022, Month.JANUARY).plus(-1).year
+        )
+        // Check incrementing by a large number
+        assertEquals(
+            2030,
+            YearMonth(2022, Month.JULY).plus(100).year
+        )
+        // Check decrementing by a large number
+        assertEquals(
+            2014,
+            YearMonth(2022, Month.JULY).plus(-100).year
+        )
     }
 }
