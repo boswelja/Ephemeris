@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.model.FocusMode
+import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.core.model.YearMonth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,7 +56,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
         pagingDataSource = CalendarMonthPageSource(
             Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
             firstDayOfWeek!!,
-            FocusMode.WEEKDAYS
+            WeekdayFocusMode
         )
         viewPager.adapter = CalendarPagerAdapter(
             pagingDataSource!!,

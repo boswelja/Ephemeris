@@ -2,9 +2,9 @@ package com.boswelja.ephemeris.core.data
 
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
-import com.boswelja.ephemeris.core.model.FocusMode
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
+import com.boswelja.ephemeris.core.model.yearMonth
 import com.boswelja.ephemeris.core.startOfWeek
 import com.boswelja.ephemeris.core.toList
 import kotlinx.datetime.Clock
@@ -22,7 +22,6 @@ public class CalendarWeekPageSource(
 ) : CalendarPageSource {
 
     private val daysInWeek = DayOfWeek.values().size
-    private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
     override val pageSize: PageSize = PageSize.WEEK
 
@@ -32,11 +31,7 @@ public class CalendarWeekPageSource(
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
             .toList()
             .map {
-                val focused = when (focusMode) {
-                    FocusMode.ALL -> true
-                    FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
-                    FocusMode.CURRENT_MONTH -> true
-                }
+                val focused = focusMode(it, it.yearMonth)
                 DisplayDate(it, focused)
             }
             .toSet()

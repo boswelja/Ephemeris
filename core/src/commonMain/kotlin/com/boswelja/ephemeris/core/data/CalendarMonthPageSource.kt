@@ -3,7 +3,6 @@ package com.boswelja.ephemeris.core.data
 import com.boswelja.ephemeris.core.endOfWeek
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
-import com.boswelja.ephemeris.core.model.FocusMode
 import com.boswelja.ephemeris.core.model.PageSize
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.plus
@@ -23,7 +22,6 @@ public class CalendarMonthPageSource(
     override val focusMode: FocusMode
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
-    private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
     override val pageSize: PageSize = PageSize.MONTH
 
@@ -37,11 +35,7 @@ public class CalendarMonthPageSource(
             .map {
                 DisplayRow(
                     it.map { date ->
-                        val focused = when (focusMode) {
-                            FocusMode.ALL -> true
-                            FocusMode.WEEKDAYS -> !weekends.contains(date.dayOfWeek)
-                            FocusMode.CURRENT_MONTH -> date.month == month.month
-                        }
+                        val focused = focusMode(date, month)
                         DisplayDate(date, focused)
                     }.toSet()
                 )

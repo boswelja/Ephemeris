@@ -9,8 +9,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.DefaultCalendarPageSource
 import com.boswelja.ephemeris.core.model.DisplayDate
 import kotlinx.coroutines.flow.collect
 
@@ -18,11 +18,10 @@ import kotlinx.coroutines.flow.collect
 fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
-    calendarPageSource: CalendarPageSource = DefaultCalendarPageSource(
+    calendarPageSource: CalendarPageSource = CalendarMonthPageSource(
         calendarState.startDate,
         calendarState.firstDayOfWeek,
-        calendarState.focusMode,
-        calendarState.pageSize
+        calendarState.focusMode
     ),
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit
 ) {
