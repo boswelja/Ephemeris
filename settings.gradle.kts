@@ -19,5 +19,6 @@ include(
     ":core",
     ":benchmark",
     ":android:compose",
+    ":android:views",
     ":android:sample",
 )
