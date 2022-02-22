@@ -25,3 +25,7 @@ public object DisplayMonthFocusMode : FocusMode {
         return date.yearMonth == targetYearMonth
     }
 }
+
+public object AllFocusMode : FocusMode {
+    override fun invoke(date: LocalDate, targetYearMonth: YearMonth): Boolean = true
+}
