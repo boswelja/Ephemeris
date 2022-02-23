@@ -1,13 +1,14 @@
 package com.boswelja.ephemeris.core.data
 
+import com.boswelja.ephemeris.core.chunked
 import com.boswelja.ephemeris.core.endOfWeek
+import com.boswelja.ephemeris.core.mapToSet
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.plus
 import com.boswelja.ephemeris.core.model.yearMonth
 import com.boswelja.ephemeris.core.startOfWeek
-import com.boswelja.ephemeris.core.toList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
@@ -34,7 +35,6 @@ public class CalendarMonthPageLoader(
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
         return (firstDisplayedDate..lastDisplayedDate)
-            .toList()
             .chunked(daysInWeek)
             .map {
                 DisplayRow(
@@ -63,12 +63,10 @@ public class CalendarWeekPageLoader(
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
-            .toList()
-            .map {
+            .mapToSet {
                 val focused = focusMode(it, it.yearMonth)
                 DisplayDate(it, focused)
             }
-            .toSet()
         return setOf(
             DisplayRow(weekDays)
         )

@@ -19,12 +19,34 @@ internal fun LocalDate.endOfWeek(firstDayOfWeek: DayOfWeek): LocalDate {
     return plus(offset, DateTimeUnit.DAY)
 }
 
-internal fun ClosedRange<LocalDate>.toList(): List<LocalDate> {
-    val list = mutableListOf<LocalDate>()
+internal fun <T> ClosedRange<LocalDate>.mapToSet(transform: (LocalDate) -> T): Set<T> {
+    val list = mutableSetOf<T>()
     var currentItem = start
     while (currentItem <= endInclusive) {
-        list.add(currentItem)
+        list.add(transform(currentItem))
         currentItem = currentItem.plus(1, DateTimeUnit.DAY)
+    }
+    return list
+}
+
+internal fun ClosedRange<LocalDate>.chunked(chunkSize: Int): List<List<LocalDate>> {
+    val list = mutableListOf<List<LocalDate>>()
+    var currentItem = start
+    val workingList = mutableListOf<LocalDate>()
+    while (currentItem <= endInclusive) {
+        workingList.add(currentItem)
+        currentItem = currentItem.plus(1, DateTimeUnit.DAY)
+        // If we've completed a chunk, add it to the list
+        if (workingList.count() >= chunkSize) {
+            // We use toList here to create a copy of the list, otherwise calling clear will mutate the
+            // stored list.
+            list.add(workingList.toList())
+            workingList.clear()
+        }
+    }
+    // Add any remaining items
+    if (workingList.isNotEmpty()) {
+        list.add(workingList)
     }
     return list
 }
