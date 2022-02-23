@@ -12,10 +12,7 @@ import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.core.model.YearMonth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -54,7 +51,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
         if (firstDayOfWeek == null) return
         if (dayBinder == null) return
         pagingDataSource = CalendarMonthPageLoader(
-            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
             firstDayOfWeek!!,
             WeekdayFocusMode
         )

@@ -14,7 +14,7 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayAt
 
 public interface CalendarPageLoader {
     public fun loadPage(page: Long): Set<DisplayRow>
@@ -23,9 +23,9 @@ public interface CalendarPageLoader {
 }
 
 public class CalendarMonthPageLoader(
-    private val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     private val firstDayOfWeek: DayOfWeek,
-    private val focusMode: FocusMode
+    private val focusMode: FocusMode,
+    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
 
@@ -53,9 +53,9 @@ public class CalendarMonthPageLoader(
 }
 
 public class CalendarWeekPageLoader(
-    private val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     private val firstDayOfWeek: DayOfWeek,
-    private val focusMode: FocusMode
+    private val focusMode: FocusMode,
+    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
 
