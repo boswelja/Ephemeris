@@ -1,6 +1,5 @@
 package com.boswelja.ephemeris.compose
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -39,14 +38,14 @@ fun InfiniteHorizontalPager(
     }
 
     HorizontalPager(
-        modifier = modifier.animateContentSize(),
+        modifier = modifier,
         state = pagerState,
         count = state.pageCount,
         contentPadding = contentPadding,
         key = state::calculatePageFromInternal
     ) { index ->
         // Map the page to start at centered value of 0
-        val actualPage = state.calculatePageFromInternal(index)
+        val actualPage = remember { state.calculatePageFromInternal(index) }
         Box(modifier) {
             content(actualPage)
         }
