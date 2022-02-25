@@ -28,7 +28,7 @@ fun EphemerisCalendar(
         modifier = modifier,
         state = pagerState
     ) {
-        val pageData = remember(it, calendarState.calendarPageLoader) {
+        val pageData = remember(calendarState.calendarPageLoader) {
             calendarState.calendarPageLoader.loadPage(it.toLong())
         }
         Column {

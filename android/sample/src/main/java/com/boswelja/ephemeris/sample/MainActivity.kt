@@ -6,19 +6,42 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.recyclerview.widget.RecyclerView
+import com.boswelja.ephemeris.compose.EphemerisCalendar
+import com.boswelja.ephemeris.compose.rememberCalendarState
+import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
+import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import com.boswelja.ephemeris.views.CalendarDateBinder
-import com.boswelja.ephemeris.views.EphemerisCalendarView
 import kotlinx.datetime.DayOfWeek
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val calendarView = findViewById<EphemerisCalendarView>(R.id.calendar)
-        calendarView.dayBinder = CalendarDayBinder()
-        calendarView.firstDayOfWeek = DayOfWeek.SUNDAY
+//        setContentView(R.layout.activity_main)
+//        val calendarView = findViewById<EphemerisCalendarView>(R.id.calendar)
+//        calendarView.dayBinder = CalendarDayBinder()
+//        calendarView.firstDayOfWeek = DayOfWeek.SUNDAY
+        setContent {
+            EphemerisTheme {
+                val calendarState = rememberCalendarState(
+                    calendarPageLoader = CalendarMonthPageLoader(
+                        DayOfWeek.SUNDAY,
+                        WeekdayFocusMode
+                    )
+                )
+                EphemerisCalendar(calendarState = calendarState) { dayState ->
+                    Text(
+                        text = dayState.date.dayOfMonth.toString(),
+                        color = if (dayState.isFocusedDate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+        }
     }
 }
 

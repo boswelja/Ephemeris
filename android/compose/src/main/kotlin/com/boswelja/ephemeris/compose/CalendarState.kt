@@ -9,20 +9,18 @@ import androidx.compose.runtime.setValue
 import com.boswelja.ephemeris.core.data.CalendarPageLoader
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.yearMonth
-import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayAt
 
 interface CalendarState {
-    val startDate: LocalDate
-    val firstDayOfWeek: DayOfWeek
-
     var calendarPageLoader: CalendarPageLoader
     var currentMonth: YearMonth
 }
 
 internal class DefaultCalendarState(
-    override val startDate: LocalDate,
-    override val firstDayOfWeek: DayOfWeek,
+    startDate: LocalDate,
     calendarPageLoader: CalendarPageLoader
 ) : CalendarState {
     override var currentMonth: YearMonth by mutableStateOf(startDate.yearMonth)
@@ -32,11 +30,10 @@ internal class DefaultCalendarState(
 @Composable
 @Stable
 fun rememberCalendarState(
-    firstDayOfWeek: DayOfWeek,
-    startDate: LocalDate,
-    calendarPageLoader: CalendarPageLoader
+    calendarPageLoader: CalendarPageLoader,
+    startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
 ): CalendarState {
-    return remember(startDate, firstDayOfWeek, calendarPageLoader) {
-        DefaultCalendarState(startDate, firstDayOfWeek, calendarPageLoader)
+    return remember(startDate, calendarPageLoader) {
+        DefaultCalendarState(startDate, calendarPageLoader)
     }
 }
