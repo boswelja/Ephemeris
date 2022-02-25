@@ -7,12 +7,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
 import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
+import com.boswelja.ephemeris.core.data.CalendarWeekPageLoader
+import com.boswelja.ephemeris.core.data.DisplayMonthFocusMode
 import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
@@ -31,14 +39,34 @@ class MainActivity : ComponentActivity() {
                 val calendarState = rememberCalendarState(
                     calendarPageLoader = CalendarMonthPageLoader(
                         DayOfWeek.SUNDAY,
-                        WeekdayFocusMode
+                        DisplayMonthFocusMode
                     )
                 )
-                EphemerisCalendar(calendarState = calendarState) { dayState ->
-                    Text(
-                        text = dayState.date.dayOfMonth.toString(),
-                        color = if (dayState.isFocusedDate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                    )
+                Column {
+                    EphemerisCalendar(calendarState = calendarState) { dayState ->
+                        Text(
+                            modifier = Modifier.padding(16.dp).align(Alignment.Center),
+                            text = dayState.date.dayOfMonth.toString(),
+                            color = if (dayState.isFocusedDate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            if (calendarState.calendarPageLoader is CalendarMonthPageLoader) {
+                                calendarState.calendarPageLoader = CalendarWeekPageLoader(
+                                    DayOfWeek.SUNDAY,
+                                    WeekdayFocusMode
+                                )
+                            } else {
+                                calendarState.calendarPageLoader = CalendarMonthPageLoader(
+                                    DayOfWeek.SUNDAY,
+                                    WeekdayFocusMode
+                                )
+                            }
+                        }
+                    ) {
+                        Text("Switch")
+                    }
                 }
             }
         }
