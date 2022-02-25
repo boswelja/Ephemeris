@@ -1,5 +1,7 @@
 package com.boswelja.ephemeris.compose
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.DisplayDate
 import kotlinx.coroutines.flow.collect
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun EphemerisCalendar(
     calendarState: CalendarState,
@@ -24,19 +27,21 @@ fun EphemerisCalendar(
             calendarState.currentMonth = calendarState.calendarPageLoader.monthFor(it.toLong())
         }
     }
-    InfiniteHorizontalPager(
-        modifier = modifier,
-        state = pagerState
-    ) {
-        val pageData = remember(calendarState.calendarPageLoader) {
-            calendarState.calendarPageLoader.loadPage(it.toLong())
-        }
-        Column {
-            pageData.forEach { week ->
-                Row {
-                    week.dates.forEach { date ->
-                        Box(Modifier.weight(1f)) {
-                            dayContent(date)
+    AnimatedContent(targetState = calendarState.calendarPageLoader) { pageLoader ->
+        InfiniteHorizontalPager(
+            modifier = modifier,
+            state = pagerState
+        ) {
+            val pageData = remember {
+                pageLoader.loadPage(it.toLong())
+            }
+            Column {
+                pageData.forEach { week ->
+                    Row {
+                        week.dates.forEach { date ->
+                            Box(Modifier.weight(1f)) {
+                                dayContent(date)
+                            }
                         }
                     }
                 }

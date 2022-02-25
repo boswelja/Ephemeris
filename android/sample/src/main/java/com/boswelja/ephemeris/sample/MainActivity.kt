@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.compose.EphemerisCalendar
@@ -36,18 +37,19 @@ class MainActivity : ComponentActivity() {
 //        calendarView.firstDayOfWeek = DayOfWeek.SUNDAY
         setContent {
             EphemerisTheme {
-                val calendarState = rememberCalendarState(
-                    calendarPageLoader = CalendarMonthPageLoader(
+                val calendarState = rememberCalendarState {
+                    CalendarMonthPageLoader(
                         DayOfWeek.SUNDAY,
                         DisplayMonthFocusMode
                     )
-                )
+                }
                 Column {
                     EphemerisCalendar(calendarState = calendarState) { dayState ->
                         Text(
                             modifier = Modifier.padding(16.dp).align(Alignment.Center),
                             text = dayState.date.dayOfMonth.toString(),
-                            color = if (dayState.isFocusedDate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            color = if (dayState.isFocusedDate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            fontWeight = if (dayState.isFocusedDate) FontWeight.Bold else FontWeight.Normal
                         )
                     }
                     Button(
