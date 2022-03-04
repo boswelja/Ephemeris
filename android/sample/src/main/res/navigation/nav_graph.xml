@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.boswelja.ephemeris.sample.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_composeCalendarFragment"
+            app:destination="@id/composeCalendarFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_viewsCalendarFragment"
+            app:destination="@id/viewsCalendarFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/composeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.compose.ComposeCalendarFragment"
+        android:label="ComposeCalendarFragment" />
+    <fragment
+        android:id="@+id/viewsCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.views.ViewsCalendarFragment"
+        android:label="ViewsCalendarFragment" />
+</navigation>
