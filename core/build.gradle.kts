@@ -40,6 +40,6 @@ dependencies {
 }
 
 detekt {
-    config = files("../config/detekt/detekt.yml")
+    config = files("${rootDir.absolutePath}/config/detekt/detekt.yml")
     buildUponDefaultConfig = true
 }
