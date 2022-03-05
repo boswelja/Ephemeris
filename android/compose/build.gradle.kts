@@ -18,6 +18,16 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
     }
+
+    testOptions {
+        devices {
+            create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel2api31") {
+                device = "Pixel 2"
+                apiLevel = 31
+                systemImageSource = "aosp"
+            }
+        }
+    }
 }
 
 dependencies {
