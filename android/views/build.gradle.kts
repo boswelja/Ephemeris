@@ -1,6 +1,6 @@
 plugins {
     id("com.android.library")
-    id("kotlin-android")
+    kotlin("android")
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -22,9 +22,10 @@ dependencies {
 
     api(project(":core"))
 
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    api("androidx.recyclerview:recyclerview:1.2.1")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    api(libs.kotlinx.coroutines.core)
+
+    api(libs.androidx.recyclerview)
+    implementation(libs.androidx.viewpager)
 }
 
 detekt {
