@@ -1,4 +1,4 @@
-package com.boswelja.android.views
+package com.boswelja.android.compose
 
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
@@ -8,13 +8,13 @@ import java.util.concurrent.TimeUnit
 object Utils {
     const val PackageName = "com.boswelja.ephemeris.sample"
 
-    fun MacrobenchmarkScope.launchViewsCalendar() {
+    fun MacrobenchmarkScope.launchComposeCalendar() {
         pressHome()
         startActivityAndWait()
-        device.findObject(By.res(PackageName, "xmlviews_link"))
+        device.findObject(By.res(PackageName, "compose_link"))
             .click()
         device.wait(
-            Until.hasObject(By.clazz("$PackageName.views.ViewsCalendarFragment")),
+            Until.hasObject(By.clazz("$PackageName.compose.ComposeCalendarFragment")),
             TimeUnit.SECONDS.toMillis(5)
         )
     }
