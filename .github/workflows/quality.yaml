@@ -47,8 +47,8 @@ jobs:
           path: ./**/build/reports/tests/
           if-no-files-found: ignore
 
-      - name: Instrumented Tests
-        run: bash ./gradlew pixel2api31DebugAndroidTest
+#      - name: Instrumented Tests
+#        run: bash ./gradlew pixel2api31DebugAndroidTest
 
   code-quality:
     name: Code Quality
