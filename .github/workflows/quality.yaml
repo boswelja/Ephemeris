@@ -1,0 +1,66 @@
+name: Quality Checks
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    paths-ignore:
+      - '**.md'
+      - '.github/*.yml'
+
+jobs:
+  assemble:
+    name: Assemble
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
+          cache: 'gradle'
+
+      - name: Build
+        run: bash ./gradlew assemble
+
+  test:
+    name: Testing
+    runs-on: ubuntu-latest
+    needs: assemble
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
+          cache: 'gradle'
+
+      - name: Unit tests
+        run: bash ./gradlew test
+
+      - uses: actions/upload-artifact@v2.3.1
+        if: failure()
+        with:
+          name: Unit test results
+          path: ./**/build/reports/tests/
+          if-no-files-found: ignore
+
+#      - name: Instrumented Tests
+#        run: bash ./gradlew pixel2api31DebugAndroidTest
+
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: assemble
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
+          cache: 'gradle'
+
+      - run: bash ./gradlew detekt lint
