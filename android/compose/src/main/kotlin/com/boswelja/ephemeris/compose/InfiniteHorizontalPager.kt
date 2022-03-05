@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -42,13 +43,12 @@ fun InfiniteHorizontalPager(
         state = pagerState,
         count = state.pageCount,
         contentPadding = contentPadding,
+        verticalAlignment = Alignment.Top,
         key = state::calculatePageFromInternal
     ) { index ->
         // Map the page to start at centered value of 0
         val actualPage = remember { state.calculatePageFromInternal(index) }
-        Box(modifier) {
-            content(actualPage)
-        }
+        content(actualPage)
     }
 }
 
