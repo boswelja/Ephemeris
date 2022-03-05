@@ -18,7 +18,8 @@ dependencyResolutionManagement {
 rootProject.name = "Ephemeris"
 include(
     ":core",
-    ":benchmark",
+    ":benchmark:core",
+    ":benchmark:android",
     ":android:compose",
     ":android:views",
     ":android:sample",

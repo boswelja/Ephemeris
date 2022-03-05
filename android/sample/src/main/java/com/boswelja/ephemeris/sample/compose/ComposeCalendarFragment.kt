@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -50,7 +52,10 @@ fun CalendarScreen() {
         )
     }
     Column {
-        EphemerisCalendar(calendarState = calendarState) { dayState ->
+        EphemerisCalendar(
+            modifier = Modifier.semantics { contentDescription = "calendar" },
+            calendarState = calendarState
+        ) { dayState ->
             Text(
                 modifier = Modifier.padding(16.dp).align(Alignment.Center),
                 text = dayState.date.dayOfMonth.toString(),

@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.allopen") version "1.6.10"
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
+    kotlin("plugin.allopen")
+    id("org.jetbrains.kotlinx.benchmark")
 }
 
 allOpen {
@@ -15,7 +15,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.2")
+                implementation(libs.kotlinx.benchmark)
             }
         }
     }
