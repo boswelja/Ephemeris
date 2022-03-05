@@ -66,4 +66,5 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
     implementation("com.google.android.material:material:1.5.0")
+    implementation("com.github.Zhuinden:fragmentviewbindingdelegate-kt:1.0.0")
 }

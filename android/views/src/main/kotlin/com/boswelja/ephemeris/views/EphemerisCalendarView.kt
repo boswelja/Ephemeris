@@ -10,8 +10,8 @@ import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
 import com.boswelja.ephemeris.core.data.CalendarPageLoader
 import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.core.model.YearMonth
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.DayOfWeek
 
 class EphemerisCalendarView @JvmOverloads constructor(
@@ -24,39 +24,64 @@ class EphemerisCalendarView @JvmOverloads constructor(
     }
     private val snapHelper = PagerSnapHelper()
 
-    private var pagingDataSource: CalendarPageLoader? = null
+    var pagingDataSource: CalendarPageLoader? = null
+        set(value) {
+            if (field == null || field != value) {
+                field = value
+                recreateAdapter()
+            }
+        }
 
     private val _currentMonth = MutableStateFlow<YearMonth?>(null)
-    val currentMonth: StateFlow<YearMonth?> = _currentMonth
+    val currentMonth: Flow<YearMonth?> = _currentMonth
 
-    var firstDayOfWeek: DayOfWeek? = null
+    var firstDayOfWeek: DayOfWeek = DayOfWeek.SUNDAY
         set(value) {
-            field = value
-            recreateAdapter()
+            if (field != value) {
+                field = value
+                recreateAdapter()
+            }
         }
 
     var dayBinder: CalendarDateBinder<*>? = null
         set(value) {
-            field = value
-            recreateAdapter()
+            if (field == null || field != value) {
+                field = value
+                recreateAdapter()
+            }
         }
 
     init {
         snapHelper.attachToRecyclerView(viewPager)
         addView(viewPager)
+
+        /*
+            Allow for XML attributes to be used to set initial config like app:firstDayOfWeek="1"
+         */
+        val config = context.theme.obtainStyledAttributes(attrs, R.styleable.EphemerisCalendarView, 0, 0)
+        try {
+            val firstDayOfWeek = config.getInteger(R.styleable.EphemerisCalendarView_firstDayOfWeek, -1)
+            if (firstDayOfWeek > -1) {
+                this.firstDayOfWeek = DayOfWeek.of(firstDayOfWeek + 1)
+            }
+        } finally {
+            config.recycle()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun recreateAdapter() {
-        if (firstDayOfWeek == null) return
         if (dayBinder == null) return
-        pagingDataSource = CalendarMonthPageLoader(
-            firstDayOfWeek!!,
-            WeekdayFocusMode
-        )
+        if (pagingDataSource == null) {
+            pagingDataSource = CalendarMonthPageLoader(
+                firstDayOfWeek,
+                WeekdayFocusMode
+            )
+        }
+
         viewPager.adapter = CalendarPagerAdapter(
             pagingDataSource!!,
-            dayBinder!! as CalendarDateBinder<RecyclerView.ViewHolder>
+            dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
         )
     }
 }

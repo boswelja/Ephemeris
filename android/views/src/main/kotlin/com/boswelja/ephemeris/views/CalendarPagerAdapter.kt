@@ -22,8 +22,7 @@ internal class CalendarPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
-        val page = (position - (Int.MAX_VALUE / 2)).toLong()
-        val pageState = pagingSource.loadPage(page)
+        val pageState = pagingSource.loadPage(position.toLong())
         holder.bindDisplayRows(dayBinder, pageState)
     }
 }
