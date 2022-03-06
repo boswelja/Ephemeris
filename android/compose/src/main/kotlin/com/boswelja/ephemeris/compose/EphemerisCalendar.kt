@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.DisplayRow
 import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -35,14 +36,26 @@ fun EphemerisCalendar(
             val pageData = remember {
                 pageLoader.loadPage(it.toLong())
             }
-            Column {
-                pageData.forEach { week ->
-                    Row {
-                        week.dates.forEach { date ->
-                            Box(Modifier.weight(1f)) {
-                                dayContent(date)
-                            }
-                        }
+            CalendarPage(
+                pageData = pageData,
+                dayContent = dayContent
+            )
+        }
+    }
+}
+
+@Composable
+internal fun CalendarPage(
+    pageData: Set<DisplayRow>,
+    modifier: Modifier = Modifier,
+    dayContent: @Composable BoxScope.(DisplayDate) -> Unit
+) {
+    Column(modifier) {
+        pageData.forEach { week ->
+            Row {
+                week.dates.forEach { date ->
+                    Box(Modifier.weight(1f)) {
+                        dayContent(date)
                     }
                 }
             }
