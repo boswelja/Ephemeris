@@ -6,11 +6,12 @@ The flexible, multiplatform calendar library!
 | Platform | Core | UI |
 | -- | -- | -- |
 | Android | ✔️ | ✔️ |
-| iOS | ❌ | ❌ |
+| iOS | ✔️ | ❌ |
 | JVM | ✔️ | ❌ |
-| Windows | ❌ | ❌ |
-| Linux | ❌ | ❌ |
-| MacOS | ❌ | ❌ |
+| Windows | ✔️ | ❌ |
+| Linux | ✔️ | ❌ |
+| MacOS | ✔️ | ❌ |
+| JS | ❌ | ❌ |
 | Compose Multiplatform | ✔️ | ❌ |
 
 ## How to Use
