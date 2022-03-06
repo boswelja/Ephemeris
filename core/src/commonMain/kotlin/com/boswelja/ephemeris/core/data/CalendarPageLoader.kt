@@ -3,7 +3,6 @@ package com.boswelja.ephemeris.core.data
 import com.boswelja.ephemeris.core.chunked
 import com.boswelja.ephemeris.core.endOfWeek
 import com.boswelja.ephemeris.core.mapToSet
-import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.plus
@@ -27,7 +26,6 @@ public interface CalendarPageLoader {
 
 public class CalendarMonthPageLoader(
     private val firstDayOfWeek: DayOfWeek,
-    private val focusMode: FocusMode,
     override val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
@@ -39,12 +37,7 @@ public class CalendarMonthPageLoader(
         return (firstDisplayedDate..lastDisplayedDate)
             .chunked(daysInWeek)
             .map {
-                DisplayRow(
-                    it.map { date ->
-                        val focused = focusMode(date, month)
-                        DisplayDate(date, focused)
-                    }.toSet()
-                )
+                DisplayRow(it.toSet())
             }
             .toSet()
     }
@@ -56,7 +49,6 @@ public class CalendarMonthPageLoader(
 
 public class CalendarWeekPageLoader(
     private val firstDayOfWeek: DayOfWeek,
-    private val focusMode: FocusMode,
     override val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
@@ -65,10 +57,7 @@ public class CalendarWeekPageLoader(
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
-            .mapToSet {
-                val focused = focusMode(it, it.yearMonth)
-                DisplayDate(it, focused)
-            }
+            .mapToSet { it }
         return setOf(
             DisplayRow(weekDays)
         )
