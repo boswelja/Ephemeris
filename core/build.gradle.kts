@@ -7,16 +7,30 @@ plugins {
 kotlin {
     explicitApi()
 
+    // Android targets
     android()
+
+    // JVM targets
     jvm()
 
+    // Windows targets
+    mingwX64()
+
+    // Linux targets
+    linuxX64()
+
+    // Mac targets
+    ios()
+    macosX64()
+    macosArm64()
+
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(libs.kotlinx.datetime)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
@@ -31,12 +45,6 @@ android {
         targetSdk = 32
         minSdk = 23
     }
-
-    compileOptions.isCoreLibraryDesugaringEnabled = true
-}
-
-dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
 
 detekt {
