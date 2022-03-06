@@ -13,6 +13,11 @@ kotlin {
     // JVM targets
     jvm()
 
+    // JS targets
+    js {
+        browser()
+    }
+
     // Windows targets
     mingwX64()
 
