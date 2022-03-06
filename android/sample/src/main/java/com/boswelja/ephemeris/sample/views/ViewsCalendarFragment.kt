@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.boswelja.ephemeris.core.data.DisplayMonthFocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.databinding.FragmentViewsCalendarBinding
@@ -31,6 +32,7 @@ class ViewsCalendarFragment : Fragment() {
         binding?.calendar?.apply {
             dayBinder = CalendarDayBinder()
             firstDayOfWeek = DayOfWeek.SUNDAY
+            focusMode = DisplayMonthFocusMode
         }
     }
 
