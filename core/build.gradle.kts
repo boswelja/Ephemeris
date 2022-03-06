@@ -15,7 +15,9 @@ kotlin {
 
     // JS targets
     js {
+        nodejs()
         browser()
+        binaries.executable()
     }
 
     // Windows targets
