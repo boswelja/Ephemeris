@@ -3,6 +3,7 @@ package com.boswelja.ephemeris.core.data
 import com.boswelja.ephemeris.core.chunked
 import com.boswelja.ephemeris.core.endOfWeek
 import com.boswelja.ephemeris.core.mapToSet
+import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.plus
@@ -19,7 +20,7 @@ import kotlinx.datetime.todayAt
 public interface CalendarPageLoader {
     public val startDate: LocalDate
 
-    public fun loadPage(page: Long): Set<DisplayRow>
+    public fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
 
     public fun monthFor(page: Long): YearMonth
 }
@@ -30,14 +31,16 @@ public class CalendarMonthPageLoader(
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPage(page: Long): Set<DisplayRow> {
+    override fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
         val month = startDate.yearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
         return (firstDisplayedDate..lastDisplayedDate)
             .chunked(daysInWeek)
-            .map {
-                DisplayRow(it.toSet())
+            .map { dates ->
+                DisplayRow(
+                    dates.map { transform(it, month) }.toSet()
+                )
             }
             .toSet()
     }
@@ -53,11 +56,11 @@ public class CalendarWeekPageLoader(
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPage(page: Long): Set<DisplayRow> {
+    override fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
-            .mapToSet { it }
+            .mapToSet { transform(it, it.yearMonth) }
         return setOf(
             DisplayRow(weekDays)
         )
