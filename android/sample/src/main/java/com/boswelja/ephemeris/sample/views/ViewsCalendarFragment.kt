@@ -1,67 +1,73 @@
 package com.boswelja.ephemeris.sample.views
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
+import com.boswelja.ephemeris.core.data.CalendarPageLoader
+import com.boswelja.ephemeris.core.data.CalendarWeekPageLoader
 import com.boswelja.ephemeris.core.data.DisplayMonthFocusMode
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.databinding.FragmentViewsCalendarBinding
-import com.boswelja.ephemeris.views.CalendarDateBinder
-import kotlinx.datetime.DayOfWeek
+import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-class ViewsCalendarFragment : Fragment() {
+class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
 
-    private var binding: FragmentViewsCalendarBinding? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentViewsCalendarBinding.inflate(inflater, container, false)
-        return binding!!.root
-    }
+    private val binding by viewBinding(FragmentViewsCalendarBinding::bind)
+    private val vm by viewModels<CalendarViewVM>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.calendar?.apply {
-            dayBinder = CalendarDayBinder()
-            firstDayOfWeek = DayOfWeek.SUNDAY
+
+        binding.switchView.setOnClickListener {
+            vm.toggleView()
+        }
+
+        binding.monthCalendar.apply {
+            pagingDataSource = CalendarMonthPageLoader(
+                binding.monthCalendar.firstDayOfWeek
+            )
             focusMode = DisplayMonthFocusMode
         }
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-    }
-}
-
-class CalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
-    override fun onCreateViewHolder(
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ): CalendarDateViewHolder {
-        val view = inflater.inflate(R.layout.day, parent, false)
-        return CalendarDateViewHolder(view)
-    }
-
-    override fun onBindView(viewHolder: CalendarDateViewHolder, displayDate: DisplayDate) {
-        val textColor = viewHolder.itemView.context.getColor(
-            if (displayDate.isFocusedDate) R.color.purple_500 else android.R.color.black
-        )
-        viewHolder.dateNum.apply {
-            text = displayDate.date.dayOfMonth.toString()
-            setTextColor(textColor)
+        binding.weekCalendar.apply {
+            pagingDataSource = CalendarWeekPageLoader(
+                binding.monthCalendar.firstDayOfWeek
+            )
+            focusMode = WeekdayFocusMode
         }
-    }
-}
 
-class CalendarDateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val dateNum = itemView.findViewById<TextView>(R.id.day_num)
+        with(CalendarDayBinder()) {
+            binding.monthCalendar.dayBinder = this
+            binding.weekCalendar.dayBinder = this
+            binding.switchCalendar.dayBinder = this
+        }
+
+        observeCalendarState()
+    }
+
+    private fun observeCalendarState() {
+        vm.toggle.onEach {
+            val loader: CalendarPageLoader
+            val buttonText: String
+            if (it) {
+                loader = CalendarMonthPageLoader(
+                    binding.switchCalendar.firstDayOfWeek
+                )
+                buttonText = getString(R.string.toggle_view, getString(R.string.week))
+            } else {
+                loader = CalendarWeekPageLoader(
+                    binding.switchCalendar.firstDayOfWeek
+                )
+                buttonText = getString(R.string.toggle_view, getString(R.string.month))
+            }
+            binding.switchCalendar.pagingDataSource = loader
+            binding.switchView.text = buttonText
+        }.launchIn(lifecycleScope)
+    }
 }
