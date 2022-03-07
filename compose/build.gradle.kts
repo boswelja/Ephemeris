@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(project(":core"))
                 api(libs.kotlinx.datetime)
                 api(compose.runtime)
                 api(compose.foundation)
