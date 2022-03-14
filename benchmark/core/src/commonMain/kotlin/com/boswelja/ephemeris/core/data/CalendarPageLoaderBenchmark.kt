@@ -1,5 +1,6 @@
 package com.boswelja.ephemeris.core.data
 
+import com.boswelja.ephemeris.core.model.DisplayDate
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkMode
 import kotlinx.benchmark.Mode
@@ -22,7 +23,7 @@ abstract class CalendarPageLoaderBenchmark {
 
     @Benchmark
     fun loadPage() {
-        pageSource.loadPage(11)
+        pageSource.loadPage(11) { date, _ -> DisplayDate(date, false) }
     }
 
     @Benchmark
