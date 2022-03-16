@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("org.jetbrains.compose") version "1.1.1"
 }
 
 android {
@@ -44,11 +45,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        compose = true
         viewBinding = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
     }
     packagingOptions {
         resources {
@@ -60,7 +57,7 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
-    implementation(project(":android:compose"))
+    implementation(project(":compose"))
     implementation(project(":android:views"))
 
     implementation(libs.bundles.androidx.foundation)
