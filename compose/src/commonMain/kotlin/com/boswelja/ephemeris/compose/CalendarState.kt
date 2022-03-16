@@ -11,16 +11,17 @@ import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.yearMonth
 
-public interface CalendarState {
-    public var calendarPageLoader: CalendarPageLoader
-    public var focusMode: FocusMode
-    public var currentMonth: YearMonth
+public abstract class CalendarState {
+    public abstract var calendarPageLoader: CalendarPageLoader
+    public abstract var focusMode: FocusMode
+    public abstract var currentMonth: YearMonth
+        internal set
 }
 
 internal class DefaultCalendarState(
     focusMode: FocusMode,
     calendarPageLoader: CalendarPageLoader
-) : CalendarState {
+) : CalendarState() {
     override var currentMonth: YearMonth by mutableStateOf(calendarPageLoader.startDate.yearMonth)
     override var focusMode: FocusMode by mutableStateOf(focusMode)
     override var calendarPageLoader: CalendarPageLoader by mutableStateOf(calendarPageLoader)
