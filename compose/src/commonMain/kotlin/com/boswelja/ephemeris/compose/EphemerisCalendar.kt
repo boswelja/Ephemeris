@@ -34,8 +34,13 @@ public fun EphemerisCalendar(
             modifier = modifier.fillMaxWidth(),
             state = pagerState
         ) {
-            val pageData = remember {
-                pageLoader.loadPage(it.toLong())
+            val pageData = remember(calendarState.focusMode) {
+                pageLoader.loadPage(it.toLong()) { date, month ->
+                    DisplayDate(
+                        date,
+                        calendarState.focusMode(date, month)
+                    )
+                }
             }
             CalendarPage(
                 pageData = pageData,
