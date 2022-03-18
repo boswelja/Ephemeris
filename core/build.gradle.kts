@@ -35,6 +35,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(libs.kotlinx.datetime)
+                api(libs.kotlinx.coroutines.core)
             }
         }
         commonTest {
