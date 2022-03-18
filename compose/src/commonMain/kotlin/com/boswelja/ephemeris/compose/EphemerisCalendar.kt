@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun EphemerisCalendar(
+public fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit
@@ -30,7 +31,7 @@ fun EphemerisCalendar(
     }
     AnimatedContent(targetState = calendarState.calendarPageLoader) { pageLoader ->
         InfiniteHorizontalPager(
-            modifier = modifier,
+            modifier = modifier.fillMaxWidth(),
             state = pagerState
         ) {
             val pageData = remember(calendarState.focusMode) {
