@@ -5,9 +5,7 @@ import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlin.math.abs
@@ -18,7 +16,6 @@ import kotlin.math.abs
  * page source or focus mode change, it is expected a new instance will be created and the existing
  * instance discarded. Prefetch and cache operations are handled asynchronously via [coroutineScope].
  */
-@OptIn(FlowPreview::class)
 public class CalendarPageLoader(
     private val coroutineScope: CoroutineScope,
     public val calendarPageSource: CalendarPageSource,
@@ -32,7 +29,6 @@ public class CalendarPageLoader(
         // Launch the page cache job
         coroutineScope.launch {
             lastLoadedPage
-                .debounce(PAGE_CHANGE_DEBOUNCE_MILLIS) // Debounce here to reduce overlapping jobs
                 .collect {
                     if (tryBuildCache(it)) {
                         trimCache(it)
@@ -115,7 +111,6 @@ public class CalendarPageLoader(
     }
 
     public companion object {
-        private const val PAGE_CHANGE_DEBOUNCE_MILLIS = 50L
         private const val PREFETCH_DISTANCE = 5
         private const val CHUNK_SIZE = 20
         private const val UPPER_CACHE_LIMIT = 250
