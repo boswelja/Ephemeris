@@ -17,18 +17,16 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayAt
 
-public interface CalendarPageLoader {
-    public val startDate: LocalDate
-
+public interface CalendarPageSource {
     public fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
 
     public fun monthFor(page: Long): YearMonth
 }
 
-public class CalendarMonthPageLoader(
+public class CalendarMonthPageSource(
     private val firstDayOfWeek: DayOfWeek,
-    override val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
-) : CalendarPageLoader {
+    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
+) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
 
     override fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
@@ -50,10 +48,10 @@ public class CalendarMonthPageLoader(
     }
 }
 
-public class CalendarWeekPageLoader(
+public class CalendarWeekPageSource(
     private val firstDayOfWeek: DayOfWeek,
-    override val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
-) : CalendarPageLoader {
+    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
+) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
 
     override fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {

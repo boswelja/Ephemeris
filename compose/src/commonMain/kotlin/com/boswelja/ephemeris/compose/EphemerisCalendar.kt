@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
-import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -24,12 +21,12 @@ public fun EphemerisCalendar(
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.page }.collect {
-            calendarState.currentMonth = calendarState.calendarPageLoader.monthFor(it.toLong())
-        }
-    }
-    AnimatedContent(targetState = calendarState.calendarPageLoader) { pageLoader ->
+//    LaunchedEffect(pagerState) {
+//        snapshotFlow { pagerState.page }.collect {
+//            calendarState.currentMonth = calendarState.calendarPageSource.monthFor(it.toLong())
+//        }
+//    }
+    AnimatedContent(targetState = calendarState.calendarPageSource) { pageLoader ->
         InfiniteHorizontalPager(
             modifier = modifier.fillMaxWidth(),
             state = pagerState

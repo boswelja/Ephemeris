@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.data.CalendarPageLoader
+import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 
 internal class CalendarPagerAdapter(
-    private val pagingSource: CalendarPageLoader,
+    private val pagingSource: CalendarPageSource,
     private val focusMode: FocusMode,
     var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>
 ) : RecyclerView.Adapter<CalendarPageViewHolder>() {

@@ -5,9 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
-import com.boswelja.ephemeris.core.data.CalendarPageLoader
-import com.boswelja.ephemeris.core.data.CalendarWeekPageLoader
+import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
+import com.boswelja.ephemeris.core.data.CalendarPageSource
+import com.boswelja.ephemeris.core.data.CalendarWeekPageSource
 import com.boswelja.ephemeris.core.data.DisplayMonthFocusMode
 import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.sample.R
@@ -29,14 +29,14 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
         }
 
         binding.monthCalendar.apply {
-            pagingDataSource = CalendarMonthPageLoader(
+            pagingDataSource = CalendarMonthPageSource(
                 binding.monthCalendar.firstDayOfWeek
             )
             focusMode = DisplayMonthFocusMode
         }
 
         binding.weekCalendar.apply {
-            pagingDataSource = CalendarWeekPageLoader(
+            pagingDataSource = CalendarWeekPageSource(
                 binding.monthCalendar.firstDayOfWeek
             )
             focusMode = WeekdayFocusMode
@@ -53,15 +53,15 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
 
     private fun observeCalendarState() {
         vm.toggle.onEach {
-            val loader: CalendarPageLoader
+            val loader: CalendarPageSource
             val buttonText: String
             if (it) {
-                loader = CalendarMonthPageLoader(
+                loader = CalendarMonthPageSource(
                     binding.switchCalendar.firstDayOfWeek
                 )
                 buttonText = getString(R.string.toggle_view, getString(R.string.week))
             } else {
-                loader = CalendarWeekPageLoader(
+                loader = CalendarWeekPageSource(
                     binding.switchCalendar.firstDayOfWeek
                 )
                 buttonText = getString(R.string.toggle_view, getString(R.string.month))

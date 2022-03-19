@@ -10,11 +10,11 @@ import kotlinx.benchmark.State
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
-abstract class CalendarPageLoaderBenchmark {
+abstract class CalendarPageSourceBenchmark {
 
-    private lateinit var pageSource: CalendarPageLoader
+    private lateinit var pageSource: CalendarPageSource
 
-    abstract fun createPagingSource(): CalendarPageLoader
+    abstract fun createPagingSource(): CalendarPageSource
 
     @Setup
     fun setUp() {

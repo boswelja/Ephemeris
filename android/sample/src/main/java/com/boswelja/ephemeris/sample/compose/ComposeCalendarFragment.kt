@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
-import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
-import com.boswelja.ephemeris.core.data.CalendarWeekPageLoader
+import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
+import com.boswelja.ephemeris.core.data.CalendarWeekPageSource
 import com.boswelja.ephemeris.core.data.DisplayMonthFocusMode
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.datetime.DayOfWeek
@@ -45,7 +45,7 @@ class ComposeCalendarFragment : Fragment() {
 @Composable
 fun CalendarScreen() {
     val calendarState = rememberCalendarState(DisplayMonthFocusMode) {
-        CalendarMonthPageLoader(
+        CalendarMonthPageSource(
             DayOfWeek.SUNDAY
         )
     }
@@ -66,12 +66,12 @@ fun CalendarScreen() {
         }
         Button(
             onClick = {
-                if (calendarState.calendarPageLoader is CalendarMonthPageLoader) {
-                    calendarState.calendarPageLoader = CalendarWeekPageLoader(
+                if (calendarState.calendarPageSource is CalendarMonthPageSource) {
+                    calendarState.calendarPageSource = CalendarWeekPageSource(
                         DayOfWeek.SUNDAY
                     )
                 } else {
-                    calendarState.calendarPageLoader = CalendarMonthPageLoader(
+                    calendarState.calendarPageSource = CalendarMonthPageSource(
                         DayOfWeek.SUNDAY
                     )
                 }
