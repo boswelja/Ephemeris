@@ -23,7 +23,7 @@ internal class CalendarPagerAdapter(
 
     override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
         val page = (position - (Int.MAX_VALUE / 2)).toLong()
-        val pageState = pagingSource.loadPage(page)
+        val pageState = pagingSource.loadPage(page) // fix page loader by position; use position or `page`?
         holder.bindDisplayRows(dayBinder, pageState)
     }
 }
@@ -85,7 +85,7 @@ internal class CalendarPageViewHolder(
             val view = LinearLayout(parent.context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 orientation = LinearLayout.VERTICAL
             }
