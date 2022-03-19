@@ -1,6 +1,6 @@
 package com.boswelja.ephemeris.core.ui
 
-import com.boswelja.ephemeris.core.data.CalendarPageLoader
+import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
@@ -17,10 +17,10 @@ public interface CalendarState {
     public val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
 
     /**
-     * The current calendar page loader. Setting this will cause the calendar to redraw with data
-     * from the new page loader.
+     * The current calendar page source. Setting this will cause the calendar to redraw with data
+     * from the new page source.
      */
-    public var pageLoader: CalendarPageLoader
+    public var pageSource: CalendarPageSource
 
     /**
      * The current calendar focus mode. Setting this will cause the calendar to redraw with data

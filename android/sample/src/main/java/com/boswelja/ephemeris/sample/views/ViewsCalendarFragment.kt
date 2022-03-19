@@ -5,9 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
-import com.boswelja.ephemeris.core.data.CalendarPageLoader
-import com.boswelja.ephemeris.core.data.CalendarWeekPageLoader
+import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
+import com.boswelja.ephemeris.core.data.CalendarPageSource
+import com.boswelja.ephemeris.core.data.CalendarWeekPageSource
 import com.boswelja.ephemeris.core.data.DisplayMonthFocusMode
 import com.boswelja.ephemeris.core.data.WeekdayFocusMode
 import com.boswelja.ephemeris.sample.R
@@ -15,6 +15,7 @@ import com.boswelja.ephemeris.sample.databinding.FragmentViewsCalendarBinding
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.datetime.DayOfWeek
 
 class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
 
@@ -28,45 +29,37 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
             vm.toggleView()
         }
 
-        binding.monthCalendar.apply {
-            pagingDataSource = CalendarMonthPageLoader(
-                binding.monthCalendar.firstDayOfWeek
-            )
-            focusMode = DisplayMonthFocusMode
-        }
+        binding.monthCalendar.initCalendar(
+            pageSource = CalendarMonthPageSource(firstDayOfWeek = DayOfWeek.SUNDAY),
+            focusMode = DisplayMonthFocusMode,
+            dayBinder = CalendarDayBinder()
+        )
 
-        binding.weekCalendar.apply {
-            pagingDataSource = CalendarWeekPageLoader(
-                binding.monthCalendar.firstDayOfWeek
-            )
-            focusMode = WeekdayFocusMode
-        }
-
-        with(CalendarDayBinder()) {
-            binding.monthCalendar.dayBinder = this
-            binding.weekCalendar.dayBinder = this
-            binding.switchCalendar.dayBinder = this
-        }
+        binding.weekCalendar.initCalendar(
+            pageSource = CalendarWeekPageSource(DayOfWeek.SUNDAY),
+            focusMode = WeekdayFocusMode,
+            dayBinder = CalendarDayBinder()
+        )
 
         observeCalendarState()
     }
 
     private fun observeCalendarState() {
         vm.toggle.onEach {
-            val loader: CalendarPageLoader
+            val loader: CalendarPageSource
             val buttonText: String
             if (it) {
-                loader = CalendarMonthPageLoader(
-                    binding.switchCalendar.firstDayOfWeek
-                )
+                loader = CalendarMonthPageSource(DayOfWeek.SUNDAY)
                 buttonText = getString(R.string.toggle_view, getString(R.string.week))
             } else {
-                loader = CalendarWeekPageLoader(
-                    binding.switchCalendar.firstDayOfWeek
-                )
+                loader = CalendarWeekPageSource(DayOfWeek.SUNDAY)
                 buttonText = getString(R.string.toggle_view, getString(R.string.month))
             }
-            binding.switchCalendar.pagingDataSource = loader
+            binding.switchCalendar.initCalendar(
+                pageSource = loader,
+                focusMode = WeekdayFocusMode,
+                dayBinder = CalendarDayBinder()
+            )
             binding.switchView.text = buttonText
         }.launchIn(lifecycleScope)
     }
