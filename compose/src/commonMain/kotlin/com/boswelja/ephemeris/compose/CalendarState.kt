@@ -6,34 +6,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.boswelja.ephemeris.core.data.CalendarPageLoader
+import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
-import com.boswelja.ephemeris.core.model.YearMonth
-import com.boswelja.ephemeris.core.model.yearMonth
 
-public abstract class CalendarState {
-    public abstract var calendarPageLoader: CalendarPageLoader
-    public abstract var focusMode: FocusMode
-    public abstract var currentMonth: YearMonth
-        internal set
+public interface CalendarState {
+    public var calendarPageSource: CalendarPageSource
+    public var focusMode: FocusMode
 }
 
 internal class DefaultCalendarState(
     focusMode: FocusMode,
-    calendarPageLoader: CalendarPageLoader
-) : CalendarState() {
-    override var currentMonth: YearMonth by mutableStateOf(calendarPageLoader.startDate.yearMonth)
+    calendarPageSource: CalendarPageSource
+) : CalendarState {
     override var focusMode: FocusMode by mutableStateOf(focusMode)
-    override var calendarPageLoader: CalendarPageLoader by mutableStateOf(calendarPageLoader)
+    override var calendarPageSource: CalendarPageSource by mutableStateOf(calendarPageSource)
 }
 
 @Composable
 @Stable
 public fun rememberCalendarState(
     focusMode: FocusMode,
-    calendarPageLoader: () -> CalendarPageLoader
+    calendarPageSource: () -> CalendarPageSource
 ): CalendarState {
-    return remember(calendarPageLoader) {
-        DefaultCalendarState(focusMode, calendarPageLoader())
+    return remember(calendarPageSource) {
+        DefaultCalendarState(focusMode, calendarPageSource())
     }
 }

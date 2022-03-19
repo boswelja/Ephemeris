@@ -4,59 +4,43 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.data.AllFocusMode
-import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
-import com.boswelja.ephemeris.core.data.CalendarPageLoader
+import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
-import com.boswelja.ephemeris.core.model.YearMonth
+import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.databinding.LayoutViewpagerBinding
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.datetime.DayOfWeek
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    private lateinit var coroutineScope: CoroutineScope
+
     private val root = LayoutViewpagerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val vp by lazy { root.root }
 
-    var pagingDataSource: CalendarPageLoader? = null
+    private var adapter: CalendarPagerAdapter? = null
         set(value) {
-            if (field == null || field != value) {
+            if (value != null) {
                 field = value
-                recreateAdapter()
+                setAdapter(value)
             }
         }
 
-    var focusMode: FocusMode = AllFocusMode
-        set(value) {
-            if (value != field) {
-                field = value
-                recreateAdapter()
-            }
-        }
+    val pageSource: CalendarPageSource
+        get() = adapter!!.pageLoader.calendarPageSource
 
-    private val _currentMonth = MutableStateFlow<YearMonth?>(null)
-    val currentMonth: Flow<YearMonth?> = _currentMonth
+    val focusMode: FocusMode
+        get() = adapter!!.pageLoader.focusMode
 
-    var firstDayOfWeek: DayOfWeek = DayOfWeek.SUNDAY
-        set(value) {
-            if (field != value) {
-                field = value
-                recreateAdapter()
-            }
-        }
-
-    var dayBinder: CalendarDateBinder<*>? = null
-        set(value) {
-            if (field == null || field != value) {
-                field = value
-                recreateAdapter()
-            }
-        }
+    val dayBinder: CalendarDateBinder<*>
+        get() = adapter!!.dayBinder
 
     init {
         /*
@@ -68,30 +52,48 @@ class EphemerisCalendarView @JvmOverloads constructor(
             val firstDayOfWeek =
                 config.getInteger(R.styleable.EphemerisCalendarView_firstDayOfWeek, -1)
             if (firstDayOfWeek > -1) {
-                this.firstDayOfWeek = DayOfWeek.of(firstDayOfWeek + 1)
+                //this.firstDayOfWeek = DayOfWeek.of(firstDayOfWeek + 1)
             }
         } finally {
             config.recycle()
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun recreateAdapter() {
-        if (dayBinder == null) return
-        if (pagingDataSource == null) {
-            pagingDataSource = CalendarMonthPageLoader(
-                firstDayOfWeek
-            )
-        }
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        coroutineScope = CoroutineScope(Dispatchers.Default)
+    }
 
-        setAdapter(
-            CalendarPagerAdapter(
-                pagingDataSource!!,
-                focusMode,
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        coroutineScope.cancel()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun initCalendar(
+        pageSource: CalendarPageSource = this.pageSource,
+        focusMode: FocusMode = this.focusMode,
+        dayBinder: CalendarDateBinder<*> = this.dayBinder
+    ) {
+        if (adapter == null) {
+            adapter = CalendarPagerAdapter(
+                CalendarPageLoader(
+                    coroutineScope,
+                    pageSource,
+                    focusMode
+                ),
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
-            ),
-            vp.currentItem.let { if (it <= 0) Int.MAX_VALUE / 2 else it }
-        )
+            )
+        } else {
+            adapter!!.apply {
+                this.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
+                this.pageLoader = CalendarPageLoader(
+                    coroutineScope,
+                    pageSource,
+                    focusMode
+                )
+            }
+        }
     }
 
     private fun <T : RecyclerView.ViewHolder> setAdapter(adapter: RecyclerView.Adapter<T>, page: Int = 0) {

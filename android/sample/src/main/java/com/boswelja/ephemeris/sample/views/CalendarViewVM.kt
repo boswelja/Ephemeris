@@ -13,8 +13,8 @@ class CalendarViewVM : ViewModel() {
 
     /**
      * Invert the current state of calendar view
-     * true maps to [com.boswelja.ephemeris.core.data.CalendarMonthPageLoader] with [com.boswelja.ephemeris.core.data.DisplayMonthFocusMode]
-     * false maps to [com.boswelja.ephemeris.core.data.CalendarWeekPageLoader] with [com.boswelja.ephemeris.core.data.WeekdayFocusMode]
+     * true maps to [com.boswelja.ephemeris.core.data.CalendarMonthPageSource] with [com.boswelja.ephemeris.core.data.DisplayMonthFocusMode]
+     * false maps to [com.boswelja.ephemeris.core.data.CalendarWeekPageSource] with [com.boswelja.ephemeris.core.data.WeekdayFocusMode]
      */
     fun toggleView() = viewModelScope.launch {
         _toggleView.emit(!_toggleView.value)
