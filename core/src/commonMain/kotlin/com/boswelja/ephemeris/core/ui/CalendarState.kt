@@ -17,10 +17,10 @@ public interface CalendarState {
     public val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
 
     /**
-     * The current calendar page loader. Setting this will cause the calendar to redraw with data
-     * from the new page loader.
+     * The current calendar page source. Setting this will cause the calendar to redraw with data
+     * from the new page source.
      */
-    public var pageLoader: CalendarPageSource
+    public var pageSource: CalendarPageSource
 
     /**
      * The current calendar focus mode. Setting this will cause the calendar to redraw with data
