@@ -6,6 +6,7 @@ import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 
 public class CalendarPageLoader(
     private val coroutineScope: CoroutineScope,
@@ -44,6 +45,14 @@ public class CalendarPageLoader(
         cacheChunk(page + 1)
 
         return pageCache[page]!!
+    }
+
+    public fun getDateRangeFor(page: Int): ClosedRange<LocalDate> {
+        // Cast to non-null here since in theory a page has already been loaded
+        val pageData = pageCache[page]!!
+        val startDate = pageData.first().dates.first().date
+        val endDate = pageData.last().dates.last().date
+        return startDate..endDate
     }
 
     public companion object {
