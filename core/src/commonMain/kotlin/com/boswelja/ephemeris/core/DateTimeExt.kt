@@ -8,12 +8,12 @@ import kotlinx.datetime.number
 private val monthCount = Month.values().size
 private val dayOfWeekCount = DayOfWeek.values().size
 
-internal fun Month.plusMonths(months: Long): Month {
+internal fun Month.plusMonths(months: Int): Month {
     val newNumber = (this.number + months) % monthCount
     return if (newNumber > 0) {
-        Month(newNumber.toInt())
+        Month(newNumber)
     } else {
-        Month(newNumber.toInt() + monthCount)
+        Month(newNumber + monthCount)
     }
 }
 

@@ -32,7 +32,7 @@ public fun EphemerisCalendar(
             state = pagerState
         ) {
             val pageData = remember(calendarState.focusMode) {
-                pageLoader.loadPageData(it.toLong()) { date, month ->
+                pageLoader.loadPageData(it) { date, month ->
                     DisplayDate(
                         date,
                         calendarState.focusMode(date, month)

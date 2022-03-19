@@ -20,7 +20,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.todayAt
 
 public interface CalendarPageSource {
-    public fun loadPageData(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
+    public fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
 
     public fun getPageFor(date: LocalDate): Int
 }
@@ -31,7 +31,7 @@ public class CalendarMonthPageSource(
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPageData(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
+    override fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
         val month = startYearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
@@ -56,7 +56,7 @@ public class CalendarWeekPageSource(
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPageData(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
+    override fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
