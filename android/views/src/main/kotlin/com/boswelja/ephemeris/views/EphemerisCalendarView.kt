@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
@@ -42,22 +40,8 @@ class EphemerisCalendarView @JvmOverloads constructor(
     val dayBinder: CalendarDateBinder<*>
         get() = adapter!!.dayBinder
 
-    init {
-        /*
-            Allow for XML attributes to be used to set initial config like app:firstDayOfWeek="1"
-         */
-        val config =
-            context.theme.obtainStyledAttributes(attrs, R.styleable.EphemerisCalendarView, 0, 0)
-        try {
-            val firstDayOfWeek =
-                config.getInteger(R.styleable.EphemerisCalendarView_firstDayOfWeek, -1)
-            if (firstDayOfWeek > -1) {
-                //this.firstDayOfWeek = DayOfWeek.of(firstDayOfWeek + 1)
-            }
-        } finally {
-            config.recycle()
-        }
-    }
+    private val page: Int
+        get() = if (vp.currentItem <= 0) Int.MAX_VALUE / 2 else vp.currentItem
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -75,6 +59,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
         focusMode: FocusMode = this.focusMode,
         dayBinder: CalendarDateBinder<*> = this.dayBinder
     ) {
+        var adapter = this.adapter
         if (adapter == null) {
             adapter = CalendarPagerAdapter(
                 CalendarPageLoader(
@@ -85,18 +70,21 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
             )
         } else {
-            adapter!!.apply {
-                this.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
-                this.pageLoader = CalendarPageLoader(
-                    coroutineScope,
-                    pageSource,
-                    focusMode
-                )
-            }
+            adapter.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
+            adapter.pageLoader = CalendarPageLoader(
+                coroutineScope,
+                pageSource,
+                focusMode
+            )
         }
+
+        setAdapter(adapter, page)
     }
 
-    private fun <T : RecyclerView.ViewHolder> setAdapter(adapter: RecyclerView.Adapter<T>, page: Int = 0) {
+    private fun <T : RecyclerView.ViewHolder> setAdapter(
+        adapter: RecyclerView.Adapter<T>,
+        page: Int = 0
+    ) {
         vp.adapter = adapter
         vp.setCurrentItem(page, false)
     }
