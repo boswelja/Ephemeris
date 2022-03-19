@@ -7,10 +7,16 @@ import kotlinx.benchmark.Mode
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.Setup
 import kotlinx.benchmark.State
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayAt
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 abstract class CalendarPageSourceBenchmark {
+
+    private lateinit var date: LocalDate
 
     private lateinit var pageSource: CalendarPageSource
 
@@ -19,15 +25,16 @@ abstract class CalendarPageSourceBenchmark {
     @Setup
     fun setUp() {
         pageSource = createPagingSource()
+        date = Clock.System.todayAt(TimeZone.currentSystemDefault())
     }
 
     @Benchmark
-    fun loadPage() {
-        pageSource.loadPage(11) { date, _ -> DisplayDate(date, false) }
+    fun loadPageData() {
+        pageSource.loadPageData(11) { date, _ -> DisplayDate(date, false) }
     }
 
     @Benchmark
-    fun monthFor() {
-        pageSource.monthFor(11)
+    fun getPageFor() {
+        pageSource.getPageFor(date)
     }
 }

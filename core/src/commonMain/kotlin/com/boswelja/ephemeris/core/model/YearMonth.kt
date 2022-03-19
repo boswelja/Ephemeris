@@ -5,6 +5,7 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.minus
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 
 public data class YearMonth(
@@ -29,6 +30,12 @@ public fun YearMonth.plus(months: Long): YearMonth {
         year = (yearDelta + year).toInt(),
         month = month.plusMonths(months)
     )
+}
+
+public fun YearMonth.until(other: YearMonth): Int {
+    val yearDelta = year - other.year
+    val monthDelta = month.plusMonths((-1 * other.month.number).toLong()).number
+    return (yearDelta * allMonths.size) + monthDelta
 }
 
 private val allMonths = Month.values()
