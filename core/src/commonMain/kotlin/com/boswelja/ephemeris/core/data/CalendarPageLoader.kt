@@ -20,30 +20,26 @@ import kotlinx.datetime.todayAt
 public interface CalendarPageLoader {
     public val startDate: LocalDate
 
-    public fun loadPage(page: Long): Set<DisplayRow>
+    public fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
 
     public fun monthFor(page: Long): YearMonth
 }
 
 public class CalendarMonthPageLoader(
     private val firstDayOfWeek: DayOfWeek,
-    private val focusMode: FocusMode,
     override val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPage(page: Long): Set<DisplayRow> {
+    override fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
         val month = startDate.yearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
         return (firstDisplayedDate..lastDisplayedDate)
             .chunked(daysInWeek)
-            .map {
+            .map { dates ->
                 DisplayRow(
-                    it.map { date ->
-                        val focused = focusMode(date, month)
-                        DisplayDate(date, focused)
-                    }.toSet()
+                    dates.map { transform(it, month) }.toSet()
                 )
             }
             .toSet()
@@ -56,19 +52,15 @@ public class CalendarMonthPageLoader(
 
 public class CalendarWeekPageLoader(
     private val firstDayOfWeek: DayOfWeek,
-    private val focusMode: FocusMode,
     override val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
 ) : CalendarPageLoader {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPage(page: Long): Set<DisplayRow> {
+    override fun loadPage(page: Long, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
-            .mapToSet {
-                val focused = focusMode(it, it.yearMonth)
-                DisplayDate(it, focused)
-            }
+            .mapToSet { transform(it, it.yearMonth) }
         return setOf(
             DisplayRow(weekDays)
         )

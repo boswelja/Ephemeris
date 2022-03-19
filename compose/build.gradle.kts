@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("org.jetbrains.compose") version "1.1.1"
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -13,29 +14,17 @@ kotlin {
     // JVM targets
     jvm()
 
-    // JS targets
-    js {
-        nodejs()
-        browser()
-        binaries.executable()
-    }
-
-    // Windows targets
-    mingwX64()
-
-    // Linux targets
-    linuxX64()
-
-    // Mac targets
-    ios()
-    macosX64()
-    macosArm64()
-
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
         commonMain {
             dependencies {
+                api(project(":core"))
                 api(libs.kotlinx.datetime)
-                api(libs.kotlinx.coroutines.core)
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.animation)
             }
         }
         commonTest {

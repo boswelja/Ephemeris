@@ -7,11 +7,13 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageLoader
+import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 
 internal class CalendarPagerAdapter(
     private val pagingSource: CalendarPageLoader,
+    private val focusMode: FocusMode,
     var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>
 ) : RecyclerView.Adapter<CalendarPageViewHolder>() {
 
@@ -23,7 +25,9 @@ internal class CalendarPagerAdapter(
 
     override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
         val page = (position - (Int.MAX_VALUE / 2)).toLong()
-        val pageState = pagingSource.loadPage(page)
+        val pageState = pagingSource.loadPage(page) { date, month ->
+            DisplayDate(date, focusMode(date, month))
+        }
         holder.bindDisplayRows(dayBinder, pageState)
     }
 }

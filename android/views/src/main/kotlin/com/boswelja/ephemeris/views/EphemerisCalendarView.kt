@@ -5,10 +5,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.boswelja.ephemeris.core.data.AllFocusMode
 import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
 import com.boswelja.ephemeris.core.data.CalendarPageLoader
-import com.boswelja.ephemeris.core.data.WeekdayFocusMode
+import com.boswelja.ephemeris.core.data.FocusMode
+import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.views.databinding.LayoutViewpagerBinding
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.datetime.DayOfWeek
 
 class EphemerisCalendarView @JvmOverloads constructor(
@@ -29,6 +33,17 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 recreateAdapter()
             }
         }
+
+    var focusMode: FocusMode = AllFocusMode
+        set(value) {
+            if (value != field) {
+                field = value
+                recreateAdapter()
+            }
+        }
+
+    private val _currentMonth = MutableStateFlow<YearMonth?>(null)
+    val currentMonth: Flow<YearMonth?> = _currentMonth
 
     var firstDayOfWeek: DayOfWeek = DayOfWeek.SUNDAY
         set(value) {
@@ -68,14 +83,14 @@ class EphemerisCalendarView @JvmOverloads constructor(
         if (dayBinder == null) return
         if (pagingDataSource == null) {
             pagingDataSource = CalendarMonthPageLoader(
-                firstDayOfWeek,
-                WeekdayFocusMode
+                firstDayOfWeek
             )
         }
 
         setAdapter(
             CalendarPagerAdapter(
                 pagingDataSource!!,
+                focusMode,
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
             ),
             vp.currentItem.let { if (it <= 0) Int.MAX_VALUE / 2 else it }
