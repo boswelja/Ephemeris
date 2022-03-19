@@ -22,9 +22,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
     private val root = LayoutViewpagerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val vp by lazy { root.root }
-    private val recyclerView by lazy {
-        root.root.getChildAt(0) as RecyclerView
-    }
 
     var pagingDataSource: CalendarPageLoader? = null
         set(value) {
@@ -100,12 +97,5 @@ class EphemerisCalendarView @JvmOverloads constructor(
     private fun <T : RecyclerView.ViewHolder> setAdapter(adapter: RecyclerView.Adapter<T>, page: Int = 0) {
         vp.adapter = adapter
         vp.setCurrentItem(page, false)
-
-//        recyclerView.addOnScrollListener(
-//            InfiniteScrollBehaviour(
-//                adapter.itemCount,
-//                recyclerView.layoutManager as LinearLayoutManager
-//            )
-//        )
     }
 }
