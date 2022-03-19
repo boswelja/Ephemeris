@@ -23,8 +23,6 @@ public interface CalendarPageLoader {
     public fun loadPage(page: Long): Set<DisplayRow>
 
     public fun monthFor(page: Long): YearMonth
-
-    public fun pageForToday(): Long
 }
 
 public class CalendarMonthPageLoader(
@@ -54,10 +52,6 @@ public class CalendarMonthPageLoader(
     override fun monthFor(page: Long): YearMonth {
         return startDate.yearMonth.plus(page)
     }
-
-    override fun pageForToday(): Long {
-        return (Clock.System.now().toEpochMilliseconds() / 1000 / 60 / 60 / 24 / 365) * 30 // figure out right calculate for current month system time
-    }
 }
 
 public class CalendarWeekPageLoader(
@@ -84,9 +78,5 @@ public class CalendarWeekPageLoader(
         val day = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         return YearMonth(day.year, day.month)
-    }
-
-    override fun pageForToday(): Long {
-        return Clock.System.now().toEpochMilliseconds() / 1000 / 60 / 60 / 24 / 7 // figure out right calculate for current month system time
     }
 }

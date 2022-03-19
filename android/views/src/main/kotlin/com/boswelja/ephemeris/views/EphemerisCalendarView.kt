@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarMonthPageLoader
 import com.boswelja.ephemeris.core.data.CalendarPageLoader
@@ -79,19 +78,19 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 pagingDataSource!!,
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
             ),
-            pagingDataSource!!.pageForToday()
+            vp.currentItem.let { if (it <= 0) Int.MAX_VALUE / 2 else it }
         )
     }
 
-    private fun <T : RecyclerView.ViewHolder> setAdapter(adapter: RecyclerView.Adapter<T>, page: Long = 1) {
+    private fun <T : RecyclerView.ViewHolder> setAdapter(adapter: RecyclerView.Adapter<T>, page: Int = 0) {
         vp.adapter = adapter
-        vp.setCurrentItem(page.toInt(), false)
+        vp.setCurrentItem(page, false)
 
-        recyclerView.addOnScrollListener(
-            InfiniteScrollBehaviour(
-                adapter.itemCount,
-                recyclerView.layoutManager as LinearLayoutManager
-            )
-        )
+//        recyclerView.addOnScrollListener(
+//            InfiniteScrollBehaviour(
+//                adapter.itemCount,
+//                recyclerView.layoutManager as LinearLayoutManager
+//            )
+//        )
     }
 }
