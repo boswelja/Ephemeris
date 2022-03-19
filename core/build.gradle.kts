@@ -32,6 +32,9 @@ kotlin {
     macosArm64()
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
         commonMain {
             dependencies {
                 api(libs.kotlinx.datetime)
