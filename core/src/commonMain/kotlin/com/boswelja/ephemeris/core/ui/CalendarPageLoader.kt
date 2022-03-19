@@ -32,7 +32,7 @@ public class CalendarPageLoader(
         // Launch the page cache job
         coroutineScope.launch {
             lastLoadedPage
-                .debounce(PageChangeDebounceMillis) // Debounce here to reduce overlapping jobs
+                .debounce(PAGE_CHANGE_DEBOUNCE_MILLIS) // Debounce here to reduce overlapping jobs
                 .collect {
                     if (tryBuildCache(it)) {
                         trimCache(it)
@@ -42,15 +42,15 @@ public class CalendarPageLoader(
     }
 
     /**
-     * Loads [ChunkSize] pages into the cache from the given page [fromPage]. If [reverse] is true,
+     * Loads [CHUNK_SIZE] pages into the cache from the given page [fromPage]. If [reverse] is true,
      * a chunk will be loaded behind the given page. Note that [fromPage] is excluded when caching.
      */
     private fun cacheChunk(fromPage: Int, reverse: Boolean) {
         // Iterate from the given page to the chunk size
         val range = if (reverse) {
-            (fromPage - ChunkSize) until fromPage
+            (fromPage - CHUNK_SIZE) until fromPage
         } else {
-            (fromPage + 1)..(fromPage + ChunkSize)
+            (fromPage + 1)..(fromPage + CHUNK_SIZE)
         }
         range.forEach { page ->
             pageCache[page] = calendarPageSource.loadPageData(page) { date, month ->
@@ -67,8 +67,8 @@ public class CalendarPageLoader(
      * @return true if cache was built on, false otherwise.
      */
     private fun tryBuildCache(page: Int): Boolean {
-        val cacheForward = pageCache[page + PrefetchDistance] == null
-        val cacheBackward = pageCache[page - PrefetchDistance] == null
+        val cacheForward = pageCache[page + PREFETCH_DISTANCE] == null
+        val cacheBackward = pageCache[page - PREFETCH_DISTANCE] == null
         if (cacheForward) {
             cacheChunk(page, false)
         }
@@ -82,8 +82,8 @@ public class CalendarPageLoader(
      * If the cache size is growing too large, trim the furthest elements from the given page.
      */
     private fun trimCache(page: Int) {
-        if (pageCache.size > UpperCacheLimit) {
-            val maxDistance = UpperCacheLimit / 2
+        if (pageCache.size > UPPER_CACHE_LIMIT) {
+            val maxDistance = UPPER_CACHE_LIMIT / 2
             pageCache.keys
                 .filter { abs(page - it) > maxDistance }
                 .forEach {
@@ -115,9 +115,9 @@ public class CalendarPageLoader(
     }
 
     public companion object {
-        private const val PageChangeDebounceMillis = 50L
-        private const val PrefetchDistance = 5
-        private const val ChunkSize = 20
-        private const val UpperCacheLimit = 250
+        private const val PAGE_CHANGE_DEBOUNCE_MILLIS = 50L
+        private const val PREFETCH_DISTANCE = 5
+        private const val CHUNK_SIZE = 20
+        private const val UPPER_CACHE_LIMIT = 250
     }
 }
