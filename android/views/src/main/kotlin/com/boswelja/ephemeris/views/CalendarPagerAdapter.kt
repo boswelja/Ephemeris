@@ -10,12 +10,28 @@ import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
+import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 internal class CalendarPagerAdapter(
-    private val pagingSource: CalendarPageSource,
-    private val focusMode: FocusMode,
-    var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>
+    pageLoader: CalendarPageLoader,
+    dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>
 ) : RecyclerView.Adapter<CalendarPageViewHolder>() {
+
+    var pageLoader: CalendarPageLoader = pageLoader
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
+    var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder> = dayBinder
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
 
     override fun getItemCount(): Int = Int.MAX_VALUE
 
@@ -25,9 +41,7 @@ internal class CalendarPagerAdapter(
 
     override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
         val page = (position - (Int.MAX_VALUE / 2))
-        val pageState = pagingSource.loadPageData(page) { date, month ->
-            DisplayDate(date, focusMode(date, month))
-        }
+        val pageState = pageLoader.getPageData(page)
         holder.bindDisplayRows(dayBinder, pageState)
     }
 }
