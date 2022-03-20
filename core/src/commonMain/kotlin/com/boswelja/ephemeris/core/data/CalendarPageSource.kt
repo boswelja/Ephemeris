@@ -20,8 +20,9 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.todayAt
 
 /**
- * The core calendar page source interface. Implement this to provide custom page layouts. See
- * [CalendarMonthPageSource] and [CalendarWeekPageSource] for default implementations.
+ * The core calendar page source interface. Calendar page sources are used to provide a layout to
+ * calendar pages. See [CalendarMonthPageSource] and [CalendarWeekPageSource] for default
+ * implementations.
  */
 public interface CalendarPageSource {
 
