@@ -1,16 +1,15 @@
 package com.boswelja.ephemeris.views
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
 import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
+import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
+import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
+import com.boswelja.ephemeris.views.databinding.RowPopulatedDateBinding
 
 internal class CalendarPagerAdapter(
     pageLoader: CalendarPageLoader,
@@ -47,19 +46,18 @@ internal class CalendarPagerAdapter(
 }
 
 internal class CalendarPageViewHolder(
-    private val rootView: LinearLayout
-) : RecyclerView.ViewHolder(rootView) {
+    private val binding: RowDisplayDateBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    private val inflater = LayoutInflater.from(itemView.context)
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         rows: Set<DisplayRow>
     ) {
-        rootView.apply {
-            removeAllViews()
-            rows.forEach {
-                val row = createPopulatedRow(dayBinder, it)
-                addView(row)
-            }
+        binding.root.removeAllViews()
+        rows.forEach {
+            binding.root.addView(createPopulatedRow(dayBinder, it))
         }
     }
 
@@ -67,12 +65,7 @@ internal class CalendarPageViewHolder(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         row: DisplayRow
     ): LinearLayout {
-        return LinearLayout(itemView.context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            orientation = LinearLayout.HORIZONTAL
+        return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
             row.dates.forEach {
                 addView(getOrCreateDayCell(dayBinder, it))
             }
@@ -82,31 +75,22 @@ internal class CalendarPageViewHolder(
     private fun getOrCreateDayCell(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         displayDate: DisplayDate
-    ): View {
-        val container = FrameLayout(itemView.context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                weight = 1f
-            }
+    ): LinearLayout {
+        return RowDateCellBinding.inflate(inflater, binding.root, false).root.apply {
+            // TODO At least try to recycle views
+            val viewHolder = dayBinder.onCreateViewHolder(inflater, this)
+            dayBinder.onBindView(viewHolder, displayDate)
+            addView(viewHolder.itemView)
         }
-        // TODO At least try to recycle views
-        val viewHolder = dayBinder.onCreateViewHolder(LayoutInflater.from(itemView.context), container)
-        dayBinder.onBindView(viewHolder, displayDate)
-        container.addView(viewHolder.itemView)
-        return container
     }
 
     companion object {
         fun create(parent: ViewGroup): CalendarPageViewHolder {
-            val view = LinearLayout(parent.context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                orientation = LinearLayout.VERTICAL
-            }
+            val view = RowDisplayDateBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
             return CalendarPageViewHolder(view)
         }
     }
