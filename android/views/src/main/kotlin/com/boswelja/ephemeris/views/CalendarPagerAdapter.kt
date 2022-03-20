@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
-import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 internal class CalendarPagerAdapter(
@@ -52,7 +49,7 @@ internal class CalendarPageViewHolder(
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        rows: Set<DisplayRow>
+        rows: List<List<DisplayDate>>
     ) {
         rootView.apply {
             removeAllViews()
@@ -65,7 +62,7 @@ internal class CalendarPageViewHolder(
 
     private fun createPopulatedRow(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        row: DisplayRow
+        row: List<DisplayDate>
     ): LinearLayout {
         return LinearLayout(itemView.context).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -73,7 +70,7 @@ internal class CalendarPageViewHolder(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             orientation = LinearLayout.HORIZONTAL
-            row.dates.forEach {
+            row.forEach {
                 addView(getOrCreateDayCell(dayBinder, it))
             }
         }

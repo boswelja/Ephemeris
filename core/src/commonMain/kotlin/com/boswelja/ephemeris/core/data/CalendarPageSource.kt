@@ -2,9 +2,8 @@ package com.boswelja.ephemeris.core.data
 
 import com.boswelja.ephemeris.core.chunked
 import com.boswelja.ephemeris.core.endOfWeek
-import com.boswelja.ephemeris.core.mapToSet
+import com.boswelja.ephemeris.core.map
 import com.boswelja.ephemeris.core.model.DisplayDate
-import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.model.YearMonth
 import com.boswelja.ephemeris.core.model.plus
 import com.boswelja.ephemeris.core.model.until
@@ -30,7 +29,7 @@ public interface CalendarPageSource {
      * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
      * calendar UI. This should not implement any caching itself, caching is handled by consumers.
      */
-    public fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
+    public fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): List<List<DisplayDate>>
 
     /**
      * Get the page number for the given date. This function should be as lightweight as possible,
@@ -49,18 +48,15 @@ public class CalendarMonthPageSource(
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
+    override fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): List<List<DisplayDate>> {
         val month = startYearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
         return (firstDisplayedDate..lastDisplayedDate)
             .chunked(daysInWeek)
             .map { dates ->
-                DisplayRow(
-                    dates.map { transform(it, month) }.toSet()
-                )
+                dates.map { transform(it, month) }
             }
-            .toSet()
     }
 
     override fun getPageFor(date: LocalDate): Int {
@@ -77,14 +73,15 @@ public class CalendarWeekPageSource(
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
 
-    override fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow> {
+    override fun loadPageData(
+        page: Int,
+        transform: (LocalDate, YearMonth) -> DisplayDate
+    ): List<List<DisplayDate>> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
-        val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
-            .mapToSet { transform(it, it.yearMonth) }
-        return setOf(
-            DisplayRow(weekDays)
-        )
+        val weekDays =  (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
+            .map { transform(it, it.yearMonth) }
+        return listOf(weekDays)
     }
 
     override fun getPageFor(date: LocalDate): Int {

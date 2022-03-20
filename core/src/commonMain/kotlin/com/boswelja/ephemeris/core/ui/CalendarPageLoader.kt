@@ -3,7 +3,6 @@ package com.boswelja.ephemeris.core.ui
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.model.DisplayDate
-import com.boswelja.ephemeris.core.model.DisplayRow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +20,7 @@ public class CalendarPageLoader(
     public val calendarPageSource: CalendarPageSource,
     public val focusMode: FocusMode
 ) {
-    private val pageCache = mutableMapOf<Int, Set<DisplayRow>>()
+    private val pageCache = mutableMapOf<Int, List<List<DisplayDate>>>()
 
     private val lastLoadedPage = MutableStateFlow(0)
 
@@ -92,7 +91,7 @@ public class CalendarPageLoader(
      * Gets the data to display for the given page. If necessary, a cache load operation will be
      * started to ensure there's enough data available ahead of time.
      */
-    public fun getPageData(page: Int): Set<DisplayRow> {
+    public fun getPageData(page: Int): List<List<DisplayDate>> {
         lastLoadedPage.tryEmit(page)
         return pageCache[page] ?: calendarPageSource.loadPageData(page) { date, month ->
             DisplayDate(date, focusMode(date, month))
@@ -105,8 +104,8 @@ public class CalendarPageLoader(
     public fun getDateRangeFor(page: Int): ClosedRange<LocalDate> {
         // Cast to non-null here since in theory a page has already been loaded
         val pageData = pageCache[page]!!
-        val startDate = pageData.first().dates.first().date
-        val endDate = pageData.last().dates.last().date
+        val startDate = pageData.first().first().date
+        val endDate = pageData.last().last().date
         return startDate..endDate
     }
 
