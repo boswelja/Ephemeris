@@ -19,12 +19,29 @@ import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayAt
 
+/**
+ * The core calendar page source interface. Implement this to provide custom page layouts. See
+ * [CalendarMonthPageSource] and [CalendarWeekPageSource] for default implementations.
+ */
 public interface CalendarPageSource {
+
+    /**
+     * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
+     * calendar UI. This should not implement any caching itself, caching is handled by consumers.
+     */
     public fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): Set<DisplayRow>
 
+    /**
+     * Get the page number for the given date. This function should be as lightweight as possible,
+     * as no results here are cached.
+     */
     public fun getPageFor(date: LocalDate): Int
 }
 
+/**
+ * An implementation of [CalendarPageSource] that loads full months. Total rows are dynamic, and
+ * will change from month to month.
+ */
 public class CalendarMonthPageSource(
     private val firstDayOfWeek: DayOfWeek,
     private val startYearMonth: YearMonth = Clock.System.todayAt(TimeZone.currentSystemDefault()).yearMonth
@@ -50,6 +67,9 @@ public class CalendarMonthPageSource(
     }
 }
 
+/**
+ * An implementation of [CalendarPageSource] that loads one week per page.
+ */
 public class CalendarWeekPageSource(
     private val firstDayOfWeek: DayOfWeek,
     private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
