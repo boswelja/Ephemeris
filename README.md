@@ -11,7 +11,7 @@ The flexible, multiplatform calendar library!
 | Windows | ✔️ | ❌ |
 | Linux | ✔️ | ❌ |
 | MacOS | ✔️ | ❌ |
-| JS | ❌ | ❌ |
+| JS | ✔️ | ❌ |
 | Compose Multiplatform | ✔️ | ❌ |
 
 ## How to Use
@@ -37,7 +37,7 @@ See [CalendarPageLoader.kt](https://github.com/boswelja/Ephemeris/blob/main/core
 
 ### Focus Modes
 
-A focus mode is a simple interface to heelp determine whether a particular date is considered "in focus".
+A focus mode is a simple interface to help determine whether a particular date is considered "in focus".
 Ephemeris performs no logic with this itself, but it is passed back to your day cell for you to use.
 We provide implementations out-of-the-box for weekdays, displayed month days and all days.
 
