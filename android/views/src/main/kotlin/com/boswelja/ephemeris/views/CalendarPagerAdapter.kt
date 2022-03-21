@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.model.DisplayDate
-import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
 import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
@@ -53,7 +52,7 @@ internal class CalendarPageViewHolder(
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        rows: Set<DisplayRow>
+        rows: List<List<DisplayDate>>
     ) {
         binding.root.removeAllViews()
         rows.forEach {
@@ -63,10 +62,10 @@ internal class CalendarPageViewHolder(
 
     private fun createPopulatedRow(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        row: DisplayRow
+        row: List<DisplayDate>
     ): LinearLayout {
         return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
-            row.dates.forEach {
+            row.forEach {
                 addView(getOrCreateDayCell(dayBinder, it))
             }
         }

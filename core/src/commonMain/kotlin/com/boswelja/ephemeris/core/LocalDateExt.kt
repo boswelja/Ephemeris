@@ -19,8 +19,8 @@ internal fun LocalDate.endOfWeek(firstDayOfWeek: DayOfWeek): LocalDate {
     return plus(offset, DateTimeUnit.DAY)
 }
 
-internal fun <T> ClosedRange<LocalDate>.mapToSet(transform: (LocalDate) -> T): Set<T> {
-    val list = mutableSetOf<T>()
+internal fun <T> ClosedRange<LocalDate>.map(transform: (LocalDate) -> T): List<T> {
+    val list = mutableListOf<T>()
     var currentItem = start
     while (currentItem <= endInclusive) {
         list.add(transform(currentItem))

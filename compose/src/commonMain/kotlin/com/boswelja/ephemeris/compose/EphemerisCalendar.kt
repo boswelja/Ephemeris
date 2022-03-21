@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.DisplayDate
-import com.boswelja.ephemeris.core.model.DisplayRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -54,14 +53,14 @@ public fun EphemerisCalendar(
 
 @Composable
 internal fun CalendarPage(
-    pageData: Set<DisplayRow>,
+    pageData: List<List<DisplayDate>>,
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(DisplayDate) -> Unit
 ) {
     Column(modifier) {
         pageData.forEach { week ->
             Row {
-                week.dates.forEach { date ->
+                week.forEach { date ->
                     Box(Modifier.weight(1f)) {
                         dayContent(date)
                     }
