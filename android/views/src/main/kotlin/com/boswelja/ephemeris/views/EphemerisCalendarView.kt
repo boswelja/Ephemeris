@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
@@ -21,7 +22,8 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     private val root = LayoutViewpagerBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private val vp by lazy { root.root }
+    private val viewPager: ViewPager2
+        get() = root.root
 
     private var adapter: CalendarPagerAdapter? = null
         set(value) {
@@ -41,7 +43,12 @@ class EphemerisCalendarView @JvmOverloads constructor(
         get() = adapter!!.dayBinder
 
     private val page: Int
-        get() = if (vp.currentItem <= 0) Int.MAX_VALUE / 2 else vp.currentItem
+        get() = if (viewPager.currentItem <= 0) Int.MAX_VALUE / 2 else viewPager.currentItem
+
+    init {
+        // Attach our height adjuster to handle ViewPager2 height changes
+        ViewPagerHeightAdjuster.attachTo(viewPager)
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -85,7 +92,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
         adapter: RecyclerView.Adapter<T>,
         page: Int = 0
     ) {
-        vp.adapter = adapter
-        vp.setCurrentItem(page, false)
+        viewPager.adapter = adapter
+        viewPager.setCurrentItem(page, false)
     }
 }
