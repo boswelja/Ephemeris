@@ -31,9 +31,9 @@ publishing {
 
         pom {
             // If the project has a parent, use that as part of the name
-            val projectName = project.parent?.let {
-                "${it.name}-${project.name}"
-            } ?: project.name
+            val projectName = if (project.parent != project.rootProject) {
+                "${project.parent!!.name}-${project.name}"
+            } else project.name
             name.set(projectName)
             description.set(project.description)
             url.set("https://github.com/boswelja/Ephemeris")
