@@ -3,13 +3,16 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose") version "1.1.1"
     id("io.gitlab.arturbosch.detekt")
+    id("ephemeris-publish")
 }
 
 kotlin {
     explicitApi()
 
     // Android targets
-    android()
+    android {
+        publishLibraryVariants("release")
+    }
 
     // JVM targets
     jvm()

@@ -2,13 +2,16 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
+    id("ephemeris-publish")
 }
 
 kotlin {
     explicitApi()
 
     // Android targets
-    android()
+    android {
+        publishLibraryVariants("release")
+    }
 
     // JVM targets
     jvm()
