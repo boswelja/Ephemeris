@@ -30,12 +30,16 @@ publishing {
         artifact(tasks["javadocJar"])
 
         pom {
-            name.set(project.name)
+            // If the project has a parent, use that as part of the name
+            val projectName = project.parent?.let {
+                "${it.name}-${project.name}"
+            } ?: project.name
+            name.set(projectName)
             description.set(project.description)
             url.set("https://github.com/boswelja/Ephemeris")
             licenses {
                 license {
-                    name.set("Apache 2.0")
+                    name.set("GPLv3")
                     url.set("https://github.com/boswelja/Ephemeris/blob/main/LICENSE")
                 }
             }
