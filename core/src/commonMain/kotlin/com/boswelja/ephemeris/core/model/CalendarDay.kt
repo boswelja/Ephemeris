@@ -9,11 +9,11 @@ import kotlinx.datetime.LocalDate
  * the current month might be February, but January 31st is also displayed on the calendar. In this case,
  * January 31st will have this field set to false, whereas any dates in February will have this field set to true.
  */
-public data class DisplayDate(
+public data class CalendarDay(
     val date: LocalDate,
     val isFocusedDate: Boolean
-) : Comparable<DisplayDate> {
-    override fun compareTo(other: DisplayDate): Int {
+) : Comparable<CalendarDay> {
+    override fun compareTo(other: CalendarDay): Int {
         return date.compareTo(other.date)
     }
 }

@@ -1,7 +1,7 @@
 package com.boswelja.ephemeris.core.ui
 
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ public class CalendarPageLoader(
     private val coroutineScope: CoroutineScope,
     public val calendarPageSource: CalendarPageSource
 ) {
-    private val pageCache = mutableMapOf<Int, List<List<DisplayDate>>>()
+    private val pageCache = mutableMapOf<Int, List<List<CalendarDay>>>()
 
     private val lastLoadedPage = MutableStateFlow(0)
 
@@ -84,7 +84,7 @@ public class CalendarPageLoader(
      * Gets the data to display for the given page. If necessary, a cache load operation will be
      * started to ensure there's enough data available ahead of time.
      */
-    public fun getPageData(page: Int): List<List<DisplayDate>> {
+    public fun getPageData(page: Int): List<List<CalendarDay>> {
         lastLoadedPage.tryEmit(page)
         return pageCache[page] ?: calendarPageSource.loadPageData(page)
     }

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 internal class CalendarPagerAdapter(
@@ -49,7 +49,7 @@ internal class CalendarPageViewHolder(
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        rows: List<List<DisplayDate>>
+        rows: List<List<CalendarDay>>
     ) {
         rootView.apply {
             removeAllViews()
@@ -62,7 +62,7 @@ internal class CalendarPageViewHolder(
 
     private fun createPopulatedRow(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        row: List<DisplayDate>
+        row: List<CalendarDay>
     ): LinearLayout {
         return LinearLayout(itemView.context).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -78,7 +78,7 @@ internal class CalendarPageViewHolder(
 
     private fun getOrCreateDayCell(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        displayDate: DisplayDate
+        calendarDay: CalendarDay
     ): View {
         val container = FrameLayout(itemView.context).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -90,7 +90,7 @@ internal class CalendarPageViewHolder(
         }
         // TODO At least try to recycle views
         val viewHolder = dayBinder.onCreateViewHolder(LayoutInflater.from(itemView.context), container)
-        dayBinder.onBindView(viewHolder, displayDate)
+        dayBinder.onBindView(viewHolder, calendarDay)
         container.addView(viewHolder.itemView)
         return container
     }

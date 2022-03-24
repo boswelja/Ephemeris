@@ -3,7 +3,7 @@ package com.boswelja.ephemeris.core.data
 import com.boswelja.ephemeris.core.datetime.chunked
 import com.boswelja.ephemeris.core.datetime.endOfWeek
 import com.boswelja.ephemeris.core.datetime.map
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.datetime.YearMonth
 import com.boswelja.ephemeris.core.datetime.plus
 import com.boswelja.ephemeris.core.datetime.until
@@ -29,7 +29,7 @@ public interface CalendarPageSource {
      * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
      * calendar UI. This should not implement any caching itself, caching is handled by consumers.
      */
-    public fun loadPageData(page: Int): List<List<DisplayDate>>
+    public fun loadPageData(page: Int): List<List<CalendarDay>>
 
     /**
      * Get the page number for the given date. This function should be as lightweight as possible,
@@ -50,7 +50,7 @@ public class CalendarMonthPageSource(
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-    override fun loadPageData(page: Int): List<List<DisplayDate>> {
+    override fun loadPageData(page: Int): List<List<CalendarDay>> {
         val month = startYearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
@@ -64,7 +64,7 @@ public class CalendarMonthPageSource(
                         FocusMode.ALL -> true
                         FocusMode.NONE -> false
                     }
-                    DisplayDate(it, focused)
+                    CalendarDay(it, focused)
                 }
             }
     }
@@ -94,7 +94,7 @@ public class CalendarWeekPageSource(
 
     override fun loadPageData(
         page: Int
-    ): List<List<DisplayDate>> {
+    ): List<List<CalendarDay>> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays =  (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
@@ -104,7 +104,7 @@ public class CalendarWeekPageSource(
                     FocusMode.ALL -> true
                     FocusMode.NONE -> false
                 }
-                DisplayDate(it, focused)
+                CalendarDay(it, focused)
             }
         return listOf(weekDays)
     }
