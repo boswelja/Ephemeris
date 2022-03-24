@@ -2,10 +2,14 @@ package com.boswelja.ephemeris.core.model
 
 import kotlinx.datetime.LocalDate
 
+@DslMarker
+public annotation class CalendarPageDsl
+
 public fun calendarPage(init: CalendarPageBuilder.() -> Unit): CalendarPage {
     return CalendarPageBuilder().apply(init).build()
 }
 
+@CalendarPageDsl
 public class CalendarPageBuilder internal constructor() {
     private val rows = mutableListOf<CalendarRow>()
 
@@ -14,9 +18,12 @@ public class CalendarPageBuilder internal constructor() {
         rows.add(row)
     }
 
-    public fun rows(count: Int, init: CalendarRowBuilder.() -> Unit) {
+    public fun rows(count: Int, init: CalendarRowBuilder.(Int) -> Unit) {
         repeat(count) {
-            row(init)
+            val row = CalendarRowBuilder()
+                .apply { init(it) }
+                .build()
+            rows.add(row)
         }
     }
 
@@ -26,6 +33,7 @@ public class CalendarPageBuilder internal constructor() {
     }
 }
 
+@CalendarPageDsl
 public class CalendarRowBuilder internal constructor() {
     private val days = mutableListOf<CalendarDay>()
 
@@ -34,9 +42,12 @@ public class CalendarRowBuilder internal constructor() {
         days.add(day)
     }
 
-    public fun days(count: Int, init: CalendarDayBuilder.() -> Unit) {
+    public fun days(count: Int, init: CalendarDayBuilder.(Int) -> Unit) {
         repeat(count) {
-            day(init)
+            val day = CalendarDayBuilder()
+                .apply { init(it) }
+                .build()
+            days.add(day)
         }
     }
 
@@ -46,6 +57,7 @@ public class CalendarRowBuilder internal constructor() {
     }
 }
 
+@CalendarPageDsl
 public class CalendarDayBuilder internal constructor() {
     private var date: LocalDate? = null
     private var focused: Boolean? = null
