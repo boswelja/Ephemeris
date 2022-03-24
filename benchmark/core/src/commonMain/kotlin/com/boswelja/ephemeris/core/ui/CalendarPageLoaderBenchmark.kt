@@ -1,6 +1,5 @@
 package com.boswelja.ephemeris.core.ui
 
-import com.boswelja.ephemeris.core.data.AllFocusMode
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkMode
@@ -28,8 +27,7 @@ class CalendarPageLoaderBenchmark {
         coroutineScope = CoroutineScope(Dispatchers.Default)
         pageLoader = CalendarPageLoader(
             coroutineScope,
-            CalendarMonthPageSource(DayOfWeek.SUNDAY),
-            AllFocusMode
+            CalendarMonthPageSource(DayOfWeek.SUNDAY, focusMode = CalendarMonthPageSource.FocusMode.ALL)
         )
     }
 
