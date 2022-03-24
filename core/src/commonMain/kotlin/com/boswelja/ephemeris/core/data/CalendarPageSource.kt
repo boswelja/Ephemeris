@@ -9,6 +9,8 @@ import com.boswelja.ephemeris.core.datetime.plus
 import com.boswelja.ephemeris.core.datetime.until
 import com.boswelja.ephemeris.core.datetime.yearMonth
 import com.boswelja.ephemeris.core.datetime.startOfWeek
+import com.boswelja.ephemeris.core.model.CalendarPage
+import com.boswelja.ephemeris.core.model.CalendarRow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
@@ -29,7 +31,7 @@ public interface CalendarPageSource {
      * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
      * calendar UI. This should not implement any caching itself, caching is handled by consumers.
      */
-    public fun loadPageData(page: Int): List<List<CalendarDay>>
+    public fun loadPageData(page: Int): CalendarPage
 
     /**
      * Get the page number for the given date. This function should be as lightweight as possible,
@@ -50,23 +52,27 @@ public class CalendarMonthPageSource(
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-    override fun loadPageData(page: Int): List<List<CalendarDay>> {
+    override fun loadPageData(page: Int): CalendarPage {
         val month = startYearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
-        return (firstDisplayedDate..lastDisplayedDate)
-            .chunked(daysInWeek)
-            .map { week ->
-                week.map {
-                    val focused = when (focusMode) {
-                        FocusMode.MONTH -> it.yearMonth == month
-                        FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
-                        FocusMode.ALL -> true
-                        FocusMode.NONE -> false
-                    }
-                    CalendarDay(it, focused)
+        return CalendarPage(
+            (firstDisplayedDate..lastDisplayedDate)
+                .chunked(daysInWeek)
+                .map { week ->
+                    CalendarRow(
+                        week.map {
+                            val focused = when (focusMode) {
+                                FocusMode.MONTH -> it.yearMonth == month
+                                FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
+                                FocusMode.ALL -> true
+                                FocusMode.NONE -> false
+                            }
+                            CalendarDay(it, focused)
+                        }
+                    )
                 }
-            }
+        )
     }
 
     override fun getPageFor(date: LocalDate): Int {
@@ -94,10 +100,10 @@ public class CalendarWeekPageSource(
 
     override fun loadPageData(
         page: Int
-    ): List<List<CalendarDay>> {
+    ): CalendarPage {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
-        val weekDays =  (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
+        val weekDays = (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
             .map {
                 val focused = when (focusMode) {
                     FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
@@ -106,7 +112,7 @@ public class CalendarWeekPageSource(
                 }
                 CalendarDay(it, focused)
             }
-        return listOf(weekDays)
+        return CalendarPage(listOf(CalendarRow(weekDays)))
     }
 
     override fun getPageFor(date: LocalDate): Int {

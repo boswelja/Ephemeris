@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.model.CalendarDay
+import com.boswelja.ephemeris.core.model.CalendarPage
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 internal class CalendarPagerAdapter(
@@ -49,12 +50,12 @@ internal class CalendarPageViewHolder(
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        rows: List<List<CalendarDay>>
+        page: CalendarPage
     ) {
         rootView.apply {
             removeAllViews()
-            rows.forEach {
-                val row = createPopulatedRow(dayBinder, it)
+            page.rows.forEach {
+                val row = createPopulatedRow(dayBinder, it.days)
                 addView(row)
             }
         }
