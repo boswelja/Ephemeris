@@ -1,6 +1,5 @@
-package com.boswelja.ephemeris.core.model
+package com.boswelja.ephemeris.core.datetime
 
-import com.boswelja.ephemeris.core.plusMonths
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
