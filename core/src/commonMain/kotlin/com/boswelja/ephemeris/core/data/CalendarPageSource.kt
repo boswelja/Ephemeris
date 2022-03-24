@@ -29,7 +29,7 @@ public interface CalendarPageSource {
      * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
      * calendar UI. This should not implement any caching itself, caching is handled by consumers.
      */
-    public fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): List<List<DisplayDate>>
+    public fun loadPageData(page: Int): List<List<DisplayDate>>
 
     /**
      * Get the page number for the given date. This function should be as lightweight as possible,
@@ -44,23 +44,40 @@ public interface CalendarPageSource {
  */
 public class CalendarMonthPageSource(
     private val firstDayOfWeek: DayOfWeek,
-    private val startYearMonth: YearMonth = Clock.System.todayAt(TimeZone.currentSystemDefault()).yearMonth
+    private val startYearMonth: YearMonth = Clock.System.todayAt(TimeZone.currentSystemDefault()).yearMonth,
+    private val focusMode: FocusMode = FocusMode.MONTH
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
+    private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
-    override fun loadPageData(page: Int, transform: (LocalDate, YearMonth) -> DisplayDate): List<List<DisplayDate>> {
+    override fun loadPageData(page: Int): List<List<DisplayDate>> {
         val month = startYearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)
         val lastDisplayedDate = month.endDate.endOfWeek(firstDayOfWeek)
         return (firstDisplayedDate..lastDisplayedDate)
             .chunked(daysInWeek)
-            .map { dates ->
-                dates.map { transform(it, month) }
+            .map { week ->
+                week.map {
+                    val focused = when (focusMode) {
+                        FocusMode.MONTH -> it.yearMonth == month
+                        FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
+                        FocusMode.ALL -> true
+                        FocusMode.NONE -> false
+                    }
+                    DisplayDate(it, focused)
+                }
             }
     }
 
     override fun getPageFor(date: LocalDate): Int {
         return startYearMonth.until(date.yearMonth)
+    }
+
+    public enum class FocusMode {
+        MONTH,
+        WEEKDAYS,
+        ALL,
+        NONE
     }
 }
 
@@ -69,22 +86,36 @@ public class CalendarMonthPageSource(
  */
 public class CalendarWeekPageSource(
     private val firstDayOfWeek: DayOfWeek,
-    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
+    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
+    private val focusMode: FocusMode = FocusMode.WEEKDAYS
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
+    private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
     override fun loadPageData(
-        page: Int,
-        transform: (LocalDate, YearMonth) -> DisplayDate
+        page: Int
     ): List<List<DisplayDate>> {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
             .startOfWeek(firstDayOfWeek)
         val weekDays =  (startOfWeek..startOfWeek.plus(daysInWeek - 1, DateTimeUnit.DAY))
-            .map { transform(it, it.yearMonth) }
+            .map {
+                val focused = when (focusMode) {
+                    FocusMode.WEEKDAYS -> !weekends.contains(it.dayOfWeek)
+                    FocusMode.ALL -> true
+                    FocusMode.NONE -> false
+                }
+                DisplayDate(it, focused)
+            }
         return listOf(weekDays)
     }
 
     override fun getPageFor(date: LocalDate): Int {
         return startDate.daysUntil(date) / daysInWeek
+    }
+
+    public enum class FocusMode {
+        WEEKDAYS,
+        ALL,
+        NONE
     }
 }

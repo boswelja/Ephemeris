@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,9 +35,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
     val pageSource: CalendarPageSource
         get() = adapter!!.pageLoader.calendarPageSource
 
-    val focusMode: FocusMode
-        get() = adapter!!.pageLoader.focusMode
-
     val dayBinder: CalendarDateBinder<*>
         get() = adapter!!.dayBinder
 
@@ -60,15 +56,13 @@ class EphemerisCalendarView @JvmOverloads constructor(
     @Suppress("UNCHECKED_CAST")
     fun initCalendar(
         pageSource: CalendarPageSource = this.pageSource,
-        focusMode: FocusMode = this.focusMode,
         dayBinder: CalendarDateBinder<*> = this.dayBinder
     ) {
         if (adapter == null) {
             adapter = CalendarPagerAdapter(
                 CalendarPageLoader(
                     coroutineScope,
-                    pageSource,
-                    focusMode
+                    pageSource
                 ),
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
             )
@@ -77,8 +71,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 this.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
                 this.pageLoader = CalendarPageLoader(
                     coroutineScope,
-                    pageSource,
-                    focusMode
+                    pageSource
                 )
             }
         }

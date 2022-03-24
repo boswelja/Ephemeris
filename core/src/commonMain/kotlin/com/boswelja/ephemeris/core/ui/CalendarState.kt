@@ -1,7 +1,6 @@
 package com.boswelja.ephemeris.core.ui
 
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.FocusMode
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 
@@ -21,12 +20,6 @@ public interface CalendarState {
      * from the new page source.
      */
     public var pageSource: CalendarPageSource
-
-    /**
-     * The current calendar focus mode. Setting this will cause the calendar to redraw with data
-     * from the new focus mode.
-     */
-    public var focusMode: FocusMode
 
     /**
      * Instantly scrolls to the given date. See [animateScrollToDate] for a smooth scrolling
