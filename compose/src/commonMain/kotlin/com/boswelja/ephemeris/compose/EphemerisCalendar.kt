@@ -28,11 +28,10 @@ public fun EphemerisCalendar(
 //            calendarState.currentMonth = calendarState.calendarPageSource.monthFor(it.toLong())
 //        }
 //    }
-    val calendarPageLoader = remember(calendarState.calendarPageSource, calendarState.focusMode) {
+    val calendarPageLoader = remember(calendarState.calendarPageSource) {
         CalendarPageLoader(
             coroutineScope,
-            calendarState.calendarPageSource,
-            calendarState.focusMode
+            calendarState.calendarPageSource
         )
     }
     AnimatedContent(targetState = calendarPageLoader) { pageLoader ->

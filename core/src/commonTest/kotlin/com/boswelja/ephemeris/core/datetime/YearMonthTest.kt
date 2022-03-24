@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.core.model
+package com.boswelja.ephemeris.core.datetime
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
