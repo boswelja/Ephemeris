@@ -1,0 +1,78 @@
+name: Publish Modules
+
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Whether this release is a prerelease'
+        default: 'true'
+        required: true
+
+jobs:
+  publish:
+    name: Build module and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}   # checkout the correct branch name
+          fetch-depth: 0                # fetch the whole repo history
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Git Version
+        uses: codacy/git-version@2.5.4
+        id: version
+        with:
+          release-branch: main
+          log-paths: ./
+
+      - name: Publish modules
+        run: ./gradlew  publishToSonatype --max-workers 1 closeAndReleaseSonatypeStagingRepository
+        env:
+          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.ORG_GRADLE_PROJECT_OSSRHUSERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.ORG_GRADLE_PROJECT_OSSRHPASSWORD }}
+          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEYID }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
+
+      - name: Create Tag
+        uses: negz/create-tag@v1
+        with:
+          version: ${{ steps.version.outputs.version }}
+          message: 'Version ${{ steps.version.outputs.version }}'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Changelog
+        id: changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          stripHeaders: true
+          releaseBranch: "main"
+          pullRequests: true
+          author: true
+          issues: true
+          issuesWoLabels: true
+          prWoLabels: true
+          compareLink: true
+          filterByMilestone: false
+          unreleased: false
+          onlyLastTag: true
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          body: ${{ steps.changelog.outputs.changelog }}
+          commit: ${{ env.GITHUB_SHA }}
+          tag: ${{ steps.version.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          artifacts: '**/build/libs/*-${{ steps.version.outputs.version }}-*.jar'

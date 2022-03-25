@@ -11,7 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarDay
+import com.boswelja.ephemeris.core.model.CalendarPage
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -19,7 +20,7 @@ import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 public fun EphemerisCalendar(
     calendarState: CalendarState,
     modifier: Modifier = Modifier,
-    dayContent: @Composable BoxScope.(DisplayDate) -> Unit
+    dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -28,11 +29,10 @@ public fun EphemerisCalendar(
 //            calendarState.currentMonth = calendarState.calendarPageSource.monthFor(it.toLong())
 //        }
 //    }
-    val calendarPageLoader = remember(calendarState.calendarPageSource, calendarState.focusMode) {
+    val calendarPageLoader = remember(calendarState.calendarPageSource) {
         CalendarPageLoader(
             coroutineScope,
-            calendarState.calendarPageSource,
-            calendarState.focusMode
+            calendarState.calendarPageSource
         )
     }
     AnimatedContent(targetState = calendarPageLoader) { pageLoader ->
@@ -53,14 +53,14 @@ public fun EphemerisCalendar(
 
 @Composable
 internal fun CalendarPage(
-    pageData: List<List<DisplayDate>>,
+    pageData: CalendarPage,
     modifier: Modifier = Modifier,
-    dayContent: @Composable BoxScope.(DisplayDate) -> Unit
+    dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
     Column(modifier) {
-        pageData.forEach { week ->
+        pageData.rows.forEach { week ->
             Row {
-                week.forEach { date ->
+                week.days.forEach { date ->
                     Box(Modifier.weight(1f)) {
                         dayContent(date)
                     }

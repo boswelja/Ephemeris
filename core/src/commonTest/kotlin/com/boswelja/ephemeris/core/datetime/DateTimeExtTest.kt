@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.core
+package com.boswelja.ephemeris.core.datetime
 
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month

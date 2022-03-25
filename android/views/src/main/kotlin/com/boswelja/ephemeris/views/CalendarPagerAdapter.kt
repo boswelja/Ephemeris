@@ -1,10 +1,13 @@
 package com.boswelja.ephemeris.views
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarDay
+import com.boswelja.ephemeris.core.model.CalendarPage
+import com.boswelja.ephemeris.core.model.CalendarRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
 import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
@@ -52,20 +55,23 @@ internal class CalendarPageViewHolder(
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        rows: List<List<DisplayDate>>
+        page: CalendarPage
     ) {
-        binding.root.removeAllViews()
-        rows.forEach {
-            binding.root.addView(createPopulatedRow(dayBinder, it))
+        binding.root.apply {
+            removeAllViews()
+            page.rows.forEach {
+                val row = createPopulatedRow(dayBinder, it)
+                addView(row)
+            }
         }
     }
 
     private fun createPopulatedRow(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        row: List<DisplayDate>
+        row: CalendarRow
     ): LinearLayout {
         return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
-            row.forEach {
+            row.days.forEach {
                 addView(getOrCreateDayCell(dayBinder, it))
             }
         }
@@ -73,12 +79,12 @@ internal class CalendarPageViewHolder(
 
     private fun getOrCreateDayCell(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        displayDate: DisplayDate
-    ): LinearLayout {
+        calendarDay: CalendarDay
+    ): View {
         return RowDateCellBinding.inflate(inflater, binding.root, false).root.apply {
             // TODO At least try to recycle views
             val viewHolder = dayBinder.onCreateViewHolder(inflater, this)
-            dayBinder.onBindView(viewHolder, displayDate)
+            dayBinder.onBindView(viewHolder, calendarDay)
             addView(viewHolder.itemView)
         }
     }

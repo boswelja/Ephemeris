@@ -1,8 +1,7 @@
 package com.boswelja.ephemeris.core.ui
 
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.FocusMode
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarPage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -10,17 +9,16 @@ import kotlinx.datetime.LocalDate
 import kotlin.math.abs
 
 /**
- * Handles loading data from [CalendarPageSource], combining with [FocusMode], caching and
- * prefetching entries. Platform UIs should make use of this class for their data loading. If the
- * page source or focus mode change, it is expected a new instance will be created and the existing
- * instance discarded. Prefetch and cache operations are handled asynchronously via [coroutineScope].
+ * Handles loading data from [CalendarPageSource], caching and prefetching entries. Platform UIs
+ * should make use of this class for their data loading. If the page source or focus mode change, it
+ * is expected a new instance will be created and the existing instance discarded. Prefetch and
+ * cache operations are handled asynchronously via [coroutineScope].
  */
 public class CalendarPageLoader(
     private val coroutineScope: CoroutineScope,
-    public val calendarPageSource: CalendarPageSource,
-    public val focusMode: FocusMode
+    public val calendarPageSource: CalendarPageSource
 ) {
-    private val pageCache = mutableMapOf<Int, List<List<DisplayDate>>>()
+    private val pageCache = mutableMapOf<Int, CalendarPage>()
 
     private val lastLoadedPage = MutableStateFlow(0)
 
@@ -48,12 +46,7 @@ public class CalendarPageLoader(
             (fromPage + 1)..(fromPage + CHUNK_SIZE)
         }
         range.forEach { page ->
-            pageCache[page] = calendarPageSource.loadPageData(page) { date, month ->
-                DisplayDate(
-                    date,
-                    focusMode(date, month)
-                )
-            }
+            pageCache[page] = calendarPageSource.loadPageData(page)
         }
     }
 
@@ -91,11 +84,9 @@ public class CalendarPageLoader(
      * Gets the data to display for the given page. If necessary, a cache load operation will be
      * started to ensure there's enough data available ahead of time.
      */
-    public fun getPageData(page: Int): List<List<DisplayDate>> {
+    public fun getPageData(page: Int): CalendarPage {
         lastLoadedPage.tryEmit(page)
-        return pageCache[page] ?: calendarPageSource.loadPageData(page) { date, month ->
-            DisplayDate(date, focusMode(date, month))
-        }
+        return pageCache[page] ?: calendarPageSource.loadPageData(page)
     }
 
     /**
@@ -104,8 +95,8 @@ public class CalendarPageLoader(
     public fun getDateRangeFor(page: Int): ClosedRange<LocalDate> {
         // Cast to non-null here since in theory a page has already been loaded
         val pageData = pageCache[page]!!
-        val startDate = pageData.first().first().date
-        val endDate = pageData.last().last().date
+        val startDate = pageData.rows.first().days.first().date
+        val endDate = pageData.rows.last().days.last().date
         return startDate..endDate
     }
 

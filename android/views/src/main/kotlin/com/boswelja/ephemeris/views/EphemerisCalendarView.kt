@@ -7,7 +7,6 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.data.FocusMode
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.databinding.LayoutViewpagerBinding
 import kotlinx.coroutines.CoroutineScope
@@ -36,9 +35,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
     val pageSource: CalendarPageSource
         get() = adapter!!.pageLoader.calendarPageSource
 
-    val focusMode: FocusMode
-        get() = adapter!!.pageLoader.focusMode
-
     val dayBinder: CalendarDateBinder<*>
         get() = adapter!!.dayBinder
 
@@ -63,7 +59,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
     @Suppress("UNCHECKED_CAST")
     fun initCalendar(
         pageSource: CalendarPageSource = this.pageSource,
-        focusMode: FocusMode = this.focusMode,
         dayBinder: CalendarDateBinder<*> = this.dayBinder
     ) {
         var adapter = this.adapter
@@ -71,19 +66,24 @@ class EphemerisCalendarView @JvmOverloads constructor(
             adapter = CalendarPagerAdapter(
                 CalendarPageLoader(
                     coroutineScope,
-                    pageSource,
-                    focusMode
+                    pageSource
                 ),
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
             )
         } else {
-            adapter.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
-            adapter.pageLoader = CalendarPageLoader(
-                coroutineScope,
-                pageSource,
-                focusMode
-            )
+            adapter.apply {
+                this.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
+                this.pageLoader = CalendarPageLoader(
+                    coroutineScope,
+                    pageSource
+                )
+            }
         }
+        adapter.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
+        adapter.pageLoader = CalendarPageLoader(
+            coroutineScope,
+            pageSource
+        )
 
         setAdapter(adapter, page)
     }

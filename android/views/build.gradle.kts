@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     id("io.gitlab.arturbosch.detekt")
+    id("ephemeris-publish")
 }
 
 android {

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.ephemeris.core.model.DisplayDate
+import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.databinding.DayBinding
 import com.boswelja.ephemeris.views.CalendarDateBinder
@@ -18,20 +18,20 @@ class CalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
         return CalendarDateViewHolder(view)
     }
 
-    override fun onBindView(viewHolder: CalendarDateViewHolder, displayDate: DisplayDate) {
-        viewHolder.onBind(displayDate)
+    override fun onBindView(viewHolder: CalendarDateViewHolder, calendarDay: CalendarDay) {
+        viewHolder.onBind(calendarDay)
     }
 }
 
 class CalendarDateViewHolder(private val binding: DayBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun onBind(displayDate: DisplayDate) {
+    fun onBind(calendarDay: CalendarDay) {
         binding.dayNum.apply {
-            text = displayDate.date.dayOfMonth.toString()
+            text = calendarDay.date.dayOfMonth.toString()
             setTextColor(
                 ContextCompat.getColor(
                     binding.root.context,
-                    if (displayDate.isFocusedDate) R.color.teal_200 else R.color.purple_200)
+                    if (calendarDay.isFocusedDate) R.color.teal_200 else R.color.purple_200)
             )
         }
     }
