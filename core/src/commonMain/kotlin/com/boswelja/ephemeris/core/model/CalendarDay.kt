@@ -12,8 +12,4 @@ import kotlinx.datetime.LocalDate
 public data class CalendarDay internal constructor(
     val date: LocalDate,
     val isFocusedDate: Boolean
-) : Comparable<CalendarDay> {
-    override fun compareTo(other: CalendarDay): Int {
-        return date.compareTo(other.date)
-    }
-}
+)
