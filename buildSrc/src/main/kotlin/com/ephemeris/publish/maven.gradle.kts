@@ -1,5 +1,4 @@
-import org.gradle.kotlin.dsl.`maven-publish`
-import org.gradle.kotlin.dsl.signing
+package com.ephemeris.publish
 
 plugins {
     `maven-publish`

@@ -1,8 +1,8 @@
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
-    id("io.gitlab.arturbosch.detekt")
-    id("ephemeris-maven-publish")
+    id("com.ephemeris.library.android")
+    id("com.ephemeris.publish.maven")
+    id("com.ephemeris.quality")
 }
 
 kotlin {
@@ -52,17 +52,4 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.boswelja.ephemeris.core"
-    compileSdk = 32
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        targetSdk = 32
-        minSdk = 23
-    }
-}
-
-detekt {
-    config = files("${rootDir.absolutePath}/config/detekt/detekt.yml")
-    buildUponDefaultConfig = true
-}
+android.namespace = "com.boswelja.ephemeris.core"
