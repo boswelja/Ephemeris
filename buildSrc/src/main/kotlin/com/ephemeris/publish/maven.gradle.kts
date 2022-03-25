@@ -1,9 +1,9 @@
 package com.ephemeris.publish
 
 plugins {
-    `maven-publish`
-    signing
     id("org.jetbrains.dokka")
+    id("signing")
+    id("maven-publish")
 }
 
 val version: String? by project
