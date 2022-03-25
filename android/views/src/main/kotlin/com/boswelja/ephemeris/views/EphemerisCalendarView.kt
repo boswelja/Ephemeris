@@ -2,12 +2,13 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
+import com.boswelja.ephemeris.views.databinding.LayoutViewpagerBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -18,17 +19,16 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     private lateinit var coroutineScope: CoroutineScope
 
-    private val viewPager = RecyclerView(context, attrs).apply {
-        id = generateViewId()
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    }
-    private val snapHelper = PagerSnapHelper()
+    private val root = LayoutViewpagerBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private val viewPager: ViewPager2
+        get() = root.root
 
     private var adapter: CalendarPagerAdapter? = null
         set(value) {
             if (value != null) {
                 field = value
-                viewPager.adapter = value
+                setAdapter(value)
             }
         }
 
@@ -38,9 +38,12 @@ class EphemerisCalendarView @JvmOverloads constructor(
     val dayBinder: CalendarDateBinder<*>
         get() = adapter!!.dayBinder
 
+    private val page: Int
+        get() = if (viewPager.currentItem <= 0) Int.MAX_VALUE / 2 else viewPager.currentItem
+
     init {
-        snapHelper.attachToRecyclerView(viewPager)
-        addView(viewPager)
+        // Attach our height adjuster to handle ViewPager2 height changes
+        ViewPagerHeightAdjuster.attachTo(viewPager)
     }
 
     override fun onAttachedToWindow() {
@@ -58,6 +61,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
         pageSource: CalendarPageSource = this.pageSource,
         dayBinder: CalendarDateBinder<*> = this.dayBinder
     ) {
+        var adapter = this.adapter
         if (adapter == null) {
             adapter = CalendarPagerAdapter(
                 CalendarPageLoader(
@@ -67,7 +71,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
             )
         } else {
-            adapter!!.apply {
+            adapter.apply {
                 this.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
                 this.pageLoader = CalendarPageLoader(
                     coroutineScope,
@@ -75,5 +79,20 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 )
             }
         }
+        adapter.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
+        adapter.pageLoader = CalendarPageLoader(
+            coroutineScope,
+            pageSource
+        )
+
+        setAdapter(adapter, page)
+    }
+
+    private fun <T : RecyclerView.ViewHolder> setAdapter(
+        adapter: RecyclerView.Adapter<T>,
+        page: Int = 0
+    ) {
+        viewPager.adapter = adapter
+        viewPager.setCurrentItem(page, false)
     }
 }

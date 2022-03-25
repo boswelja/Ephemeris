@@ -36,6 +36,7 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
 
     api(libs.androidx.recyclerview)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.viewpager)
 }
 

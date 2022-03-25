@@ -3,12 +3,15 @@ package com.boswelja.ephemeris.views
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
+import com.boswelja.ephemeris.core.model.CalendarRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
+import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
+import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
+import com.boswelja.ephemeris.views.databinding.RowPopulatedDateBinding
 
 internal class CalendarPagerAdapter(
     pageLoader: CalendarPageLoader,
@@ -45,17 +48,19 @@ internal class CalendarPagerAdapter(
 }
 
 internal class CalendarPageViewHolder(
-    private val rootView: LinearLayout
-) : RecyclerView.ViewHolder(rootView) {
+    private val binding: RowDisplayDateBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    private val inflater = LayoutInflater.from(itemView.context)
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         page: CalendarPage
     ) {
-        rootView.apply {
+        binding.root.apply {
             removeAllViews()
             page.rows.forEach {
-                val row = createPopulatedRow(dayBinder, it.days)
+                val row = createPopulatedRow(dayBinder, it)
                 addView(row)
             }
         }
@@ -63,48 +68,34 @@ internal class CalendarPageViewHolder(
 
     private fun createPopulatedRow(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        row: List<CalendarDay>
+        row: CalendarRow
     ): LinearLayout {
-        return LinearLayout(itemView.context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            orientation = LinearLayout.HORIZONTAL
-            row.forEach {
-                addView(getOrCreateDayCell(dayBinder, it))
+        return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
+            row.days.forEach {
+                addView(createDayCell(dayBinder, it))
             }
         }
     }
 
-    private fun getOrCreateDayCell(
+    private fun createDayCell(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         calendarDay: CalendarDay
     ): View {
-        val container = FrameLayout(itemView.context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                weight = 1f
-            }
+        return RowDateCellBinding.inflate(inflater, binding.root, false).root.apply {
+            // TODO At least try to recycle views
+            val viewHolder = dayBinder.onCreateViewHolder(inflater, this)
+            dayBinder.onBindView(viewHolder, calendarDay)
+            addView(viewHolder.itemView)
         }
-        // TODO At least try to recycle views
-        val viewHolder = dayBinder.onCreateViewHolder(LayoutInflater.from(itemView.context), container)
-        dayBinder.onBindView(viewHolder, calendarDay)
-        container.addView(viewHolder.itemView)
-        return container
     }
 
     companion object {
         fun create(parent: ViewGroup): CalendarPageViewHolder {
-            val view = LinearLayout(parent.context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                orientation = LinearLayout.VERTICAL
-            }
+            val view = RowDisplayDateBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
             return CalendarPageViewHolder(view)
         }
     }
