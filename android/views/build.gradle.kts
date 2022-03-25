@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    namespace = "com.boswelja.ephemeris.views"
     compileSdk = 32
 
     defaultConfig {

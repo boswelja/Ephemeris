@@ -53,6 +53,7 @@ kotlin {
 }
 
 android {
+    namespace = "com.boswelja.ephemeris.core"
     compileSdk = 32
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
