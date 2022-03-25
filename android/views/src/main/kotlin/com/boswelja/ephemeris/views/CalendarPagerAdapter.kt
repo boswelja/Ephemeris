@@ -72,12 +72,12 @@ internal class CalendarPageViewHolder(
     ): LinearLayout {
         return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
             row.days.forEach {
-                addView(getOrCreateDayCell(dayBinder, it))
+                addView(createDayCell(dayBinder, it))
             }
         }
     }
 
-    private fun getOrCreateDayCell(
+    private fun createDayCell(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         calendarDay: CalendarDay
     ): View {
