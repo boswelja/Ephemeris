@@ -8,6 +8,10 @@ on:
       - '**.md'
       - '.github/*.yml'
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   assemble:
     name: Assemble
