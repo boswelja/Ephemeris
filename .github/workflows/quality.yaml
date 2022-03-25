@@ -22,7 +22,7 @@ jobs:
           cache: 'gradle'
 
       - name: Build
-        run: bash ./gradlew assembleDebug
+        run: bash ./gradlew assemble
 
   test:
     name: Testing
