@@ -19,8 +19,8 @@ rootProject.name = "Ephemeris"
 include(
     ":core",
     ":compose",
-    ":benchmark:core",
-    ":benchmark:android",
+//    ":benchmark:core",
+//    ":benchmark:android",
     ":android:views",
     ":android:sample",
 )
