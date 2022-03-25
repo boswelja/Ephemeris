@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("io.gitlab.arturbosch.detekt")
-    id("ephemeris-publish")
+    id("ephemeris-maven-publish")
 }
 
 kotlin {

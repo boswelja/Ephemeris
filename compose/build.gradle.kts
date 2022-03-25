@@ -3,7 +3,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose") version "1.1.1"
     id("io.gitlab.arturbosch.detekt")
-    id("ephemeris-publish")
+    id("ephemeris-maven-publish")
 }
 
 kotlin {

@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     id("io.gitlab.arturbosch.detekt")
-    id("ephemeris-publish")
+    id("ephemeris-maven-publish")
 }
 
 android {
@@ -17,16 +17,6 @@ android {
     compileOptions.isCoreLibraryDesugaringEnabled = true
 
     buildFeatures.viewBinding = true
-
-    testOptions {
-        devices {
-            create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel2api31") {
-                device = "Pixel 2"
-                apiLevel = 31
-                systemImageSource = "aosp"
-            }
-        }
-    }
 }
 
 dependencies {
