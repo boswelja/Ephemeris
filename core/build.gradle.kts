@@ -1,9 +1,9 @@
 plugins {
     kotlin("multiplatform")
+    id("org.jetbrains.kotlinx.kover")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
     id("com.ephemeris.quality")
-    id("com.ephemeris.coverage")
 }
 
 kotlin {
@@ -54,3 +54,12 @@ kotlin {
 }
 
 android.namespace = "com.boswelja.ephemeris.core"
+
+tasks.koverVerify {
+    rule {
+        name = "Code line coverage"
+        bound {
+            minValue = 90
+        }
+    }
+}
