@@ -2,7 +2,6 @@ package com.boswelja.ephemeris.views
 
 import android.animation.ValueAnimator
 import android.view.View
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
@@ -11,15 +10,17 @@ import androidx.viewpager2.widget.ViewPager2
  * displayed page changes.
  */
 class ViewPagerHeightAdjuster private constructor(
-    private val viewPager: ViewPager2
+    private val viewPager: ViewPager2,
+    private val heightAnimator: ValueAnimator
 ) : ViewPager2.OnPageChangeCallback() {
 
-    private val heightAnimator = ValueAnimator().apply {
-        addUpdateListener { animator ->
-            viewPager.layoutParams = viewPager.layoutParams
-                .also { lp -> lp.height = animator.animatedValue as Int }
+    init {
+        heightAnimator.apply {
+            addUpdateListener { animator ->
+                viewPager.layoutParams = viewPager.layoutParams
+                    .also { lp -> lp.height = animator.animatedValue as Int }
+            }
         }
-        interpolator = FastOutSlowInInterpolator()
     }
 
     override fun onPageSelected(position: Int) {
@@ -39,8 +40,11 @@ class ViewPagerHeightAdjuster private constructor(
     }
 
     companion object {
-        fun attachTo(viewPager: ViewPager2): ViewPagerHeightAdjuster {
-            val heightAdjuster = ViewPagerHeightAdjuster(viewPager)
+        fun attachTo(
+            viewPager: ViewPager2,
+            heightAnimator: ValueAnimator
+        ): ViewPagerHeightAdjuster {
+            val heightAdjuster = ViewPagerHeightAdjuster(viewPager, heightAnimator)
             viewPager.registerOnPageChangeCallback(heightAdjuster)
             return heightAdjuster
         }
