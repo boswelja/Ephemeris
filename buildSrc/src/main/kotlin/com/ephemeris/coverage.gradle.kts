@@ -8,7 +8,7 @@ tasks.koverVerify {
     rule {
         name = "Code line coverage"
         bound {
-            minValue = 75
+            minValue = 85
         }
     }
 }
