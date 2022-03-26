@@ -10,9 +10,9 @@ import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
 import com.boswelja.ephemeris.core.model.CalendarRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
-import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
-import com.boswelja.ephemeris.views.databinding.RowPopulatedDateBinding
+import com.boswelja.ephemeris.views.databinding.CalendarPageBinding
+import com.boswelja.ephemeris.views.databinding.CalendarRowBinding
+import com.boswelja.ephemeris.views.databinding.DateCellBinding
 import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
 
 internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolder>() {
@@ -54,7 +54,7 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
 }
 
 internal class CalendarPageViewHolder(
-    private val binding: RowDisplayDateBinding
+    private val binding: CalendarPageBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val inflater = LayoutInflater.from(itemView.context)
@@ -76,7 +76,7 @@ internal class CalendarPageViewHolder(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         row: CalendarRow
     ): LinearLayout {
-        return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
+        return CalendarRowBinding.inflate(inflater, null, false).root.apply {
             row.days.forEach {
                 addView(createDayCell(dayBinder, it))
             }
@@ -87,7 +87,7 @@ internal class CalendarPageViewHolder(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         calendarDay: CalendarDay
     ): View {
-        return RowDateCellBinding.inflate(inflater, binding.root, false).root.apply {
+        return DateCellBinding.inflate(inflater, binding.root, false).root.apply {
             // TODO At least try to recycle views
             val viewHolder = dayBinder.onCreateViewHolder(inflater, this)
             dayBinder.onBindView(viewHolder, calendarDay)
@@ -97,7 +97,7 @@ internal class CalendarPageViewHolder(
 
     companion object {
         fun create(parent: ViewGroup): CalendarPageViewHolder {
-            val view = RowDisplayDateBinding.inflate(
+            val view = CalendarPageBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
