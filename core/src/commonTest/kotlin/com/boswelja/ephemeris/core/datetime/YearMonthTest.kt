@@ -100,4 +100,28 @@ class YearMonthTest {
             YearMonth(2022, Month.JULY).plus(-100).year
         )
     }
+
+    @Test
+    fun until_returnsCorrectValues() {
+        assertEquals(
+            0,
+            YearMonth(2022, Month.MARCH).until(YearMonth(2022, Month.MARCH))
+        )
+        assertEquals(
+            4,
+            YearMonth(2022, Month.MARCH).until(YearMonth(2022, Month.JULY))
+        )
+        assertEquals(
+            -2,
+            YearMonth(2022, Month.MARCH).until(YearMonth(2022, Month.JANUARY))
+        )
+        assertEquals(
+            12,
+            YearMonth(2022, Month.MARCH).until(YearMonth(2023, Month.MARCH))
+        )
+        assertEquals(
+            -10,
+            YearMonth(2022, Month.MARCH).until(YearMonth(2021, Month.MAY))
+        )
+    }
 }

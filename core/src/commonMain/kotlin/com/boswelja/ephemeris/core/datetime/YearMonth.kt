@@ -32,8 +32,9 @@ public fun YearMonth.plus(months: Int): YearMonth {
 }
 
 public fun YearMonth.until(other: YearMonth): Int {
-    val yearDelta = year - other.year
-    val monthDelta = month.plusMonths(-1 * other.month.number).number
+    if (this == other) return 0
+    val yearDelta = -1 * (year - other.year)
+    val monthDelta = -1 * (month.number - other.month.number) % allMonths.size
     return (yearDelta * allMonths.size) + monthDelta
 }
 
