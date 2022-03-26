@@ -14,13 +14,14 @@ class InfiniteHorizontalPager @JvmOverloads constructor(
 
     private val snapHelper = PagerSnapHelper()
 
-    private var snapPosition: Int = 0
+    var currentPage: Int = 0
 
     var snapPositionChangeListener: OnSnapPositionChangeListener? = null
 
     init {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         snapHelper.attachToRecyclerView(this)
+        scrollToPosition(pageToPosition(0))
     }
 
     override fun onScrollStateChanged(state: Int) {
@@ -39,16 +40,20 @@ class InfiniteHorizontalPager @JvmOverloads constructor(
     private fun maybeNotifySnapPositionChange() {
         snapPositionChangeListener?.let {
             val snapPosition = positionToPage(snapHelper.getSnapPosition(this))
-            val snapPositionChanged = this.snapPosition != snapPosition
+            val snapPositionChanged = this.currentPage != snapPosition
             if (snapPositionChanged) {
                 it.onSnapPositionChange(snapPosition)
-                this.snapPosition = snapPosition
+                this.currentPage = snapPosition
             }
         }
     }
 
     private fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
+    }
+
+    private fun pageToPosition(page: Int): Int {
+        return page + (Int.MAX_VALUE / 2)
     }
 
     companion object {

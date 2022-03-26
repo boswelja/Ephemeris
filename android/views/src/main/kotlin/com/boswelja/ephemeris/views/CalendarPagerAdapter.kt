@@ -13,8 +13,9 @@ import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
 import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
 import com.boswelja.ephemeris.views.databinding.RowPopulatedDateBinding
+import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
 
-internal class CalendarPagerAdapter : RecyclerView.Adapter<CalendarPageViewHolder>() {
+internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolder>() {
 
     var pageLoader: CalendarPageLoader? = null
         @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
@@ -36,7 +37,7 @@ internal class CalendarPagerAdapter : RecyclerView.Adapter<CalendarPageViewHolde
 
     override fun getItemCount(): Int {
         return if (pageLoader != null && dayBinder != null) {
-            Int.MAX_VALUE
+            super.getItemCount()
         } else {
             0
         }
@@ -46,8 +47,7 @@ internal class CalendarPagerAdapter : RecyclerView.Adapter<CalendarPageViewHolde
         return CalendarPageViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
-        val page = (position - (Int.MAX_VALUE / 2))
+    override fun onBindHolder(holder: CalendarPageViewHolder, page: Int) {
         val pageState = pageLoader!!.getPageData(page)
         holder.bindDisplayRows(dayBinder!!, pageState)
     }
