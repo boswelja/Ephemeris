@@ -51,8 +51,8 @@ jobs:
           path: ./**/build/reports/tests/
           if-no-files-found: ignore
 
-#      - name: Instrumented Tests
-#        run: bash ./gradlew pixel2api31DebugAndroidTest
+      - name: Code Coverage
+        run: bash ./gradlew koverVerify
 
   code-quality:
     name: Code Quality
