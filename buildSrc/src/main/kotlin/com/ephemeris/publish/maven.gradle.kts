@@ -1,10 +1,9 @@
-import org.gradle.kotlin.dsl.`maven-publish`
-import org.gradle.kotlin.dsl.signing
+package com.ephemeris.publish
 
 plugins {
-    `maven-publish`
-    signing
     id("org.jetbrains.dokka")
+    id("signing")
+    id("maven-publish")
 }
 
 val version: String? by project

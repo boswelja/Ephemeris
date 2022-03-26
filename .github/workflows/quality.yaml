@@ -8,6 +8,10 @@ on:
       - '**.md'
       - '.github/*.yml'
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   assemble:
     name: Assemble
@@ -26,7 +30,7 @@ jobs:
 
   test:
     name: Testing
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: assemble
     steps:
       - uses: actions/checkout@v2.4.0
@@ -52,7 +56,7 @@ jobs:
 
   code-quality:
     name: Code Quality
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: assemble
     steps:
       - uses: actions/checkout@v2.4.0
