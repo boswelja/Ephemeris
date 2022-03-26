@@ -1,8 +1,5 @@
 package com.boswelja.ephemeris.core.data
 
-import com.boswelja.ephemeris.core.datetime.YearMonth
-import com.boswelja.ephemeris.core.datetime.plus
-import com.boswelja.ephemeris.core.datetime.yearMonth
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
@@ -11,14 +8,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CalendarMonthPageSourceTest {
+class CalendarWeekPageSourceTest {
 
     @Test
     fun loadPageData_respectsFirstDayOfWeek() {
         val daysOfWeek = DayOfWeek.values()
 
         daysOfWeek.forEach { firstDayOfWeek ->
-            val source = CalendarMonthPageSource(
+            val source = CalendarWeekPageSource(
                 firstDayOfWeek = firstDayOfWeek
             )
             // Load some pages
@@ -27,29 +24,7 @@ class CalendarMonthPageSourceTest {
 
                 // Check each row starts on the correct day
                 assertTrue {
-                    calendarPage.rows.all { it.days.first().date.dayOfWeek == firstDayOfWeek }
-                }
-            }
-        }
-    }
-
-    @Test
-    fun loadPageData_respectsMonthFocusMode() {
-        val startYearMonth = YearMonth(2022, Month.MARCH)
-        val source = CalendarMonthPageSource(
-            firstDayOfWeek = DayOfWeek.SUNDAY,
-            startYearMonth = startYearMonth,
-            focusMode = CalendarMonthPageSource.FocusMode.MONTH
-        )
-        (-10..10).forEach { page ->
-            val yearMonth = startYearMonth.plus(page)
-            val calendarPage = source.loadPageData(page)
-            calendarPage.rows.forEach { row ->
-                row.days.forEach {
-                    assertEquals(
-                        it.date.yearMonth == yearMonth,
-                        it.isFocusedDate
-                    )
+                    calendarPage.rows.first().days.first().date.dayOfWeek == firstDayOfWeek
                 }
             }
         }
@@ -57,9 +32,9 @@ class CalendarMonthPageSourceTest {
 
     @Test
     fun loadPageData_respectsAllFocusMode() {
-        val source = CalendarMonthPageSource(
+        val source = CalendarWeekPageSource(
             firstDayOfWeek = DayOfWeek.SUNDAY,
-            focusMode = CalendarMonthPageSource.FocusMode.ALL
+            focusMode = CalendarWeekPageSource.FocusMode.ALL
         )
         (-10..10).forEach { page ->
             val calendarPage = source.loadPageData(page)
@@ -73,9 +48,9 @@ class CalendarMonthPageSourceTest {
 
     @Test
     fun loadPageData_respectsNoneFocusMode() {
-        val source = CalendarMonthPageSource(
+        val source = CalendarWeekPageSource(
             firstDayOfWeek = DayOfWeek.SUNDAY,
-            focusMode = CalendarMonthPageSource.FocusMode.NONE
+            focusMode = CalendarWeekPageSource.FocusMode.NONE
         )
         (-10..10).forEach { page ->
             val calendarPage = source.loadPageData(page)
@@ -89,11 +64,9 @@ class CalendarMonthPageSourceTest {
 
     @Test
     fun loadPageData_respectsWeekdayFocusMode() {
-        val startYearMonth = YearMonth(2022, Month.MARCH)
-        val source = CalendarMonthPageSource(
+        val source = CalendarWeekPageSource(
             firstDayOfWeek = DayOfWeek.SUNDAY,
-            startYearMonth = startYearMonth,
-            focusMode = CalendarMonthPageSource.FocusMode.WEEKDAYS
+            focusMode = CalendarWeekPageSource.FocusMode.WEEKDAYS
         )
         val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
         (-10..10).forEach { page ->
@@ -120,50 +93,48 @@ class CalendarMonthPageSourceTest {
     }
 
     @Test
-    fun loadPageData_loadsCorrectNumberOfRows() {
-        val startYearMonth = YearMonth(2022, Month.MARCH)
-        val source = CalendarMonthPageSource(
+    fun loadPageData_loadsSingleRow() {
+        val source = CalendarWeekPageSource(
             firstDayOfWeek = DayOfWeek.MONDAY,
-            startYearMonth = startYearMonth
         )
 
         assertEquals(
-            5,
+            1,
             source.loadPageData(0).rows.size
         )
         assertEquals(
-            6,
+            1,
             source.loadPageData(2).rows.size
         )
         assertEquals(
-            4,
+            1,
             source.loadPageData(-13).rows.size
         )
     }
 
     @Test
     fun getPageFor_returnsCorrectPage() {
-        val startYearMonth = YearMonth(2022, Month.MARCH)
-        val source = CalendarMonthPageSource(
+        val startDate = LocalDate(2022, Month.MARCH, 23)
+        val source = CalendarWeekPageSource(
             firstDayOfWeek = DayOfWeek.MONDAY,
-            startYearMonth = startYearMonth
+            startDate = startDate
         )
 
         assertEquals(
             0,
-            source.getPageFor(LocalDate(2022, Month.MARCH, 1))
+            source.getPageFor(LocalDate(2022, Month.MARCH, 21))
         )
         assertEquals(
             0,
-            source.getPageFor(LocalDate(2022, Month.MARCH, 31))
+            source.getPageFor(LocalDate(2022, Month.MARCH, 27))
         )
         assertEquals(
             -13,
-            source.getPageFor(LocalDate(2021, Month.FEBRUARY, 20))
+            source.getPageFor(LocalDate(2021, Month.DECEMBER, 22))
         )
         assertEquals(
             10,
-            source.getPageFor(LocalDate(2023, Month.JANUARY, 3))
+            source.getPageFor(LocalDate(2022, Month.JUNE, 3))
         )
     }
 }
