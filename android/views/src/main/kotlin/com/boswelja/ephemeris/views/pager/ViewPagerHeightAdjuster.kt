@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.views
+package com.boswelja.ephemeris.views.pager
 
 import android.animation.ValueAnimator
 import android.view.View
@@ -9,7 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
  * An implementation of [ViewPager2.OnPageChangeCallback] that animates height changes when the
  * displayed page changes.
  */
-class ViewPagerHeightAdjuster private constructor(
+internal class ViewPagerHeightAdjuster(
     private val viewPager: ViewPager2,
     private val heightAnimator: ValueAnimator
 ) : ViewPager2.OnPageChangeCallback() {
@@ -25,6 +25,10 @@ class ViewPagerHeightAdjuster private constructor(
 
     override fun onPageSelected(position: Int) {
         super.onPageSelected(position)
+        readjustHeight(position)
+    }
+
+    fun readjustHeight(position: Int) {
         val view = (viewPager.getChildAt(0) as RecyclerView).findViewHolderForAdapterPosition(position)?.itemView
         view?.post {
             val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
@@ -36,17 +40,6 @@ class ViewPagerHeightAdjuster private constructor(
                     setIntValues(viewPager.height, view.measuredHeight)
                 }.also { it.start() }
             }
-        }
-    }
-
-    companion object {
-        fun attachTo(
-            viewPager: ViewPager2,
-            heightAnimator: ValueAnimator
-        ): ViewPagerHeightAdjuster {
-            val heightAdjuster = ViewPagerHeightAdjuster(viewPager, heightAnimator)
-            viewPager.registerOnPageChangeCallback(heightAdjuster)
-            return heightAdjuster
         }
     }
 }

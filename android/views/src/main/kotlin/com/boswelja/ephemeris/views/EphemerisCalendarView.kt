@@ -1,18 +1,13 @@
 package com.boswelja.ephemeris.views
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.widget.FrameLayout
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.core.ui.CalendarState
-import com.boswelja.ephemeris.views.databinding.LayoutViewpagerBinding
+import com.boswelja.ephemeris.views.pager.DynamicHeightViewPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -22,18 +17,11 @@ import kotlinx.datetime.LocalDate
 
 class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), CalendarState {
-
-    private val heightAnimator = ValueAnimator().apply { interpolator = FastOutSlowInInterpolator() }
+) : DynamicHeightViewPager(context, attrs, defStyleAttr), CalendarState {
 
     private lateinit var coroutineScope: CoroutineScope
 
-    private val root = LayoutViewpagerBinding.inflate(LayoutInflater.from(context), this, true)
-
     private val adapter = CalendarPagerAdapter()
-
-    private val viewPager: ViewPager2
-        get() = root.root
 
     private val page: Int
         get() = if (viewPager.currentItem <= 0) Int.MAX_VALUE / 2 else viewPager.currentItem
@@ -74,8 +62,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     init {
         // Attach our height adjuster to handle ViewPager2 height changes
-        ViewPagerHeightAdjuster.attachTo(viewPager, heightAnimator)
-        viewPager.setCurrentItem(page, false)
         viewPager.adapter = adapter
     }
 
@@ -101,5 +87,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
             coroutineScope,
             pageSource
         )
+        viewPager.setCurrentItem(page, false)
     }
 }
