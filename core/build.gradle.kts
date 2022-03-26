@@ -3,6 +3,7 @@ plugins {
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
     id("com.ephemeris.quality")
+    id("com.ephemeris.coverage")
 }
 
 kotlin {
