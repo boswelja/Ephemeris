@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class InfiniteHorizontalPager @JvmOverloads constructor(
+open class InfiniteHorizontalPager @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -21,7 +21,7 @@ class InfiniteHorizontalPager @JvmOverloads constructor(
     init {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         snapHelper.attachToRecyclerView(this)
-        scrollToPosition(pageToPosition(0))
+        scrollToPage(currentPage, animate = false)
     }
 
     override fun onScrollStateChanged(state: Int) {
@@ -31,11 +31,17 @@ class InfiniteHorizontalPager @JvmOverloads constructor(
     }
 
     override fun setAdapter(adapter: Adapter<*>?) {
-        require(adapter is InfinitePagerAdapter<*>)
+        require(adapter is InfinitePagerAdapter<*>) { "$adapter is not an InfinitePagerAdapter!" }
         super.setAdapter(adapter)
     }
 
-    fun setAdapter(adapter: InfinitePagerAdapter<*>) = setAdapter(adapter as Adapter<*>)
+    fun scrollToPage(page: Int, animate: Boolean = true) {
+        if (animate) {
+            smoothScrollToPosition(pageToPosition(page))
+        } else {
+            scrollToPosition(pageToPosition(page))
+        }
+    }
 
     private fun maybeNotifySnapPositionChange() {
         snapPositionChangeListener?.let {
