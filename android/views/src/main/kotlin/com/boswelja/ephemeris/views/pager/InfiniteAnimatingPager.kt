@@ -1,7 +1,5 @@
 package com.boswelja.ephemeris.views.pager
 
-import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -24,20 +22,34 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
-        //remeasureAndAnimateHeight(page)
+        remeasureAndAnimateHeight(page)
     }
 
-    internal fun remeasureAndAnimateHeight(position: Int) {
+    private fun remeasureAndAnimateHeight(position: Int) {
+        // TODO This assumes there are 3 views, not good
         val view = findViewHolderForAdapterPosition(position)?.itemView
         view?.post {
             val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
             val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             view.measure(wMeasureSpec, hMeasureSpec)
-
-            if (height != view.measuredHeight) {
+            if (view.height != view.measuredHeight) {
+                val prevView = findViewHolderForAdapterPosition(position - 1)?.itemView
+                val nextView = findViewHolderForAdapterPosition(position + 1)?.itemView
                 heightAnimator.apply {
-                    setIntValues(height, view.measuredHeight)
-                }.also { it.start() }
+                    setIntValues(view.height, view.measuredHeight)
+                    addUpdateListener { animator ->
+                        prevView?.layoutParams = prevView!!.layoutParams.also {
+                            it.height = animator.animatedValue as Int
+                        }
+                        nextView?.layoutParams = nextView!!.layoutParams.also {
+                            it.height = animator.animatedValue as Int
+                        }
+                        view.layoutParams = view.layoutParams.also {
+                            it.height = animator.animatedValue as Int
+                        }
+                    }
+                }
+                heightAnimator.start()
             }
         }
     }
@@ -46,21 +58,6 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 internal class PageChangeAnimator(
     private val heightAnimator: ValueAnimator
 ) : DefaultItemAnimator() {
-
-    init {
-        heightAnimator.addListener(object : AnimatorListener {
-            override fun onAnimationEnd(animator: Animator?) {
-                heightAnimator.removeAllUpdateListeners()
-            }
-
-            override fun onAnimationCancel(p0: Animator?) {
-                heightAnimator.removeAllUpdateListeners()
-            }
-
-            override fun onAnimationRepeat(p0: Animator?) { }
-            override fun onAnimationStart(p0: Animator?) { }
-        })
-    }
 
     override fun recordPostLayoutInformation(
         state: RecyclerView.State,
