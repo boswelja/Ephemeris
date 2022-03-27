@@ -3,6 +3,7 @@ package com.boswelja.ephemeris.views.pager
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +14,6 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 
     private val heightAnimator = ValueAnimator().apply {
         interpolator = FastOutSlowInInterpolator()
-        addUpdateListener { animator ->
-            layoutParams = layoutParams
-                .also { lp -> lp.height = animator.animatedValue as Int }
-        }
     }
 
     init {
@@ -28,17 +25,31 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
         remeasureAndAnimateHeight(page)
     }
 
-    internal fun remeasureAndAnimateHeight(position: Int) {
+    private fun remeasureAndAnimateHeight(position: Int) {
+        // TODO This assumes there are 3 views, not good
         val view = findViewHolderForAdapterPosition(position)?.itemView
         view?.post {
             val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
             val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             view.measure(wMeasureSpec, hMeasureSpec)
-
-            if (height != view.measuredHeight) {
+            if (view.height != view.measuredHeight) {
+                val prevView = findViewHolderForAdapterPosition(position - 1)?.itemView
+                val nextView = findViewHolderForAdapterPosition(position + 1)?.itemView
                 heightAnimator.apply {
-                    setIntValues(height, view.measuredHeight)
-                }.also { it.start() }
+                    setIntValues(view.height, view.measuredHeight)
+                    addUpdateListener { animator ->
+                        prevView?.layoutParams = prevView!!.layoutParams.also {
+                            it.height = animator.animatedValue as Int
+                        }
+                        nextView?.layoutParams = nextView!!.layoutParams.also {
+                            it.height = animator.animatedValue as Int
+                        }
+                        view.layoutParams = view.layoutParams.also {
+                            it.height = animator.animatedValue as Int
+                        }
+                    }
+                }
+                heightAnimator.start()
             }
         }
     }
@@ -47,12 +58,23 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 internal class PageChangeAnimator(
     private val heightAnimator: ValueAnimator
 ) : DefaultItemAnimator() {
-    override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean = false
 
-    override fun canReuseUpdatedViewHolder(
-        viewHolder: RecyclerView.ViewHolder,
-        payloads: MutableList<Any>
-    ): Boolean = false
+    override fun recordPostLayoutInformation(
+        state: RecyclerView.State,
+        viewHolder: RecyclerView.ViewHolder
+    ): ItemHolderInfo {
+        viewHolder.itemView.apply {
+            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            measure(wMeasureSpec, hMeasureSpec)
+        }
+        return ItemHolderInfo().apply {
+            top = 0
+            left = viewHolder.itemView.left
+            right = viewHolder.itemView.right
+            bottom = viewHolder.itemView.measuredHeight
+        }
+    }
 
     override fun animateChange(
         oldHolder: RecyclerView.ViewHolder,
@@ -63,6 +85,11 @@ internal class PageChangeAnimator(
         val fromHeight = preInfo.bottom - preInfo.top
         val toHeight = postInfo.bottom - preInfo.top
         heightAnimator.setIntValues(fromHeight, toHeight)
+        heightAnimator.addUpdateListener { animator ->
+            newHolder.itemView.layoutParams = newHolder.itemView.layoutParams.also {
+                it.height = animator.animatedValue as Int
+            }
+        }
         heightAnimator.start()
         return false
     }
