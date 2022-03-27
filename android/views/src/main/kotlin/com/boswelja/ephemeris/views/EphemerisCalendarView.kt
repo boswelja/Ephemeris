@@ -21,11 +21,10 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     private val calendarAdapter = CalendarPagerAdapter()
 
-    private val _displayedDateRange = MutableStateFlow(
-        calendarAdapter.pageLoader?.getDateRangeFor(currentPage) ?: LocalDate(1970, 1, 1)..LocalDate(1970, 1, 1)
-    )
+    private lateinit var _displayedDateRange: MutableStateFlow<ClosedRange<LocalDate>>
 
-    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = _displayedDateRange
+    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
+        get() = _displayedDateRange
 
     override var pageSource: CalendarPageSource
         get() = calendarAdapter.pageLoader!!.calendarPageSource
@@ -79,10 +78,12 @@ class EphemerisCalendarView @JvmOverloads constructor(
             coroutineScope,
             pageSource
         )
-        updateDisplayedDateRange(currentPage)
+        _displayedDateRange = MutableStateFlow(
+            calendarAdapter.pageLoader!!.getDateRangeFor(currentPage)
+        )
     }
 
     private fun updateDisplayedDateRange(page: Int) {
-        calendarAdapter.pageLoader?.getDateRangeFor(page)?.let { _displayedDateRange.tryEmit(it) }
+        calendarAdapter.pageLoader!!.getDateRangeFor(page).let { _displayedDateRange.tryEmit(it) }
     }
 }
