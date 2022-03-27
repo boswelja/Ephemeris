@@ -8,7 +8,6 @@ import com.boswelja.ephemeris.core.ui.CalendarState
 import com.boswelja.ephemeris.views.pager.InfiniteAnimatingPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
@@ -17,7 +16,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteAnimatingPager(context, attrs, defStyleAttr), CalendarState {
 
-    private lateinit var coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val calendarAdapter = CalendarPagerAdapter()
 
@@ -56,16 +55,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
         updateDisplayedDateRange(page)
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        coroutineScope = CoroutineScope(Dispatchers.Default)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        coroutineScope.cancel()
     }
 
     @Suppress("UNCHECKED_CAST")
