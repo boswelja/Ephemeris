@@ -4,6 +4,8 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
 
 open class InfiniteAnimatingPager @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -21,6 +23,10 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
         override fun onSnapPositionChange(position: Int) {
             remeasureAndAnimateHeight(position)
         }
+    }
+
+    init {
+        itemAnimator = PageChangeAnimator(heightAnimator)
     }
 
     override fun onAttachedToWindow() {
@@ -46,5 +52,29 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
                 }.also { it.start() }
             }
         }
+    }
+}
+
+internal class PageChangeAnimator(
+    private val heightAnimator: ValueAnimator
+) : DefaultItemAnimator() {
+    override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean = false
+
+    override fun canReuseUpdatedViewHolder(
+        viewHolder: RecyclerView.ViewHolder,
+        payloads: MutableList<Any>
+    ): Boolean = false
+
+    override fun animateChange(
+        oldHolder: RecyclerView.ViewHolder,
+        newHolder: RecyclerView.ViewHolder,
+        preInfo: ItemHolderInfo,
+        postInfo: ItemHolderInfo
+    ): Boolean {
+        val fromHeight = preInfo.bottom - preInfo.top
+        val toHeight = postInfo.bottom - preInfo.top
+        heightAnimator.setIntValues(fromHeight, toHeight)
+        heightAnimator.start()
+        return false
     }
 }

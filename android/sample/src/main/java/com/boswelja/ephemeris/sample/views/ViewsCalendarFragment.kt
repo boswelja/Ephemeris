@@ -2,6 +2,7 @@ package com.boswelja.ephemeris.sample.views
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -11,8 +12,10 @@ import com.boswelja.ephemeris.core.data.CalendarWeekPageSource
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.databinding.FragmentViewsCalendarBinding
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
 
 class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
@@ -43,6 +46,11 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
             dayBinder = CalendarDayBinder()
         )
 
+        lifecycleScope.launch {
+            binding.switchCalendar.displayedDateRange.collectLatest {
+                Toast.makeText(requireContext(), "${it.start} - ${it.endInclusive}", Toast.LENGTH_SHORT).show()
+            }
+        }
         observeCalendarState()
     }
 
