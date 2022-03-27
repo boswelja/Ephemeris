@@ -1,9 +1,11 @@
 package com.boswelja.ephemeris.views.pager
 
+import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,14 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
         remeasureAndAnimateHeight(page)
+    }
+
+    override fun onViewAdded(child: View?) {
+        super.onViewAdded(child)
+        // Add LayoutTransition to handle page change crossfade
+        if (child is ViewGroup) {
+            child.layoutTransition = LayoutTransition()
+        }
     }
 
     private fun remeasureAndAnimateHeight(position: Int) {
