@@ -34,6 +34,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
                 coroutineScope,
                 value
             )
+            updateDisplayedDateRange(currentPage)
         }
 
     override fun scrollToDate(date: LocalDate) {
@@ -55,7 +56,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
-        calendarAdapter.pageLoader?.getDateRangeFor(page)?.let { _displayedDateRange.tryEmit(it) }
+        updateDisplayedDateRange(page)
     }
 
     override fun onAttachedToWindow() {
@@ -78,5 +79,10 @@ class EphemerisCalendarView @JvmOverloads constructor(
             coroutineScope,
             pageSource
         )
+        updateDisplayedDateRange(currentPage)
+    }
+
+    private fun updateDisplayedDateRange(page: Int) {
+        calendarAdapter.pageLoader?.getDateRangeFor(page)?.let { _displayedDateRange.tryEmit(it) }
     }
 }
