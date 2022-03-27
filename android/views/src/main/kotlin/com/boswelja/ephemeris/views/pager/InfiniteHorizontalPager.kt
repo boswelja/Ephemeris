@@ -27,7 +27,7 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
     open fun onPageSnap(page: Int) { }
 
     override fun onScrollStateChanged(state: Int) {
-        if (state == SCROLL_STATE_IDLE) {
+        if (state == SCROLL_STATE_SETTLING) {
             maybeNotifySnapPositionChange()
         }
     }
