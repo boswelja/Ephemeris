@@ -90,14 +90,31 @@ public class CalendarPageLoader(
     }
 
     /**
-     * Gets the range of dates displayed on the given page.
+     * Gets the range of focused dates displayed on the given page. If no dates are in focus on the
+     * given page, falls back to the full range of dates displayed.
      */
     public fun getDateRangeFor(page: Int): ClosedRange<LocalDate> {
         // Cast to non-null here since in theory a page has already been loaded
         val pageData = getPageData(page)
-        val startDate = pageData.rows.first().days.first().date
-        val endDate = pageData.rows.last().days.last().date
+        val startDate = pageData.rows.first().days.firstOrDefault { it.isFocusedDate }.date
+        val endDate = pageData.rows.last().days.lastOrDefault { it.isFocusedDate }.date
         return startDate..endDate
+    }
+
+    /**
+     * Returns the first item matching the given predicate. If no matches are found, the first item in
+     * the list is returned.
+     */
+    private fun <T> List<T>.firstOrDefault(predicate: (T) -> Boolean): T {
+        return firstOrNull(predicate) ?: first()
+    }
+
+    /**
+     * Returns the last item matching the given predicate. If no matches are found, the last item in the
+     * list is returned.
+     */
+    private fun <T> List<T>.lastOrDefault(predicate: (T) -> Boolean): T {
+        return lastOrNull(predicate) ?: last()
     }
 
     public companion object {
