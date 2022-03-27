@@ -17,5 +17,4 @@ dependencies {
 
     api(libs.androidx.recyclerview)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.viewpager)
 }
