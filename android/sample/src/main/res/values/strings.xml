@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">Ephemeris Sample</string>
 
-    <string name="month_view">Month View;\nMonth View with Month FocusMode, highlighting days of the current month</string>
-    <string name="week_view">Week View;\nMonth View with Week FocusMode, highlighting week days in the primary colour with weekends being the secondary colour</string>
-    <string name="switch_view">Switch View;\nSwitch between the month and week view with a button click</string>
-
     <string name="current_view">%s</string>
     <string name="toggle_view">Toggle to %s view</string>
 

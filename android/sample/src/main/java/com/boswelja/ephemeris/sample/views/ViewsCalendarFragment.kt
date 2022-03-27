@@ -2,7 +2,6 @@ package com.boswelja.ephemeris.sample.views
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +15,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toJavaLocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
 
     private val binding by viewBinding(FragmentViewsCalendarBinding::bind)
     private val vm by viewModels<CalendarViewVM>()
+    private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,22 +32,6 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
         binding.switchView.setOnClickListener {
             vm.toggleView()
         }
-
-        binding.monthCalendar.initCalendar(
-            pageSource = CalendarMonthPageSource(
-                firstDayOfWeek = DayOfWeek.SUNDAY,
-                focusMode = CalendarMonthPageSource.FocusMode.MONTH
-            ),
-            dayBinder = CalendarDayBinder()
-        )
-
-        binding.weekCalendar.initCalendar(
-            pageSource = CalendarWeekPageSource(
-                firstDayOfWeek = DayOfWeek.SUNDAY,
-                focusMode = CalendarWeekPageSource.FocusMode.WEEKDAYS
-            ),
-            dayBinder = CalendarDayBinder()
-        )
 
         binding.switchCalendar.initCalendar(
             pageSource = CalendarWeekPageSource(
@@ -55,7 +43,7 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
 
         lifecycleScope.launch {
             binding.switchCalendar.displayedDateRange.collectLatest {
-                Toast.makeText(requireContext(), "${it.start} - ${it.endInclusive}", Toast.LENGTH_SHORT).show()
+                updateHeader(it)
             }
         }
         observeCalendarState()
@@ -78,5 +66,10 @@ class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
             }
             binding.switchView.text = buttonText
         }.launchIn(lifecycleScope)
+    }
+
+    private fun updateHeader(dateRange: ClosedRange<LocalDate>) {
+        val headerText = "${dateRange.start.toJavaLocalDate().format(dateFormatter)} - ${dateRange.endInclusive.toJavaLocalDate().format(dateFormatter)}"
+        binding.headerText.text = headerText
     }
 }
