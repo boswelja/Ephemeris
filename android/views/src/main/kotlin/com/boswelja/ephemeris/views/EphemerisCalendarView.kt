@@ -6,7 +6,6 @@ import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.core.ui.CalendarState
 import com.boswelja.ephemeris.views.pager.InfiniteAnimatingPager
-import com.boswelja.ephemeris.views.pager.OnSnapPositionChangeListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -25,12 +24,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
     private val _displayedDateRange = MutableStateFlow(
         calendarAdapter.pageLoader?.getDateRangeFor(currentPage) ?: LocalDate(1970, 1, 1)..LocalDate(1970, 1, 1)
     )
-
-    private val pageChangeListener = object : OnSnapPositionChangeListener {
-        override fun onSnapPositionChange(position: Int) {
-            calendarAdapter.pageLoader?.getDateRangeFor(position)?.let { _displayedDateRange.tryEmit(it) }
-        }
-    }
 
     override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = _displayedDateRange
 
@@ -60,16 +53,19 @@ class EphemerisCalendarView @JvmOverloads constructor(
         adapter = calendarAdapter
     }
 
+    override fun onPageSnap(page: Int) {
+        super.onPageSnap(page)
+        calendarAdapter.pageLoader?.getDateRangeFor(page)?.let { _displayedDateRange.tryEmit(it) }
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         coroutineScope = CoroutineScope(Dispatchers.Default)
-        registerSnapPositionChangeListener(pageChangeListener)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         coroutineScope.cancel()
-        unregisterSnapPositionChangeListener(pageChangeListener)
     }
 
     @Suppress("UNCHECKED_CAST")

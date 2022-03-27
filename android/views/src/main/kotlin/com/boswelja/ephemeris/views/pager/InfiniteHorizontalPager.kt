@@ -2,6 +2,7 @@ package com.boswelja.ephemeris.views.pager
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +13,6 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-    private val snapPositionChangeListeners = mutableListOf<OnSnapPositionChangeListener>()
-
     private val snapHelper = PagerSnapHelper()
 
     var currentPage: Int = 0
@@ -23,6 +22,9 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
         snapHelper.attachToRecyclerView(this)
         scrollToPosition(currentPage)
     }
+
+    @CallSuper
+    open fun onPageSnap(page: Int) { }
 
     override fun onScrollStateChanged(state: Int) {
         if (state == SCROLL_STATE_IDLE) {
@@ -47,28 +49,12 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
         super.scrollToPosition(pageToPosition(position))
     }
 
-    fun registerSnapPositionChangeListener(
-        snapPositionChangeListener: OnSnapPositionChangeListener
-    ) {
-        snapPositionChangeListeners.add(snapPositionChangeListener)
-    }
-
-    fun unregisterSnapPositionChangeListener(
-        snapPositionChangeListener: OnSnapPositionChangeListener
-    ) {
-        snapPositionChangeListeners.remove(snapPositionChangeListener)
-    }
-
     private fun maybeNotifySnapPositionChange() {
-        if (snapPositionChangeListeners.isNotEmpty()) {
-            val snapPosition = positionToPage(snapHelper.getSnapPosition(this))
-            val snapPositionChanged = this.currentPage != snapPosition
-            if (snapPositionChanged) {
-                snapPositionChangeListeners.onEach {
-                    it.onSnapPositionChange(snapPosition)
-                }
-                this.currentPage = snapPosition
-            }
+        val snapPosition = positionToPage(snapHelper.getSnapPosition(this))
+        val snapPositionChanged = currentPage != snapPosition
+        if (snapPositionChanged) {
+            currentPage = snapPosition
+            onPageSnap(snapPosition)
         }
     }
 

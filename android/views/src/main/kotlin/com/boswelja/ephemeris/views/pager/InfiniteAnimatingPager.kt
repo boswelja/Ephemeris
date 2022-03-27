@@ -19,24 +19,13 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
         }
     }
 
-    private val pageChangeListener = object : OnSnapPositionChangeListener {
-        override fun onSnapPositionChange(position: Int) {
-            remeasureAndAnimateHeight(position)
-        }
-    }
-
     init {
         itemAnimator = PageChangeAnimator(heightAnimator)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        registerSnapPositionChangeListener(pageChangeListener)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        unregisterSnapPositionChangeListener(pageChangeListener)
+    override fun onPageSnap(page: Int) {
+        super.onPageSnap(page)
+        remeasureAndAnimateHeight(page)
     }
 
     internal fun remeasureAndAnimateHeight(position: Int) {
