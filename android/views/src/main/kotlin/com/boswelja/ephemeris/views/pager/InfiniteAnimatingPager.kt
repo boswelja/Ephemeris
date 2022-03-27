@@ -1,8 +1,11 @@
 package com.boswelja.ephemeris.views.pager
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +16,6 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 
     private val heightAnimator = ValueAnimator().apply {
         interpolator = FastOutSlowInInterpolator()
-        addUpdateListener { animator ->
-            layoutParams = layoutParams
-                .also { lp -> lp.height = animator.animatedValue as Int }
-        }
     }
 
     init {
@@ -25,7 +24,7 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
-        remeasureAndAnimateHeight(page)
+        //remeasureAndAnimateHeight(page)
     }
 
     internal fun remeasureAndAnimateHeight(position: Int) {
@@ -47,12 +46,38 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
 internal class PageChangeAnimator(
     private val heightAnimator: ValueAnimator
 ) : DefaultItemAnimator() {
-    override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean = false
 
-    override fun canReuseUpdatedViewHolder(
-        viewHolder: RecyclerView.ViewHolder,
-        payloads: MutableList<Any>
-    ): Boolean = false
+    init {
+        heightAnimator.addListener(object : AnimatorListener {
+            override fun onAnimationEnd(animator: Animator?) {
+                heightAnimator.removeAllUpdateListeners()
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+                heightAnimator.removeAllUpdateListeners()
+            }
+
+            override fun onAnimationRepeat(p0: Animator?) { }
+            override fun onAnimationStart(p0: Animator?) { }
+        })
+    }
+
+    override fun recordPostLayoutInformation(
+        state: RecyclerView.State,
+        viewHolder: RecyclerView.ViewHolder
+    ): ItemHolderInfo {
+        viewHolder.itemView.apply {
+            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            measure(wMeasureSpec, hMeasureSpec)
+        }
+        return ItemHolderInfo().apply {
+            top = 0
+            left = viewHolder.itemView.left
+            right = viewHolder.itemView.right
+            bottom = viewHolder.itemView.measuredHeight
+        }
+    }
 
     override fun animateChange(
         oldHolder: RecyclerView.ViewHolder,
@@ -63,6 +88,11 @@ internal class PageChangeAnimator(
         val fromHeight = preInfo.bottom - preInfo.top
         val toHeight = postInfo.bottom - preInfo.top
         heightAnimator.setIntValues(fromHeight, toHeight)
+        heightAnimator.addUpdateListener { animator ->
+            newHolder.itemView.layoutParams = newHolder.itemView.layoutParams.also {
+                it.height = animator.animatedValue as Int
+            }
+        }
         heightAnimator.start()
         return false
     }
