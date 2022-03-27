@@ -1,6 +1,5 @@
 package com.boswelja.ephemeris.views
 
-import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
@@ -60,10 +59,6 @@ internal class CalendarPageViewHolder(
 
     private val inflater = LayoutInflater.from(itemView.context)
 
-    init {
-        binding.root.layoutTransition = LayoutTransition()
-    }
-
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         page: CalendarPage
@@ -73,12 +68,6 @@ internal class CalendarPageViewHolder(
             page.rows.forEach {
                 val row = createPopulatedRow(dayBinder, it)
                 addView(row)
-            }
-            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            measure(wMeasureSpec, hMeasureSpec)
-            layoutParams = layoutParams.also {
-                it.height = measuredHeight
             }
         }
     }
