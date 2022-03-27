@@ -31,7 +31,12 @@ class CalendarDateViewHolder(private val binding: DayBinding) : RecyclerView.Vie
             setTextColor(
                 ContextCompat.getColor(
                     binding.root.context,
-                    if (calendarDay.isFocusedDate) R.color.teal_200 else R.color.purple_200)
+                    if (calendarDay.isFocusedDate) {
+                        R.color.purple_500
+                    } else {
+                        R.color.black
+                    }
+                )
             )
         }
     }

@@ -94,7 +94,7 @@ public class CalendarPageLoader(
      */
     public fun getDateRangeFor(page: Int): ClosedRange<LocalDate> {
         // Cast to non-null here since in theory a page has already been loaded
-        val pageData = pageCache[page]!!
+        val pageData = getPageData(page)
         val startDate = pageData.rows.first().days.first().date
         val endDate = pageData.rows.last().days.last().date
         return startDate..endDate

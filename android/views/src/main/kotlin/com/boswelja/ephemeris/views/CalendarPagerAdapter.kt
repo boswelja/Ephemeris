@@ -1,5 +1,7 @@
 package com.boswelja.ephemeris.views
 
+import android.animation.LayoutTransition
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,49 +11,58 @@ import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
 import com.boswelja.ephemeris.core.model.CalendarRow
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.databinding.RowDateCellBinding
-import com.boswelja.ephemeris.views.databinding.RowDisplayDateBinding
-import com.boswelja.ephemeris.views.databinding.RowPopulatedDateBinding
+import com.boswelja.ephemeris.views.databinding.CalendarPageBinding
+import com.boswelja.ephemeris.views.databinding.CalendarRowBinding
+import com.boswelja.ephemeris.views.databinding.DateCellBinding
+import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
 
-internal class CalendarPagerAdapter(
-    pageLoader: CalendarPageLoader,
-    dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>
-) : RecyclerView.Adapter<CalendarPageViewHolder>() {
+internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolder>() {
 
-    var pageLoader: CalendarPageLoader = pageLoader
+    var pageLoader: CalendarPageLoader? = null
+        @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
         set(value) {
-            if (field != value) {
+            if (value != null && field != value) {
                 field = value
                 notifyDataSetChanged()
             }
         }
 
-    var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder> = dayBinder
+    var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>? = null
+        @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
         set(value) {
-            if (field != value) {
+            if (value != null && field != value) {
                 field = value
                 notifyDataSetChanged()
             }
         }
 
-    override fun getItemCount(): Int = Int.MAX_VALUE
+    override fun getItemCount(): Int {
+        return if (pageLoader != null && dayBinder != null) {
+            super.getItemCount()
+        } else {
+            0
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
         return CalendarPageViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
-        val page = (position - (Int.MAX_VALUE / 2))
-        val pageState = pageLoader.getPageData(page)
-        holder.bindDisplayRows(dayBinder, pageState)
+    override fun onBindHolder(holder: CalendarPageViewHolder, page: Int) {
+        val pageState = pageLoader!!.getPageData(page)
+        holder.bindDisplayRows(dayBinder!!, pageState)
     }
 }
 
 internal class CalendarPageViewHolder(
-    private val binding: RowDisplayDateBinding
+    private val binding: CalendarPageBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val inflater = LayoutInflater.from(itemView.context)
+
+    init {
+        binding.root.layoutTransition = LayoutTransition()
+    }
 
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
@@ -63,6 +74,12 @@ internal class CalendarPageViewHolder(
                 val row = createPopulatedRow(dayBinder, it)
                 addView(row)
             }
+            val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            measure(wMeasureSpec, hMeasureSpec)
+            layoutParams = layoutParams.also {
+                it.height = measuredHeight
+            }
         }
     }
 
@@ -70,7 +87,7 @@ internal class CalendarPageViewHolder(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         row: CalendarRow
     ): LinearLayout {
-        return RowPopulatedDateBinding.inflate(inflater, null, false).root.apply {
+        return CalendarRowBinding.inflate(inflater, null, false).root.apply {
             row.days.forEach {
                 addView(createDayCell(dayBinder, it))
             }
@@ -81,7 +98,7 @@ internal class CalendarPageViewHolder(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         calendarDay: CalendarDay
     ): View {
-        return RowDateCellBinding.inflate(inflater, binding.root, false).root.apply {
+        return DateCellBinding.inflate(inflater, binding.root, false).root.apply {
             // TODO At least try to recycle views
             val viewHolder = dayBinder.onCreateViewHolder(inflater, this)
             dayBinder.onBindView(viewHolder, calendarDay)
@@ -91,7 +108,7 @@ internal class CalendarPageViewHolder(
 
     companion object {
         fun create(parent: ViewGroup): CalendarPageViewHolder {
-            val view = RowDisplayDateBinding.inflate(
+            val view = CalendarPageBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

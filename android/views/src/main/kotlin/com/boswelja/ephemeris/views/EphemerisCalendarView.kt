@@ -2,58 +2,59 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.widget.FrameLayout
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.databinding.LayoutViewpagerBinding
+import com.boswelja.ephemeris.core.ui.CalendarState
+import com.boswelja.ephemeris.views.pager.InfiniteAnimatingPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.datetime.LocalDate
 
 class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : InfiniteAnimatingPager(context, attrs, defStyleAttr), CalendarState {
 
-    private lateinit var coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val root = LayoutViewpagerBinding.inflate(LayoutInflater.from(context), this, true)
+    private val calendarAdapter = CalendarPagerAdapter()
 
-    private val viewPager: ViewPager2
-        get() = root.root
+    private lateinit var _displayedDateRange: MutableStateFlow<ClosedRange<LocalDate>>
 
-    private var adapter: CalendarPagerAdapter? = null
+    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
+        get() = _displayedDateRange
+
+    override var pageSource: CalendarPageSource
+        get() = calendarAdapter.pageLoader!!.calendarPageSource
         set(value) {
-            if (value != null) {
-                field = value
-                setAdapter(value)
-            }
+            calendarAdapter.pageLoader = CalendarPageLoader(
+                coroutineScope,
+                value
+            )
+            updateDisplayedDateRange(currentPage)
         }
 
-    val pageSource: CalendarPageSource
-        get() = adapter!!.pageLoader.calendarPageSource
+    override fun scrollToDate(date: LocalDate) {
+        val page = pageSource.getPageFor(date)
+        scrollToPosition(page)
+    }
+
+    override suspend fun animateScrollToDate(date: LocalDate) {
+        val page = pageSource.getPageFor(date)
+        smoothScrollToPosition(page)
+    }
 
     val dayBinder: CalendarDateBinder<*>
-        get() = adapter!!.dayBinder
-
-    private val page: Int
-        get() = if (viewPager.currentItem <= 0) Int.MAX_VALUE / 2 else viewPager.currentItem
+        get() = calendarAdapter.dayBinder!!
 
     init {
-        // Attach our height adjuster to handle ViewPager2 height changes
-        ViewPagerHeightAdjuster.attachTo(viewPager)
+        adapter = calendarAdapter
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        coroutineScope = CoroutineScope(Dispatchers.Default)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        coroutineScope.cancel()
+    override fun onPageSnap(page: Int) {
+        super.onPageSnap(page)
+        updateDisplayedDateRange(page)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -61,38 +62,17 @@ class EphemerisCalendarView @JvmOverloads constructor(
         pageSource: CalendarPageSource = this.pageSource,
         dayBinder: CalendarDateBinder<*> = this.dayBinder
     ) {
-        var adapter = this.adapter
-        if (adapter == null) {
-            adapter = CalendarPagerAdapter(
-                CalendarPageLoader(
-                    coroutineScope,
-                    pageSource
-                ),
-                dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
-            )
-        } else {
-            adapter.apply {
-                this.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
-                this.pageLoader = CalendarPageLoader(
-                    coroutineScope,
-                    pageSource
-                )
-            }
-        }
-        adapter.dayBinder = dayBinder as CalendarDateBinder<RecyclerView.ViewHolder>
-        adapter.pageLoader = CalendarPageLoader(
+        calendarAdapter.dayBinder = dayBinder as CalendarDateBinder<ViewHolder>
+        calendarAdapter.pageLoader = CalendarPageLoader(
             coroutineScope,
             pageSource
         )
-
-        setAdapter(adapter, page)
+        _displayedDateRange = MutableStateFlow(
+            calendarAdapter.pageLoader!!.getDateRangeFor(currentPage)
+        )
     }
 
-    private fun <T : RecyclerView.ViewHolder> setAdapter(
-        adapter: RecyclerView.Adapter<T>,
-        page: Int = 0
-    ) {
-        viewPager.adapter = adapter
-        viewPager.setCurrentItem(page, false)
+    private fun updateDisplayedDateRange(page: Int) {
+        calendarAdapter.pageLoader!!.getDateRangeFor(page).let { _displayedDateRange.tryEmit(it) }
     }
 }
