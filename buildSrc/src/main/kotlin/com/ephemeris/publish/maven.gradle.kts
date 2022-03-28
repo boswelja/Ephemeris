@@ -1,7 +1,6 @@
 package com.ephemeris.publish
 
 plugins {
-    id("org.jetbrains.dokka")
     id("signing")
     id("maven-publish")
 }
@@ -16,18 +15,8 @@ signing {
     sign(publishing.publications)
 }
 
-tasks {
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
-}
-
 publishing {
     publications.withType<MavenPublication> {
-        artifact(tasks["javadocJar"])
-
         pom {
             // If the project has a parent, use that as part of the name
             val projectName = if (project.parent != project.rootProject) {
