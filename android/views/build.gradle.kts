@@ -31,6 +31,8 @@ publishing {
             artifactId = "android-views"
 
             pom {
+                name.set("android-views")
+                description.set("The flexible, multiplatform calendar library!")
                 url.set("https://github.com/boswelja/Ephemeris/tree/main/android/views")
                 licenses {
                     license {
