@@ -1,7 +1,6 @@
 package com.ephemeris.publish
 
 plugins {
-    id("org.jetbrains.dokka")
     id("signing")
     id("maven-publish")
 }
@@ -18,11 +17,10 @@ signing {
     sign(publishing.publications)
 }
 
+// Empty javadoc JAR for publishing. Kotlin Multiplatform does not build Javadoc
 tasks {
     create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
         archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
     }
 }
 
