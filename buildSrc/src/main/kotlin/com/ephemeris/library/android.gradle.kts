@@ -16,11 +16,4 @@ android {
     if (isMultiplatform) {
         sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
 }
