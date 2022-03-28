@@ -5,6 +5,8 @@ plugins {
     id("maven-publish")
 }
 
+group = "io.github.boswelja.ephemeris"
+description = "The flexible, multiplatform calendar library!"
 val version: String? by project
 
 signing {
