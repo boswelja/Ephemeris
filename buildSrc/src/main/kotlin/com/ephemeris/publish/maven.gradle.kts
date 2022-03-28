@@ -1,11 +1,12 @@
 package com.ephemeris.publish
 
 plugins {
-    id("org.jetbrains.dokka")
     id("signing")
     id("maven-publish")
 }
 
+group = "io.github.boswelja.ephemeris"
+description = "The flexible, multiplatform calendar library!"
 val version: String? by project
 
 signing {
@@ -16,11 +17,10 @@ signing {
     sign(publishing.publications)
 }
 
+// Empty javadoc JAR for publishing. Kotlin Multiplatform does not build Javadoc
 tasks {
     create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
         archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
     }
 }
 
