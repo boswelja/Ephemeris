@@ -14,7 +14,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version 
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version = "1.4.1"}
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
-androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.3.0-alpha01" }
 binding-delegate = { module = "com.github.Zhuinden:fragmentviewbindingdelegate-kt", version = "1.0.0" }
 google-material = { module = "com.google.android.material:material", version = "1.5.0" }
 
