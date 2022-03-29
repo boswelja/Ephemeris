@@ -129,6 +129,14 @@ class CalendarWeekPageSourceTest {
             source.getPageFor(LocalDate(2022, Month.MARCH, 27))
         )
         assertEquals(
+            1,
+            source.getPageFor(LocalDate(2022, Month.MARCH, 28))
+        )
+        assertEquals(
+            -1,
+            source.getPageFor(LocalDate(2022, Month.MARCH, 20))
+        )
+        assertEquals(
             -13,
             source.getPageFor(LocalDate(2021, Month.DECEMBER, 22))
         )
