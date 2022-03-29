@@ -6,7 +6,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 
@@ -14,9 +13,7 @@ open class InfiniteAnimatingPager @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteHorizontalPager(context, attrs, defStyleAttr) {
 
-    private val heightAnimator = ValueAnimator().apply {
-        interpolator = FastOutSlowInInterpolator()
-    }
+    private val heightAnimator = ValueAnimator()
 
     init {
         itemAnimator = PageChangeAnimator(heightAnimator)
