@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 
-class EphemerisCalendarView @JvmOverloads constructor(
+public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteAnimatingPager(context, attrs, defStyleAttr), CalendarState {
 
@@ -22,7 +22,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     private lateinit var _displayedDateRange: MutableStateFlow<ClosedRange<LocalDate>>
 
-    var dayBinder: CalendarDateBinder<*>
+    public var dayBinder: CalendarDateBinder<*>
         get() = calendarAdapter.dayBinder!!
         set(value) {
             @Suppress("UNCHECKED_CAST")
@@ -42,6 +42,10 @@ class EphemerisCalendarView @JvmOverloads constructor(
             updateDisplayedDateRange(currentPage)
         }
 
+    init {
+        adapter = calendarAdapter
+    }
+
     override fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
         scrollToPosition(page)
@@ -52,17 +56,13 @@ class EphemerisCalendarView @JvmOverloads constructor(
         smoothScrollToPosition(page)
     }
 
-    init {
-        adapter = calendarAdapter
-    }
-
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
         updateDisplayedDateRange(page)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun initCalendar(
+    public fun initCalendar(
         pageSource: CalendarPageSource,
         dayBinder: CalendarDateBinder<*>
     ) {
@@ -79,7 +79,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
     /**
      * Notifies the calendar that a single [date] has changed, and should be re-bound.
      */
-    fun notifyDateChanged(date: LocalDate) {
+    public fun notifyDateChanged(date: LocalDate) {
         val page = pageSource.getPageFor(date)
         calendarAdapter.notifyItemChanged(pageToPosition(page))
     }
@@ -87,7 +87,7 @@ class EphemerisCalendarView @JvmOverloads constructor(
     /**
      * Notifies the calendar that a range of [dates] has changed, and should be re-bound.
      */
-    fun notifyDateRangeChanged(dates: ClosedRange<LocalDate>) {
+    public fun notifyDateRangeChanged(dates: ClosedRange<LocalDate>) {
         val startPage = pageSource.getPageFor(dates.start)
         val endPage = pageSource.getPageFor(dates.endInclusive)
         calendarAdapter.notifyItemRangeChanged(

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
-open class InfiniteHorizontalPager @JvmOverloads constructor(
+public open class InfiniteHorizontalPager @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -15,7 +15,7 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
 
     private val snapHelper = PagerSnapHelper()
 
-    var currentPage: Int = 0
+    public var currentPage: Int = 0
 
     init {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -24,7 +24,7 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
     }
 
     @CallSuper
-    open fun onPageSnap(page: Int) { }
+    public open fun onPageSnap(page: Int) { }
 
     override fun onScrollStateChanged(state: Int) {
         if (state == SCROLL_STATE_IDLE) {
@@ -66,7 +66,7 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
         return page + (Int.MAX_VALUE / 2)
     }
 
-    companion object {
+    private companion object {
         private const val MAX_PAGES = Int.MAX_VALUE
     }
 }

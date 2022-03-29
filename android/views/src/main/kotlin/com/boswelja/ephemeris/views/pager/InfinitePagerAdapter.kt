@@ -3,7 +3,7 @@ package com.boswelja.ephemeris.views.pager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
+internal abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
 
     init {
         setHasStableIds(true)
