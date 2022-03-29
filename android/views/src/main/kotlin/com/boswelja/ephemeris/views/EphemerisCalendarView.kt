@@ -22,6 +22,13 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     private lateinit var _displayedDateRange: MutableStateFlow<ClosedRange<LocalDate>>
 
+    var dayBinder: CalendarDateBinder<*>
+        get() = calendarAdapter.dayBinder!!
+        set(value) {
+            @Suppress("UNCHECKED_CAST")
+            calendarAdapter.dayBinder = value as CalendarDateBinder<ViewHolder>
+        }
+
     override val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
         get() = _displayedDateRange
 
@@ -45,9 +52,6 @@ class EphemerisCalendarView @JvmOverloads constructor(
         smoothScrollToPosition(page)
     }
 
-    val dayBinder: CalendarDateBinder<*>
-        get() = calendarAdapter.dayBinder!!
-
     init {
         adapter = calendarAdapter
     }
@@ -59,8 +63,8 @@ class EphemerisCalendarView @JvmOverloads constructor(
 
     @Suppress("UNCHECKED_CAST")
     fun initCalendar(
-        pageSource: CalendarPageSource = this.pageSource,
-        dayBinder: CalendarDateBinder<*> = this.dayBinder
+        pageSource: CalendarPageSource,
+        dayBinder: CalendarDateBinder<*>
     ) {
         calendarAdapter.dayBinder = dayBinder as CalendarDateBinder<ViewHolder>
         calendarAdapter.pageLoader = CalendarPageLoader(
