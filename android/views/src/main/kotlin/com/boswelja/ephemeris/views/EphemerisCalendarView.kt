@@ -76,6 +76,26 @@ class EphemerisCalendarView @JvmOverloads constructor(
         )
     }
 
+    /**
+     * Notifies the calendar that a single [date] has changed, and should be re-bound.
+     */
+    fun notifyDateChanged(date: LocalDate) {
+        val page = pageSource.getPageFor(date)
+        calendarAdapter.notifyItemChanged(pageToPosition(page))
+    }
+
+    /**
+     * Notifies the calendar that a range of [dates] has changed, and should be re-bound.
+     */
+    fun notifyDateRangeChanged(dates: ClosedRange<LocalDate>) {
+        val startPage = pageSource.getPageFor(dates.start)
+        val endPage = pageSource.getPageFor(dates.endInclusive)
+        calendarAdapter.notifyItemRangeChanged(
+            pageToPosition(startPage),
+            pageToPosition(endPage)
+        )
+    }
+
     private fun updateDisplayedDateRange(page: Int) {
         calendarAdapter.pageLoader!!.getDateRangeFor(page).let { _displayedDateRange.tryEmit(it) }
     }

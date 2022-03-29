@@ -58,11 +58,11 @@ open class InfiniteHorizontalPager @JvmOverloads constructor(
         }
     }
 
-    private fun positionToPage(position: Int): Int {
+    protected fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
     }
 
-    private fun pageToPosition(page: Int): Int {
+    protected fun pageToPosition(page: Int): Int {
         return page + (Int.MAX_VALUE / 2)
     }
 
