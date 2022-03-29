@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 
-class EphemerisCalendarView @JvmOverloads constructor(
+public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteAnimatingPager(context, attrs, defStyleAttr), CalendarState {
 
@@ -21,6 +21,13 @@ class EphemerisCalendarView @JvmOverloads constructor(
     private val calendarAdapter = CalendarPagerAdapter()
 
     private lateinit var _displayedDateRange: MutableStateFlow<ClosedRange<LocalDate>>
+
+    public var dayBinder: CalendarDateBinder<*>
+        get() = calendarAdapter.dayBinder!!
+        set(value) {
+            @Suppress("UNCHECKED_CAST")
+            calendarAdapter.dayBinder = value as CalendarDateBinder<ViewHolder>
+        }
 
     override val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
         get() = _displayedDateRange
@@ -35,6 +42,10 @@ class EphemerisCalendarView @JvmOverloads constructor(
             updateDisplayedDateRange(currentPage)
         }
 
+    init {
+        adapter = calendarAdapter
+    }
+
     override fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
         scrollToPosition(page)
@@ -45,22 +56,15 @@ class EphemerisCalendarView @JvmOverloads constructor(
         smoothScrollToPosition(page)
     }
 
-    val dayBinder: CalendarDateBinder<*>
-        get() = calendarAdapter.dayBinder!!
-
-    init {
-        adapter = calendarAdapter
-    }
-
     override fun onPageSnap(page: Int) {
         super.onPageSnap(page)
         updateDisplayedDateRange(page)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun initCalendar(
-        pageSource: CalendarPageSource = this.pageSource,
-        dayBinder: CalendarDateBinder<*> = this.dayBinder
+    public fun initCalendar(
+        pageSource: CalendarPageSource,
+        dayBinder: CalendarDateBinder<*>
     ) {
         calendarAdapter.dayBinder = dayBinder as CalendarDateBinder<ViewHolder>
         calendarAdapter.pageLoader = CalendarPageLoader(
@@ -69,6 +73,26 @@ class EphemerisCalendarView @JvmOverloads constructor(
         )
         _displayedDateRange = MutableStateFlow(
             calendarAdapter.pageLoader!!.getDateRangeFor(currentPage)
+        )
+    }
+
+    /**
+     * Notifies the calendar that a single [date] has changed, and should be re-bound.
+     */
+    public fun notifyDateChanged(date: LocalDate) {
+        val page = pageSource.getPageFor(date)
+        calendarAdapter.notifyItemChanged(pageToPosition(page))
+    }
+
+    /**
+     * Notifies the calendar that a range of [dates] has changed, and should be re-bound.
+     */
+    public fun notifyDateRangeChanged(dates: ClosedRange<LocalDate>) {
+        val startPage = pageSource.getPageFor(dates.start)
+        val endPage = pageSource.getPageFor(dates.endInclusive)
+        calendarAdapter.notifyItemRangeChanged(
+            pageToPosition(startPage),
+            pageToPosition(endPage)
         )
     }
 

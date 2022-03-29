@@ -8,6 +8,11 @@ plugins {
 android {
     namespace = "com.boswelja.ephemeris.views"
     buildFeatures.viewBinding = true
+
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
+    }
+
     publishing {
         singleVariant("release") {
             withSourcesJar()
