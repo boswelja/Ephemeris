@@ -16,10 +16,13 @@ import kotlinx.datetime.todayAt
  * An implementation of [CalendarPageSource] that loads one week per page.
  */
 public class CalendarWeekPageSource(
-    private val firstDayOfWeek: DayOfWeek,
-    private val startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
+    firstDayOfWeek: DayOfWeek,
+    startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
     private val focusMode: FocusMode = FocusMode.WEEKDAYS
 ) : CalendarPageSource {
+
+    private val startDate = startDate.startOfWeek(firstDayOfWeek)
+
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
@@ -27,7 +30,6 @@ public class CalendarWeekPageSource(
         page: Int
     ): CalendarPage {
         val startOfWeek = startDate.plus(page * daysInWeek, DateTimeUnit.DAY)
-            .startOfWeek(firstDayOfWeek)
         return calendarPage {
             row {
                 days(daysInWeek) { index ->
@@ -46,7 +48,13 @@ public class CalendarWeekPageSource(
     }
 
     override fun getPageFor(date: LocalDate): Int {
-        return startDate.daysUntil(date) / daysInWeek
+        val daysUntil = startDate.daysUntil(date)
+        // We need to account for the previous page not being 6 dates away from the start
+        return if (daysUntil < 0) {
+            (daysUntil / daysInWeek) - 1
+        } else {
+            daysUntil / daysInWeek
+        }
     }
 
     public enum class FocusMode {
