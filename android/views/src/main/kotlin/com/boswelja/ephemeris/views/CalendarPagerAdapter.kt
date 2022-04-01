@@ -81,13 +81,14 @@ internal class CalendarPageViewHolder(
         binding.root.apply {
             removeAllViewsInLayout() // This avoids an extra call to requestLayout and invalidate
             page.rows.forEachIndexed { index, calendarRow ->
-                val row = createPopulatedRow(calendarRow, index)
+                val row = createPopulatedRow(this, calendarRow, index)
                 addView(row)
             }
         }
     }
 
     private fun createPopulatedRow(
+        parent: ViewGroup,
         row: CalendarRow,
         rowNum: Int
     ): LinearLayout {
@@ -95,7 +96,7 @@ internal class CalendarPageViewHolder(
             // We're recycling a view, make sure it's empty
             root.removeAllViewsInLayout()
         } ?: run {
-            CalendarRowBinding.inflate(inflater, null, false).also {
+            CalendarRowBinding.inflate(inflater, parent, false).also {
                 rowBindingCache.add(rowNum, it)
             }
         }
@@ -107,7 +108,7 @@ internal class CalendarPageViewHolder(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        weight = 1f
+                        weight = 1f // Ensures a row of date cells will fill the view width
                     }
                 )
             }
