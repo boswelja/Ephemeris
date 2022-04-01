@@ -64,7 +64,7 @@ internal class CalendarPageViewHolder(
         page: CalendarPage
     ) {
         binding.root.apply {
-            removeAllViews()
+            removeAllViewsInLayout() // This avoids an extra call to requestLayout and invalidate
             page.rows.forEach {
                 val row = createPopulatedRow(dayBinder, it)
                 addView(row)
