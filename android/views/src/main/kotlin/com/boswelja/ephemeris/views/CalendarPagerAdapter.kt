@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
 import com.boswelja.ephemeris.core.model.CalendarRow
@@ -25,7 +25,7 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
             }
         }
 
-    var dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>? = null
+    var dayBinder: CalendarDateBinder<ViewHolder>? = null
         @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
         set(value) {
             if (value != null && field != value) {
@@ -54,16 +54,17 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
 
 internal class CalendarPageViewHolder(
     private val binding: CalendarPageBinding
-) : RecyclerView.ViewHolder(binding.root) {
+) : ViewHolder(binding.root) {
 
     private val inflater = LayoutInflater.from(itemView.context)
 
     private val rowBindingCache = mutableListOf<CalendarRowBinding>()
+    private val dateCellViewHolderCache = mutableListOf<ViewHolder>()
 
     private var boundDateCells = 0
 
     fun bindDisplayRows(
-        dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
+        dayBinder: CalendarDateBinder<ViewHolder>,
         page: CalendarPage
     ) {
         boundDateCells = 0
@@ -77,7 +78,7 @@ internal class CalendarPageViewHolder(
     }
 
     private fun createPopulatedRow(
-        dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
+        dayBinder: CalendarDateBinder<ViewHolder>,
         row: CalendarRow,
         rowNum: Int
     ): LinearLayout {
@@ -106,10 +107,14 @@ internal class CalendarPageViewHolder(
 
     private fun createDayCell(
         parent: ViewGroup,
-        dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
+        dayBinder: CalendarDateBinder<ViewHolder>,
         calendarDay: CalendarDay
     ): View {
-        val viewHolder = dayBinder.onCreateViewHolder(inflater, parent)
+        val viewHolder = dateCellViewHolderCache.getOrNull(boundDateCells) ?: run {
+            dayBinder.onCreateViewHolder(inflater, parent).also {
+                dateCellViewHolderCache.add(boundDateCells, it)
+            }
+        }
         dayBinder.onBindView(viewHolder, calendarDay)
         boundDateCells += 1
         return viewHolder.itemView
