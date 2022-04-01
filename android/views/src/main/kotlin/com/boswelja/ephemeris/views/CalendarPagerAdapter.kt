@@ -48,7 +48,7 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
 
     override fun onBindHolder(holder: CalendarPageViewHolder, page: Int) {
         val pageState = pageLoader!!.getPageData(page)
-        holder.bindDisplayRows(dayBinder!!, pageState)
+        holder.bindDisplayRows(pageLoader!!, dayBinder!!, pageState)
     }
 }
 
@@ -71,11 +71,21 @@ internal class CalendarPageViewHolder(
                 dateCellViewHolderCache.clear()
             }
         }
+    private var pageLoader: CalendarPageLoader? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                rowBindingCache.clear()
+                dateCellViewHolderCache.clear()
+            }
+        }
 
     fun bindDisplayRows(
+        pageLoader: CalendarPageLoader,
         dayBinder: CalendarDateBinder<ViewHolder>,
         page: CalendarPage
     ) {
+        this.pageLoader = pageLoader
         dateBinder = dayBinder
         boundDateCells = 0
         binding.root.apply {
