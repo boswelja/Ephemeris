@@ -79,13 +79,15 @@ internal class CalendarPageViewHolder(
         row: CalendarRow,
         rowNum: Int
     ): LinearLayout {
-        val binding = rowBindingCache.getOrNull(rowNum) ?: run {
+        val binding = rowBindingCache.getOrNull(rowNum)?.apply {
+            // We're recycling a view, make sure it's empty
+            root.removeAllViewsInLayout()
+        } ?: run {
             CalendarRowBinding.inflate(inflater, null, false).also {
                 rowBindingCache.add(rowNum, it)
             }
         }
         return binding.root.apply {
-            removeAllViewsInLayout()
             row.days.forEach {
                 addView(createDayCell(dayBinder, it))
             }
