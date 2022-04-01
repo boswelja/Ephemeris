@@ -1,5 +1,7 @@
 package com.boswelja.ephemeris.views.pager
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
@@ -91,13 +93,43 @@ internal class PageChangeAnimator(
     ): Boolean {
         val fromHeight = preInfo.bottom - preInfo.top
         val toHeight = postInfo.bottom - preInfo.top
-        heightAnimator.setIntValues(fromHeight, toHeight)
-        heightAnimator.addUpdateListener { animator ->
-            newHolder.itemView.layoutParams = newHolder.itemView.layoutParams.also {
-                it.height = animator.animatedValue as Int
+        if (fromHeight != toHeight) {
+            heightAnimator.setIntValues(fromHeight, toHeight)
+            heightAnimator.addUpdateListener { animator ->
+                newHolder.itemView.layoutParams = newHolder.itemView.layoutParams.also {
+                    it.height = animator.animatedValue as Int
+                }
             }
+            heightAnimator.addListener(
+                object : AnimatorListener {
+                    override fun onAnimationStart(p0: Animator?) {
+                        // No-op
+                    }
+                    override fun onAnimationRepeat(p0: Animator?) {
+                        // No-op
+                    }
+
+                    override fun onAnimationEnd(p0: Animator?) {
+                        heightAnimator.removeAllListeners()
+                        heightAnimator.removeAllUpdateListeners()
+                        dispatchAnimationFinished(oldHolder)
+                        if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
+                    }
+
+                    override fun onAnimationCancel(p0: Animator?) {
+                        heightAnimator.removeAllListeners()
+                        heightAnimator.removeAllUpdateListeners()
+                        dispatchAnimationFinished(oldHolder)
+                        if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
+                    }
+
+                }
+            )
+            heightAnimator.start()
+        } else {
+            dispatchAnimationFinished(oldHolder)
+            if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
         }
-        heightAnimator.start()
         return false
     }
 }
