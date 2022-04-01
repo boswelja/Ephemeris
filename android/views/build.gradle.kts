@@ -54,7 +54,6 @@ publishing {
                     developer {
                         id.set("Iannnr")
                         name.set("Ian Roberts")
-                        email.set("boswelja@outlook.com")
                         url.set("https://github.com/Iannnr")
                     }
                 }
