@@ -63,22 +63,31 @@ internal class CalendarPageViewHolder(
 
     private var boundDateCells = 0
 
+    private var dateBinder: CalendarDateBinder<ViewHolder>? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                // Clear our cached date cells on binder change
+                dateCellViewHolderCache.clear()
+            }
+        }
+
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<ViewHolder>,
         page: CalendarPage
     ) {
+        dateBinder = dayBinder
         boundDateCells = 0
         binding.root.apply {
             removeAllViewsInLayout() // This avoids an extra call to requestLayout and invalidate
             page.rows.forEachIndexed { index, calendarRow ->
-                val row = createPopulatedRow(dayBinder, calendarRow, index)
+                val row = createPopulatedRow(calendarRow, index)
                 addView(row)
             }
         }
     }
 
     private fun createPopulatedRow(
-        dayBinder: CalendarDateBinder<ViewHolder>,
         row: CalendarRow,
         rowNum: Int
     ): LinearLayout {
@@ -93,7 +102,7 @@ internal class CalendarPageViewHolder(
         return binding.root.apply {
             row.days.forEach {
                 addView(
-                    createDayCell(this, dayBinder, it),
+                    createDayCell(this, it),
                     LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -107,15 +116,14 @@ internal class CalendarPageViewHolder(
 
     private fun createDayCell(
         parent: ViewGroup,
-        dayBinder: CalendarDateBinder<ViewHolder>,
         calendarDay: CalendarDay
     ): View {
         val viewHolder = dateCellViewHolderCache.getOrNull(boundDateCells) ?: run {
-            dayBinder.onCreateViewHolder(inflater, parent).also {
+            dateBinder!!.onCreateViewHolder(inflater, parent).also {
                 dateCellViewHolderCache.add(boundDateCells, it)
             }
         }
-        dayBinder.onBindView(viewHolder, calendarDay)
+        dateBinder!!.onBindView(viewHolder, calendarDay)
         boundDateCells += 1
         return viewHolder.itemView
     }
