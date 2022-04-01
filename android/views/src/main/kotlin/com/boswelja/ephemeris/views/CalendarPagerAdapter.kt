@@ -62,6 +62,7 @@ internal class CalendarPageViewHolder(
     private val dateCellViewHolderCache = mutableListOf<ViewHolder>()
 
     private var boundDateCells = 0
+    private var trimDateCellCache = false
 
     private var dateBinder: CalendarDateBinder<ViewHolder>? = null
         set(value) {
@@ -75,8 +76,13 @@ internal class CalendarPageViewHolder(
         set(value) {
             if (field != value) {
                 field = value
-                rowBindingCache.clear()
-                dateCellViewHolderCache.clear()
+                // Only invalidate row cache. date cells are trimmed after binding to optimize CPU
+                rowBindingCache.removeAll {
+                    // Remove all views here to avoid issues when reusing date cells
+                    it.root.removeAllViewsInLayout()
+                    true
+                }
+                trimDateCellCache = true
             }
         }
 
@@ -94,6 +100,11 @@ internal class CalendarPageViewHolder(
                 val row = createPopulatedRow(this, calendarRow, index)
                 addView(row)
             }
+        }
+        if (trimDateCellCache) {
+            trimDateCellCache = false
+            val count = dateCellViewHolderCache.size - boundDateCells - 1
+            if (count > 0) dateCellViewHolderCache.dropLast(count)
         }
     }
 
