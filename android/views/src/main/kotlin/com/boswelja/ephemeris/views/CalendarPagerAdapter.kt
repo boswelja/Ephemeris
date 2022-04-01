@@ -59,14 +59,16 @@ internal class CalendarPageViewHolder(
 
     private val inflater = LayoutInflater.from(itemView.context)
 
+    private val rowBindingCache = mutableListOf<CalendarRowBinding>()
+
     fun bindDisplayRows(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
         page: CalendarPage
     ) {
         binding.root.apply {
             removeAllViewsInLayout() // This avoids an extra call to requestLayout and invalidate
-            page.rows.forEach {
-                val row = createPopulatedRow(dayBinder, it)
+            page.rows.forEachIndexed { index, calendarRow ->
+                val row = createPopulatedRow(dayBinder, calendarRow, index)
                 addView(row)
             }
         }
@@ -74,9 +76,16 @@ internal class CalendarPageViewHolder(
 
     private fun createPopulatedRow(
         dayBinder: CalendarDateBinder<RecyclerView.ViewHolder>,
-        row: CalendarRow
+        row: CalendarRow,
+        rowNum: Int
     ): LinearLayout {
-        return CalendarRowBinding.inflate(inflater, null, false).root.apply {
+        val binding = rowBindingCache.getOrNull(rowNum) ?: run {
+            CalendarRowBinding.inflate(inflater, null, false).also {
+                rowBindingCache.add(rowNum, it)
+            }
+        }
+        return binding.root.apply {
+            removeAllViewsInLayout()
             row.days.forEach {
                 addView(createDayCell(dayBinder, it))
             }
