@@ -2,42 +2,41 @@ package com.boswelja.ephemeris.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.flow.filterNot
+import androidx.compose.ui.unit.LayoutDirection
+import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 
+@OptIn(ExperimentalSnapperApi::class)
 @Composable
 public fun InfiniteHorizontalPager(
     modifier: Modifier = Modifier,
     state: InfinitePagerState = rememberInfinitePagerState(),
     contentPadding: PaddingValues = PaddingValues(),
+    maxItemFling: Int = 1,
     content: @Composable (page: Int) -> Unit
 ) {
     val internalLazyState = rememberLazyListState(initialFirstVisibleItemIndex = state.internalStartPage)
-    LaunchedEffect(internalLazyState) {
-        snapshotFlow { internalLazyState.isScrollInProgress }
-            .filterNot { it }
-            .collect {
-                val itemToSnap = if (internalLazyState.firstVisibleItemScrollOffset > internalLazyState.layoutInfo.viewportEndOffset / 2) {
-                    internalLazyState.firstVisibleItemIndex + 1
-                } else {
-                    internalLazyState.firstVisibleItemIndex
-                }
-                internalLazyState.animateScrollToItem(itemToSnap)
-            }
-    }
+
     LazyRow(
         modifier = modifier,
         state = internalLazyState,
+        flingBehavior = rememberSnapperFlingBehavior(
+            lazyListState = internalLazyState,
+            endContentPadding = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+            snapIndex = { _, startIndex, targetIndex ->
+                targetIndex.coerceIn(startIndex - maxItemFling, startIndex + maxItemFling)
+            }
+        ),
         contentPadding = contentPadding
     ) {
         items(
