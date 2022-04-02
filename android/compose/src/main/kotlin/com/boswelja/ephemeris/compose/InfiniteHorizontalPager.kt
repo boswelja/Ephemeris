@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 
 @OptIn(ExperimentalSnapperApi::class)
@@ -26,13 +28,23 @@ public fun InfiniteHorizontalPager(
     content: @Composable (page: Int) -> Unit
 ) {
     val internalLazyState = rememberLazyListState(initialFirstVisibleItemIndex = state.internalStartPage)
+    val layoutInfo = rememberLazyListSnapperLayoutInfo(
+        lazyListState = internalLazyState,
+        endContentPadding = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
+    )
+
+    // Update the pager state page
+    LaunchedEffect(internalLazyState.isScrollInProgress) {
+        if (!internalLazyState.isScrollInProgress) {
+            state.page = layoutInfo.currentItem?.index ?: state.internalStartPage
+        }
+    }
 
     LazyRow(
         modifier = modifier,
         state = internalLazyState,
         flingBehavior = rememberSnapperFlingBehavior(
-            lazyListState = internalLazyState,
-            endContentPadding = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+            layoutInfo = layoutInfo,
             snapIndex = { _, startIndex, targetIndex ->
                 targetIndex.coerceIn(startIndex - maxItemFling, startIndex + maxItemFling)
             }
