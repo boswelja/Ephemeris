@@ -1,18 +1,30 @@
 # Ephemeris
+
 The flexible, multiplatform calendar library!
 
 ## Supported Platforms
 
-| Platform | Core | UI |
-| -- | -- | -- |
-| Android | ✔️ | ✔️ |
-| iOS | ✔️ | ❌ |
-| JVM | ✔️ | ❌ |
-| Windows | ✔️ | ❌ |
-| Linux | ✔️ | ❌ |
-| MacOS | ✔️ | ❌ |
-| JS | ✔️ | ❌ |
-| Compose Multiplatform | ✔️ | ❌ |
+### Core
+
+Ephemeris Core currently runs on the following platforms
+
+| Platform | Supported |
+| -- | -- |
+| Android | ✔️ |
+| iOS | ✔️ |
+| MacOS | ✔️ |
+| JVM | ✔️ |
+| Windows | ✔️ |
+| Linux | ✔️ |
+| JS (Node) | ✔️ |
+| JS (Browser) | ✔️ |
+
+### UI Frameworks
+
+| Platform | Supported |
+| -- | -- |
+| Android (Jetpack Compose) | ✔️ |
+| Android (XML Views) | ✔️ |
 
 ## How to Use
 
