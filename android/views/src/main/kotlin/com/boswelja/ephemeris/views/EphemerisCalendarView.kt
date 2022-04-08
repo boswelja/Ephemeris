@@ -12,6 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 
+/**
+ * A [android.view.View] that displays the Ephemeris calendar. Don't forget to call [initCalendar]
+ * to initialize the calendar.
+ */
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteAnimatingPager(context, attrs, defStyleAttr), CalendarState {
@@ -22,6 +26,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
     private lateinit var _displayedDateRange: MutableStateFlow<ClosedRange<LocalDate>>
 
+    /**
+     * The current [CalendarDateBinder] used to bind date cells. Setting this will cause the calendar
+     * view to redraw itself.
+     */
     public var dayBinder: CalendarDateBinder<*>
         get() = calendarAdapter.dayBinder!!
         set(value) {
@@ -54,6 +62,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     override suspend fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
         smoothScrollToPosition(page)
+        // TODO suspend until scroll finishes
     }
 
     override fun onPageSnap(page: Int) {
@@ -61,6 +70,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         updateDisplayedDateRange(page)
     }
 
+    /**
+     * Initializes the calendar with [pageSource] and [dayBinder]. This must be called before
+     * performing any operations.
+     */
     @Suppress("UNCHECKED_CAST")
     public fun initCalendar(
         pageSource: CalendarPageSource,
