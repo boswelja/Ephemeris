@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * An implementation of [InfiniteHorizontalPager] that automatically animates page height changes.
+ */
 public open class InfiniteAnimatingPager @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteHorizontalPager(context, attrs, defStyleAttr) {

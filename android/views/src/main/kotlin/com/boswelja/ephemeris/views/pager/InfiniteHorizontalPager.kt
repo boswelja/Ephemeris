@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * An implementation of [RecyclerView] that provides seemingly infinite left/right paging support.
+ * Implementations of this must subclass [InfinitePagerAdapter] for their adapter.
+ */
 public open class InfiniteHorizontalPager @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -15,6 +19,9 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
 
     private val snapHelper = PagerSnapHelper()
 
+    /**
+     * The current page that the pager is snapped to.
+     */
     public var currentPage: Int = 0
 
     init {
@@ -23,9 +30,13 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
         scrollToPosition(currentPage)
     }
 
+    /**
+     * Called when the pager snaps to a new page.
+     */
     @CallSuper
     public open fun onPageSnap(page: Int) { }
 
+    @CallSuper
     override fun onScrollStateChanged(state: Int) {
         if (state == SCROLL_STATE_IDLE) {
             maybeNotifySnapPositionChange()
@@ -58,10 +69,16 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Maps a position from the underlying RecyclerView to a pager page.
+     */
     protected fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
     }
 
+    /**
+     * Maps a pager page to the underlying RecyclerView position
+     */
     protected fun pageToPosition(page: Int): Int {
         return page + (Int.MAX_VALUE / 2)
     }
