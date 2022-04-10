@@ -1,5 +1,6 @@
 package com.boswelja.ephemeris.compose
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -13,6 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.LayoutDirection
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
@@ -40,6 +44,8 @@ public fun InfiniteHorizontalPager(
         }
     }
 
+    var pagerHeight by remember { mutableStateOf(0) }
+
     LazyRow(
         modifier = modifier,
         state = internalLazyState,
@@ -55,10 +61,27 @@ public fun InfiniteHorizontalPager(
             count = state.pageCount,
             key = state::calculatePageFromInternal
         ) { index ->
+            var pageHeight by remember { mutableStateOf(0) }
             Box(
                 Modifier
                     .fillParentMaxWidth()
                     .wrapContentHeight()
+                    .layout { measurable, constraints ->
+                        // We do our own measurement here so we can change the pager height according
+                        // to the current page
+                        val placeable = measurable.measure(constraints)
+                        pageHeight = placeable.height
+                        Log.d("InfiniteHorizontalPager", "Page $index $pageHeight")
+                        layout(constraints.maxWidth, pagerHeight) {
+                            placeable.placeRelative(0, 0)
+                        }
+                    }
+                    .onGloballyPositioned {
+                        // Make sure to update the pager height when a new page is snapped
+                        if (it.positionInParent().x == 0f) {
+                            pagerHeight = pageHeight
+                        }
+                    }
             ) {
                 content(state.calculatePageFromInternal(index))
             }
