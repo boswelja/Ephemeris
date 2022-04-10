@@ -1,6 +1,6 @@
 package com.boswelja.ephemeris.compose
 
-import android.util.Log
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -46,8 +46,13 @@ public fun InfiniteHorizontalPager(
 
     var pagerHeight by remember { mutableStateOf(0) }
 
+    // Switch the Modifier used to animate height once pagerHeight has had it's initial update
+    val layoutModifier = if (pagerHeight > 0) {
+        Modifier.animateContentSize().then(modifier)
+    } else modifier
+
     LazyRow(
-        modifier = modifier,
+        modifier = layoutModifier,
         state = internalLazyState,
         flingBehavior = rememberSnapperFlingBehavior(
             layoutInfo = layoutInfo,
@@ -71,7 +76,7 @@ public fun InfiniteHorizontalPager(
                         // to the current page
                         val placeable = measurable.measure(constraints)
                         pageHeight = placeable.height
-                        Log.d("InfiniteHorizontalPager", "Page $index $pageHeight")
+                        // Lay out the page, but restrict the height to the pager height
                         layout(constraints.maxWidth, pagerHeight) {
                             placeable.placeRelative(0, 0)
                         }
