@@ -7,12 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.core.ui.CalendarState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.LocalDate
 
 public class CalendarStateImpl internal constructor(
@@ -21,16 +24,16 @@ public class CalendarStateImpl internal constructor(
     internal val pagerState: InfinitePagerState
 ) : CalendarState {
 
-    internal val mutableDisplayedDateRange = MutableStateFlow(
-        // TODO This default shouldn't exist
-        LocalDate(1970, 1, 1)..LocalDate(1970, 1, 1)
-    )
-
     internal var pageLoader by mutableStateOf(CalendarPageLoader(coroutineScope, calendarPageSource))
         private set
 
-    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>>
-        get() = mutableDisplayedDateRange
+    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = snapshotFlow { pagerState.page }
+        .map { pageLoader.getDateRangeFor(it) }
+        .stateIn(
+            coroutineScope,
+            SharingStarted.Eagerly,
+            pageLoader.getDateRangeFor(pagerState.page)
+        )
 
     override var pageSource: CalendarPageSource = calendarPageSource
         set(value) {

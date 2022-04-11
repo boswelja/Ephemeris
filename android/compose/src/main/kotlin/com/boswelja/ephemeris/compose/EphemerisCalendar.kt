@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
@@ -22,13 +20,6 @@ public fun EphemerisCalendar(
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
-    // Listen to page changes and emit the displayed date range
-    LaunchedEffect(calendarState.pageSource) {
-        snapshotFlow { calendarState.pagerState.page }.collect { page ->
-            calendarState.mutableDisplayedDateRange.emit(calendarState.pageLoader.getDateRangeFor(page))
-        }
-    }
-
     AnimatedContent(targetState = calendarState.pageLoader) { pageLoader ->
         InfiniteHorizontalPager(
             modifier = modifier.fillMaxWidth(),
