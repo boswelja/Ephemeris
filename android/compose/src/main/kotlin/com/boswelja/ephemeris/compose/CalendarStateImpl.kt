@@ -54,14 +54,10 @@ public class CalendarStateImpl internal constructor(
 @Composable
 @Stable
 public fun rememberCalendarState(
-    calendarPageSource: CalendarPageSource,
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    calendarPageSource: () -> CalendarPageSource
 ): CalendarStateImpl {
-    // TODO This ignores changes to calendarPageSource.
-    // This is because recomposition triggers calendarPageSource to be recreated
-    // We need a way for the user to pass an initial page source, but we don't want the calendar
-    // state itself changing when the page source changes as this holds the current page
-    return remember(coroutineScope) {
-        CalendarStateImpl(calendarPageSource, coroutineScope)
+    return remember(calendarPageSource, coroutineScope) {
+        CalendarStateImpl(calendarPageSource(), coroutineScope)
     }
 }

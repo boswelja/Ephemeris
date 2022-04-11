@@ -52,11 +52,11 @@ class ComposeCalendarFragment : Fragment() {
 fun CalendarScreen(
     headerDateFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 ) {
-    val calendarState = rememberCalendarState(
+    val calendarState = rememberCalendarState {
         CalendarMonthPageSource(
             DayOfWeek.SUNDAY
         )
-    )
+    }
 
     var headerText by remember { mutableStateOf("") }
 
