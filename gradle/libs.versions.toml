@@ -24,6 +24,7 @@ compose-animation = { module = "androidx.compose.animation:animation", version.r
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx.compose" }
 compose-material3 = { module = "androidx.compose.material3:material3", version = "1.0.0-alpha08" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
+compose-snapper = { module = "dev.chrisbanes.snapper:snapper", version = "0.2.0" }
 
 [bundles]
 androidx-foundation = [
