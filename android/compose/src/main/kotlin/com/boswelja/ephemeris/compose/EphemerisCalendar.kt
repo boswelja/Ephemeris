@@ -18,21 +18,17 @@ import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun EphemerisCalendar(
-    calendarState: CalendarState,
+    calendarState: CalendarStateImpl,
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
     val pagerState = rememberInfinitePagerState()
     val coroutineScope = rememberCoroutineScope()
-//    LaunchedEffect(pagerState) {
-//        snapshotFlow { pagerState.page }.collect {
-//            calendarState.currentMonth = calendarState.calendarPageSource.monthFor(it.toLong())
-//        }
-//    }
-    val calendarPageLoader = remember(calendarState.calendarPageSource) {
+
+    val calendarPageLoader = remember(calendarState.pageSource) {
         CalendarPageLoader(
             coroutineScope,
-            calendarState.calendarPageSource
+            calendarState.pageSource
         )
     }
     AnimatedContent(targetState = calendarPageLoader) { pageLoader ->

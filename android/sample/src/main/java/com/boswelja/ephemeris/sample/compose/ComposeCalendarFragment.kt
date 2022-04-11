@@ -65,12 +65,12 @@ fun CalendarScreen() {
         }
         Button(
             onClick = {
-                if (calendarState.calendarPageSource is CalendarMonthPageSource) {
-                    calendarState.calendarPageSource = CalendarWeekPageSource(
+                if (calendarState.pageSource is CalendarMonthPageSource) {
+                    calendarState.pageSource = CalendarWeekPageSource(
                         DayOfWeek.SUNDAY
                     )
                 } else {
-                    calendarState.calendarPageSource = CalendarMonthPageSource(
+                    calendarState.pageSource = CalendarMonthPageSource(
                         DayOfWeek.SUNDAY
                     )
                 }
