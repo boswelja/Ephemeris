@@ -17,7 +17,8 @@ import kotlinx.datetime.LocalDate
 
 public class CalendarStateImpl internal constructor(
     calendarPageSource: CalendarPageSource,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    internal val pagerState: InfinitePagerState
 ) : CalendarState {
 
     internal val mutableDisplayedDateRange = MutableStateFlow(
@@ -55,9 +56,10 @@ public class CalendarStateImpl internal constructor(
 @Stable
 public fun rememberCalendarState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    pagerState: InfinitePagerState = rememberInfinitePagerState(),
     calendarPageSource: () -> CalendarPageSource
 ): CalendarStateImpl {
-    return remember(calendarPageSource, coroutineScope) {
-        CalendarStateImpl(calendarPageSource(), coroutineScope)
+    return remember(calendarPageSource, coroutineScope, pagerState) {
+        CalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)
     }
 }

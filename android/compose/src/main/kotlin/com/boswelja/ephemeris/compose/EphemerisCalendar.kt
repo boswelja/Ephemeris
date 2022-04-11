@@ -22,11 +22,9 @@ public fun EphemerisCalendar(
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
-    val pagerState = rememberInfinitePagerState()
-
     // Listen to page changes and emit the displayed date range
-    LaunchedEffect(pagerState, calendarState.pageSource) {
-        snapshotFlow { pagerState.page }.collect { page ->
+    LaunchedEffect(calendarState.pageSource) {
+        snapshotFlow { calendarState.pagerState.page }.collect { page ->
             calendarState.mutableDisplayedDateRange.emit(calendarState.pageLoader.getDateRangeFor(page))
         }
     }
@@ -34,7 +32,7 @@ public fun EphemerisCalendar(
     AnimatedContent(targetState = calendarState.pageLoader) { pageLoader ->
         InfiniteHorizontalPager(
             modifier = modifier.fillMaxWidth(),
-            state = pagerState
+            state = calendarState.pagerState
         ) {
             val pageData = remember {
                 pageLoader.getPageData(it)
