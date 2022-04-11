@@ -1,7 +1,6 @@
 package com.boswelja.ephemeris.sample.compose
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,11 +52,11 @@ class ComposeCalendarFragment : Fragment() {
 fun CalendarScreen(
     headerDateFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 ) {
-    val calendarState = rememberCalendarState {
+    val calendarState = rememberCalendarState(
         CalendarMonthPageSource(
             DayOfWeek.SUNDAY
         )
-    }
+    )
 
     var headerText by remember { mutableStateOf("") }
 
