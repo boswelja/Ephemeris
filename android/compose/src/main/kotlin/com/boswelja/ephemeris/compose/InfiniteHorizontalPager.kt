@@ -94,29 +94,17 @@ public fun InfiniteHorizontalPager(
     }
 }
 
-public abstract class InfinitePagerState {
-
-    public abstract val pageCount: Int
-
-    public abstract var page: Int
-        internal set
-
-    internal abstract val internalStartPage: Int
-
-    internal abstract fun calculatePageFromInternal(internalPage: Int): Int
-}
-
-internal class DefaultInfinitePagerState(
+public class InfinitePagerState internal constructor(
     startPage: Int
-) : InfinitePagerState() {
+) {
 
-    override val internalStartPage: Int = Int.MAX_VALUE / 2
+    internal val internalStartPage: Int = Int.MAX_VALUE / 2
 
-    override val pageCount: Int = Int.MAX_VALUE
+    internal val pageCount: Int = Int.MAX_VALUE
 
-    override var page: Int by mutableStateOf(startPage)
+    public var page: Int by mutableStateOf(startPage)
 
-    override fun calculatePageFromInternal(internalPage: Int): Int {
+    internal fun calculatePageFromInternal(internalPage: Int): Int {
         return internalPage - internalStartPage
     }
 }
@@ -124,6 +112,6 @@ internal class DefaultInfinitePagerState(
 @Composable
 public fun rememberInfinitePagerState(startPage: Int = 0): InfinitePagerState {
     return remember(startPage) {
-        DefaultInfinitePagerState(startPage)
+        InfinitePagerState(startPage)
     }
 }
