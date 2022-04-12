@@ -12,8 +12,10 @@ import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.core.ui.CalendarState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -28,7 +30,9 @@ public class CalendarStateImpl internal constructor(
     internal var pageLoader by mutableStateOf(CalendarPageLoader(coroutineScope, calendarPageSource))
         private set
 
-    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = snapshotFlow { pagerState.page }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = snapshotFlow { pageLoader }
+        .flatMapLatest { snapshotFlow { pagerState.page } }
         .map { pageLoader.getDateRangeFor(it) }
         .stateIn(
             coroutineScope,
