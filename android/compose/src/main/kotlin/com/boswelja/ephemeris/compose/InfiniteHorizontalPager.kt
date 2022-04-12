@@ -102,32 +102,32 @@ internal fun InfiniteHorizontalPager(
     }
 }
 
-public class InfinitePagerState internal constructor(
+internal class InfinitePagerState internal constructor(
     startPage: Int,
     internal val lazyListState: LazyListState
 ) {
 
-    internal val maxPages: Int = Int.MAX_VALUE
+    val maxPages: Int = Int.MAX_VALUE
 
-    internal val internalPageOffset: Int = maxPages / 2
+    val internalPageOffset: Int = maxPages / 2
 
-    public var page: Int by mutableStateOf(startPage)
+    var page: Int by mutableStateOf(startPage)
 
-    internal fun calculatePageFromInternal(internalPage: Int): Int {
+    fun calculatePageFromInternal(internalPage: Int): Int {
         return internalPage - internalPageOffset
     }
 
-    public suspend fun scrollToPage(page: Int) {
+    suspend fun scrollToPage(page: Int) {
         lazyListState.scrollToItem(page + internalPageOffset)
     }
 
-    public suspend fun animateScrollToPage(page: Int) {
+    suspend fun animateScrollToPage(page: Int) {
         lazyListState.animateScrollToItem(page + internalPageOffset)
     }
 }
 
 @Composable
-public fun rememberInfinitePagerState(
+internal fun rememberInfinitePagerState(
     startPage: Int = 0
 ): InfinitePagerState {
     val lazyListState: LazyListState = rememberLazyListState(

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 public class CalendarStateImpl internal constructor(
@@ -47,11 +48,16 @@ public class CalendarStateImpl internal constructor(
         }
 
     override fun scrollToDate(date: LocalDate) {
-        TODO("Not yet implemented")
+        // We launch this in a coroutine to avoid any thread blocking
+        coroutineScope.launch {
+            val page = pageSource.getPageFor(date)
+            pagerState.scrollToPage(page)
+        }
     }
 
     override suspend fun animateScrollToDate(date: LocalDate) {
-        TODO("Not yet implemented")
+        val page = pageSource.getPageFor(date)
+        pagerState.animateScrollToPage(page)
     }
 }
 
@@ -59,9 +65,9 @@ public class CalendarStateImpl internal constructor(
 @Stable
 public fun rememberCalendarState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    pagerState: InfinitePagerState = rememberInfinitePagerState(),
     calendarPageSource: () -> CalendarPageSource
 ): CalendarStateImpl {
+    val pagerState = rememberInfinitePagerState()
     return remember(calendarPageSource, coroutineScope, pagerState) {
         CalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)
     }
