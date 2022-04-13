@@ -3,7 +3,7 @@ package com.boswelja.ephemeris.compose
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.unit.LayoutDirection
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
@@ -34,10 +33,7 @@ internal fun InfiniteHorizontalPager(
     maxItemFling: Int = 1,
     content: @Composable (page: Int) -> Unit
 ) {
-    val layoutInfo = rememberLazyListSnapperLayoutInfo(
-        lazyListState = state.lazyListState,
-        endContentPadding = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
-    )
+    val layoutInfo = rememberLazyListSnapperLayoutInfo(lazyListState = state.lazyListState)
 
     // Update the pager state page
     LaunchedEffect(state.lazyListState) {
@@ -67,8 +63,7 @@ internal fun InfiniteHorizontalPager(
             snapIndex = { _, startIndex, targetIndex ->
                 targetIndex.coerceIn(startIndex - maxItemFling, startIndex + maxItemFling)
             }
-        ),
-        contentPadding = contentPadding
+        )
     ) {
         items(
             count = state.maxPages,
@@ -95,6 +90,7 @@ internal fun InfiniteHorizontalPager(
                             pagerHeight = pageHeight
                         }
                     }
+                    .padding(contentPadding)
             ) {
                 content(state.calculatePageFromInternal(index))
             }

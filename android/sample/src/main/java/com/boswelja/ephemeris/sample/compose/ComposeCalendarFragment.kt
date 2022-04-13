@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -75,7 +76,7 @@ fun CalendarScreen(
                 .padding(top = 24.dp)
         )
         EphemerisCalendar(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
             calendarState = calendarState
         ) { dayState ->
             Text(
