@@ -21,14 +21,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
+public abstract class EphemerisCalendarState : CalendarState {
+    internal abstract val pagerState: InfinitePagerState
+    internal abstract var pageLoader: CalendarPageLoader
+}
+
 public class CalendarStateImpl internal constructor(
     calendarPageSource: CalendarPageSource,
     private val coroutineScope: CoroutineScope,
-    internal val pagerState: InfinitePagerState
-) : CalendarState {
+    override val pagerState: InfinitePagerState
+) : EphemerisCalendarState() {
 
-    internal var pageLoader by mutableStateOf(CalendarPageLoader(coroutineScope, calendarPageSource))
-        private set
+    override var pageLoader by mutableStateOf(CalendarPageLoader(coroutineScope, calendarPageSource))
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = snapshotFlow { pageLoader }
@@ -70,7 +74,7 @@ public class CalendarStateImpl internal constructor(
 public fun rememberCalendarState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     calendarPageSource: () -> CalendarPageSource
-): CalendarStateImpl {
+): EphemerisCalendarState {
     val pagerState = rememberInfinitePagerState()
     return remember(calendarPageSource, coroutineScope, pagerState) {
         CalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)

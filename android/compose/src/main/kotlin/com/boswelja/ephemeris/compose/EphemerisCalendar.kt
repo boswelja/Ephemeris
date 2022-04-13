@@ -16,7 +16,7 @@ import com.boswelja.ephemeris.core.model.CalendarPage
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun EphemerisCalendar(
-    calendarState: CalendarStateImpl,
+    calendarState: EphemerisCalendarState,
     modifier: Modifier = Modifier,
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
