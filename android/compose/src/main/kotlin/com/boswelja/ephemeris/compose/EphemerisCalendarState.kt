@@ -21,12 +21,28 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
+/**
+ * A base implementation of [CalendarState] designed to be used with [EphemerisCalendar].
+ */
 public abstract class EphemerisCalendarState : CalendarState {
+    /**
+     * The internal [InfinitePagerState] that [EphemerisCalendar] uses to control its page state.
+     */
     internal abstract val pagerState: InfinitePagerState
+
+    /**
+     * The internal [CalendarPageLoader] that [EphemerisCalendar] uses to load page data. This should
+     * be backed by a Composable State so the calendar can react to changes properly.
+     */
     internal abstract var pageLoader: CalendarPageLoader
 }
 
-public class CalendarStateImpl internal constructor(
+/**
+ * The default implementation of [EphemerisCalendarState]. This is returned by [rememberCalendarState]
+ * @param pagerState The default [CalendarPageSource] to use. This can be changed later.
+ * @param coroutineScope A coroutine scope to use for running Calendar-related jobs.
+ */
+internal class EphemerisCalendarStateImpl internal constructor(
     calendarPageSource: CalendarPageSource,
     private val coroutineScope: CoroutineScope,
     override val pagerState: InfinitePagerState
@@ -69,6 +85,13 @@ public class CalendarStateImpl internal constructor(
     }
 }
 
+/**
+ * Remembers an [EphemerisCalendarState] for use with [EphemerisCalendar]. Note any changes to parameters
+ * will trigger recomposition, and the calendar state will be recreated.
+ * @param coroutineScope A coroutine scope to use for calendar operations.
+ * @param calendarPageSource A block that produces a [CalendarPageSource] for [EphemerisCalendar] to use
+ * by default. This can be changed later by setting [EphemerisCalendarState.pageSource].
+ */
 @Composable
 @Stable
 public fun rememberCalendarState(
@@ -77,6 +100,6 @@ public fun rememberCalendarState(
 ): EphemerisCalendarState {
     val pagerState = rememberInfinitePagerState()
     return remember(calendarPageSource, coroutineScope, pagerState) {
-        CalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)
+        EphemerisCalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)
     }
 }
