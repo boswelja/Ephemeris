@@ -22,6 +22,8 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
     api(libs.androidx.recyclerview)
 
+    debugImplementation(libs.bundles.androidx.foundation)
+    debugImplementation(libs.androidx.fragment.testing)
     androidTestImplementation(libs.androidx.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
@@ -71,7 +73,10 @@ publishing {
 }
 
 tasks
-    .matching { it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile && !it.name.contains("test", ignoreCase = true) }
+    .matching {
+        it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile &&
+                !(it.name.contains("test", ignoreCase = true) || it.name.contains("debug", ignoreCase = true))
+    }
     .configureEach {
         val kotlinCompile = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
         if ("-Xexplicit-api=strict" !in kotlinCompile.kotlinOptions.freeCompilerArgs) {

@@ -28,6 +28,7 @@ compose-snapper = { module = "dev.chrisbanes.snapper:snapper", version = "0.2.0"
 
 # Views testing libs
 androidx-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.4.0" }
+androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version = "1.4.1"}
 androidx-test-rules = { module = "androidx.test:rules", version = "1.4.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.4.0" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version = "1.1.4-alpha05" }
