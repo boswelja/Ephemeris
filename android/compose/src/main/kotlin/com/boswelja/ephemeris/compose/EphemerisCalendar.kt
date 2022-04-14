@@ -5,40 +5,37 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
-import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
+/**
+ * EphemerisCalendar displays a calendar Composable that takes configuration from [calendarState].
+ * @param calendarState The [EphemerisCalendarState] to use for controlling the calendar. This will
+ * usually be created via [rememberCalendarState].
+ * @param modifier The [Modifier] to be applied to the calendar Composable.
+ * @param contentPadding The [PaddingValues] to apply to the calendar Composable. Content will not be
+ * clipped to the padding when using this.
+ * @param dayContent A Composable that takes a [CalendarDay] and renders a date cell on the calendar.
+ */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun EphemerisCalendar(
-    calendarState: CalendarState,
+    calendarState: EphemerisCalendarState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
-    val pagerState = rememberInfinitePagerState()
-    val coroutineScope = rememberCoroutineScope()
-//    LaunchedEffect(pagerState) {
-//        snapshotFlow { pagerState.page }.collect {
-//            calendarState.currentMonth = calendarState.calendarPageSource.monthFor(it.toLong())
-//        }
-//    }
-    val calendarPageLoader = remember(calendarState.calendarPageSource) {
-        CalendarPageLoader(
-            coroutineScope,
-            calendarState.calendarPageSource
-        )
-    }
-    AnimatedContent(targetState = calendarPageLoader) { pageLoader ->
+    AnimatedContent(targetState = calendarState.pageLoader) { pageLoader ->
         InfiniteHorizontalPager(
             modifier = modifier.fillMaxWidth(),
-            state = pagerState
+            state = calendarState.pagerState,
+            contentPadding = contentPadding
         ) {
             val pageData = remember {
                 pageLoader.getPageData(it)
@@ -51,6 +48,9 @@ public fun EphemerisCalendar(
     }
 }
 
+/**
+ * Displays a page in the calendar. Content is rendered based on [pageData].
+ */
 @Composable
 internal fun CalendarPage(
     pageData: CalendarPage,
