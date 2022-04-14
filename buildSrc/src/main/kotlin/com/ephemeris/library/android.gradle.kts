@@ -12,6 +12,7 @@ android {
     defaultConfig {
         targetSdk = 32
         minSdk = 23
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     if (isMultiplatform) {
         sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
