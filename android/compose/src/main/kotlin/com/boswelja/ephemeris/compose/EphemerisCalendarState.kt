@@ -88,17 +88,16 @@ internal class EphemerisCalendarStateImpl internal constructor(
 /**
  * Remembers an [EphemerisCalendarState] for use with [EphemerisCalendar]. Note any changes to parameters
  * will trigger recomposition, and the calendar state will be recreated.
- * @param coroutineScope A coroutine scope to use for calendar operations.
  * @param calendarPageSource A block that produces a [CalendarPageSource] for [EphemerisCalendar] to use
  * by default. This can be changed later by setting [EphemerisCalendarState.pageSource].
  */
 @Composable
 @Stable
 public fun rememberCalendarState(
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     calendarPageSource: () -> CalendarPageSource
 ): EphemerisCalendarState {
     val pagerState = rememberInfinitePagerState()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
     return remember(calendarPageSource, coroutineScope, pagerState) {
         EphemerisCalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)
     }
