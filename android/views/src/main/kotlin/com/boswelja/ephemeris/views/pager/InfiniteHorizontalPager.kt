@@ -27,7 +27,7 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
     init {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         snapHelper.attachToRecyclerView(this)
-        scrollToPosition(currentPage)
+        super.scrollToPosition(pageToPosition(currentPage))
     }
 
     /**
@@ -58,10 +58,14 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
 
     final override fun scrollToPosition(position: Int) {
         super.scrollToPosition(pageToPosition(position))
+        // Since scrollToPosition doesn't actually trigger a scroll state change, we need to manually
+        // notify listeners. Maybe there's a better way of handling this?
+        maybeNotifySnapPositionChange(position)
     }
 
-    private fun maybeNotifySnapPositionChange() {
-        val snapPosition = positionToPage(snapHelper.getSnapPosition(this))
+    private fun maybeNotifySnapPositionChange(
+        snapPosition: Int = positionToPage(snapHelper.getSnapPosition(this))
+    ) {
         val snapPositionChanged = currentPage != snapPosition
         if (snapPositionChanged) {
             currentPage = snapPosition
