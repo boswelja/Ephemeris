@@ -21,42 +21,34 @@ class EphemerisCalendarViewPageSourceChangeTest {
 
     @Test
     fun onPageSourceChange_heightChanges() {
-        // Test height decrease
-        launchFragmentInContainer<EphemerisCalendarFragment>().use { scenario ->
-            // Init calendar
-            val calendarView = scenario.initAndGetCalendarView(CalendarMonthPageSource(DayOfWeek.SUNDAY))
-            Thread.sleep(ANIMATION_TIMEOUT)
+        // Init calendar
+        val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
+        val calendarView = scenario.initAndGetCalendarView(CalendarMonthPageSource(DayOfWeek.SUNDAY))
+        Thread.sleep(ANIMATION_TIMEOUT)
 
-            // Get initial height and change page source
-            val initialHeight = calendarView.height
+        // Test height decrease
+        calendarView.height.also { bigHeight ->
             scenario.onFragment {
-                calendarView.pageSource = CalendarWeekPageSource(DayOfWeek.SUNDAY)
+                it.calendarView.pageSource = CalendarWeekPageSource(DayOfWeek.SUNDAY)
             }
             Thread.sleep(ANIMATION_TIMEOUT)
-
-            // Assert result
+            val littleHeight = calendarView.height
             assertTrue(
-                "${calendarView.height} is not less than $initialHeight",
-                calendarView.height < initialHeight
+                "$littleHeight is not less than $bigHeight",
+                littleHeight < bigHeight
             )
         }
-        // Test height increase
-        launchFragmentInContainer<EphemerisCalendarFragment>().use { scenario ->
-            // Init calendar
-            val calendarView = scenario.initAndGetCalendarView(CalendarWeekPageSource(DayOfWeek.SUNDAY))
-            Thread.sleep(ANIMATION_TIMEOUT)
 
-            // Get initial height and change page source
-            val initialHeight = calendarView.height
+        // Test height increase
+        calendarView.height.also { littleHeight ->
             scenario.onFragment {
-                calendarView.pageSource = CalendarMonthPageSource(DayOfWeek.SUNDAY)
+                it.calendarView.pageSource = CalendarMonthPageSource(DayOfWeek.SUNDAY)
             }
             Thread.sleep(ANIMATION_TIMEOUT)
-
-            // Assert result
+            val bigHeight = calendarView.height
             assertTrue(
-                "${calendarView.height} is not greater than $initialHeight",
-                calendarView.height > initialHeight
+                "$littleHeight is not less than $bigHeight",
+                littleHeight < bigHeight
             )
         }
     }
