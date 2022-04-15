@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
+import kotlin.math.abs
 
 internal class AlternatingHeightPagerAdapter(
     private vararg val heights: Int
@@ -30,6 +31,6 @@ internal class AlternatingHeightPagerAdapter(
     }
 
     fun getHeightFor(page: Int): Int {
-        return heights[page % differentHeights]
+        return heights[abs(page % differentHeights)]
     }
 }
