@@ -6,5 +6,5 @@ import androidx.recyclerview.widget.SnapHelper
 internal fun SnapHelper.getSnapPosition(recyclerView: RecyclerView): Int {
     return recyclerView.layoutManager?.let { layoutManager ->
         findSnapView(layoutManager)?.let { snapView -> layoutManager.getPosition(snapView) }
-    } ?: RecyclerView.NO_POSITION
+    } ?: throw IllegalStateException("Couldn't find a snapped view!")
 }
