@@ -33,16 +33,15 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
 
     @Test
     fun scrollToDate_updatesDisplayedDateRange() {
-        val startDate = LocalDate(2022, 4, 14)
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
         // Scroll backwards
-        repeat(5) { iteration ->
+        repeat(5) {
             // Get the current value and scroll
             val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
             scenario.onFragment {
-                it.calendarView.scrollToDate(startDate.minus(iteration, DateTimeUnit.MONTH))
+                it.calendarView.scrollToDate(initialItem.start.minus(1, DateTimeUnit.DAY))
             }
 
             // Check the displayed date range updated
@@ -52,11 +51,11 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
             )
         }
         // Scroll forward
-        repeat(5) { iteration ->
+        repeat(5) {
             // Get the current value and scroll
             val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
             scenario.onFragment {
-                it.calendarView.scrollToDate(startDate.plus(iteration, DateTimeUnit.MONTH))
+                it.calendarView.scrollToDate(initialItem.endInclusive.plus(1, DateTimeUnit.DAY))
             }
 
             // Check the displayed date range updated
@@ -69,22 +68,16 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
 
     @Test
     fun animateScrollToDate_updatesDisplayedDateRange() {
-        val startDate = LocalDate(2022, Month.APRIL, 14)
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
-        val calendarView = scenario.initAndGetCalendarView(
-            pageSource = CalendarMonthPageSource(
-                firstDayOfWeek = DayOfWeek.SUNDAY,
-                startYearMonth = YearMonth(2022, Month.APRIL)
-            )
-        )
+        val calendarView = scenario.initAndGetCalendarView()
 
         // Scroll backwards
-        repeat(5) { iteration ->
+        repeat(5) {
             // Get the current value and scroll
             val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
             scenario.onFragment {
                 it.lifecycleScope.launch {
-                    it.calendarView.animateScrollToDate(startDate.minus(iteration, DateTimeUnit.MONTH))
+                    it.calendarView.animateScrollToDate(initialItem.start.minus(1, DateTimeUnit.DAY))
                 }
             }
             Thread.sleep(ANIMATION_TIMEOUT)
@@ -96,12 +89,12 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
             )
         }
         // Scroll forward
-        repeat(5) { iteration ->
+        repeat(5) {
             // Get the current value and scroll
             val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
             scenario.onFragment {
                 it.lifecycleScope.launch {
-                    it.calendarView.animateScrollToDate(startDate.plus(iteration, DateTimeUnit.MONTH))
+                    it.calendarView.animateScrollToDate(initialItem.endInclusive.plus(1, DateTimeUnit.DAY))
                 }
             }
             Thread.sleep(ANIMATION_TIMEOUT)
