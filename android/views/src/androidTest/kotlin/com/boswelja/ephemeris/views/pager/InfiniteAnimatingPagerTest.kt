@@ -6,15 +6,20 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.boswelja.ephemeris.views.InfiniteAnimatingPagerFragment
 import com.boswelja.ephemeris.views.R
 import com.boswelja.ephemeris.views.pagingadapters.AlternatingHeightPagerAdapter
 import com.boswelja.ephemeris.views.pagingadapters.BasicInfinitePagerAdapter
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
 
 private const val ANIMATION_TIMEOUT = 400L
 
+@RunWith(AndroidJUnit4::class)
+@LargeTest
 class InfiniteAnimatingPagerTest {
 
     @Test

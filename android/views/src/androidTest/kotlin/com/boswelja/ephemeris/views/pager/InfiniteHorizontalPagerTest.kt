@@ -6,6 +6,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.boswelja.ephemeris.views.InfiniteHorizontalPagerFragment
 import com.boswelja.ephemeris.views.R
 import com.boswelja.ephemeris.views.pagingadapters.BasicInfinitePagerAdapter
@@ -13,9 +15,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
 
 private const val SCROLL_SETTLE_TIME = 500L
 
+@RunWith(AndroidJUnit4::class)
+@LargeTest
 class InfiniteHorizontalPagerTest {
 
     @Test
