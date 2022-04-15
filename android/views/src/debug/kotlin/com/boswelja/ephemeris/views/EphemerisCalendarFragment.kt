@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.boswelja.ephemeris.views.databinding.FragmentCalendarContainerBinding
 
-class EphemerisCalendarFragment : Fragment() {
-    lateinit var calendarView: EphemerisCalendarView
+public class EphemerisCalendarFragment : Fragment() {
+    public lateinit var calendarView: EphemerisCalendarView
 
     override fun onCreateView(
         inflater: LayoutInflater,

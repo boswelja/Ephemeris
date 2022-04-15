@@ -74,8 +74,7 @@ publishing {
 
 tasks
     .matching {
-        it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile &&
-                !(it.name.contains("test", ignoreCase = true) || it.name.contains("debug", ignoreCase = true))
+        it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile && !it.name.contains("test", ignoreCase = true)
     }
     .configureEach {
         val kotlinCompile = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile

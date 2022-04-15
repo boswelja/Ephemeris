@@ -7,7 +7,7 @@ import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.views.CalendarDateBinder
 import com.boswelja.ephemeris.views.databinding.BasicDateCellBinding
 
-class BasicDateBinder : CalendarDateBinder<BasicDateViewHolder> {
+public class BasicDateBinder : CalendarDateBinder<BasicDateViewHolder> {
     override fun onCreateViewHolder(
         inflater: LayoutInflater,
         parent: ViewGroup
@@ -23,8 +23,6 @@ class BasicDateBinder : CalendarDateBinder<BasicDateViewHolder> {
     }
 }
 
-class BasicDateViewHolder(
-    val binding: BasicDateCellBinding
-) : RecyclerView.ViewHolder(binding.root) {
-
-}
+public class BasicDateViewHolder(
+    public val binding: BasicDateCellBinding
+) : RecyclerView.ViewHolder(binding.root)
