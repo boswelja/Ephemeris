@@ -9,10 +9,6 @@ android {
     namespace = "com.boswelja.ephemeris.views"
     buildFeatures.viewBinding = true
 
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
-    }
-
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -23,10 +19,15 @@ android {
 
 dependencies {
     api(project(":core"))
-
     api(libs.kotlinx.coroutines.core)
-
     api(libs.androidx.recyclerview)
+
+    debugImplementation(libs.bundles.androidx.foundation)
+    debugImplementation(libs.androidx.fragment.testing)
+    androidTestImplementation(libs.androidx.espresso)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
 }
 
 publishing {
@@ -70,3 +71,14 @@ publishing {
         }
     }
 }
+
+tasks
+    .matching {
+        it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile && !it.name.contains("test", ignoreCase = true)
+    }
+    .configureEach {
+        val kotlinCompile = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+        if ("-Xexplicit-api=strict" !in kotlinCompile.kotlinOptions.freeCompilerArgs) {
+            kotlinCompile.kotlinOptions.freeCompilerArgs += "-Xexplicit-api=strict"
+        }
+    }
