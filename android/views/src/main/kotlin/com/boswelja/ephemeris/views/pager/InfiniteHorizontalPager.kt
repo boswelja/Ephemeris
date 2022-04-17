@@ -31,15 +31,20 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
     }
 
     /**
-     * Called when the pager snaps to a new page.
+     * Called when the pager is snapping to a new page.
      */
     @CallSuper
-    public open fun onPageSnap(page: Int) { }
+    public open fun onPageSnapping(page: Int) { }
 
     @CallSuper
-    override fun onScrollStateChanged(state: Int) {
-        if (state == SCROLL_STATE_IDLE) {
-            maybeNotifySnapPositionChange()
+    override fun onScrolled(dx: Int, dy: Int) {
+        super.onScrolled(dx, dy)
+        if (scrollState != SCROLL_STATE_DRAGGING) {
+            val snapTarget = snapHelper.findTargetSnapPosition(layoutManager, dx, dy)
+            if (snapTarget != NO_POSITION) {
+                val snapPage = positionToPage(snapTarget)
+                maybeNotifySnapPositionChange(snapPage)
+            }
         }
     }
 
@@ -50,6 +55,10 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
 
     override fun findViewHolderForAdapterPosition(position: Int): ViewHolder? {
         return super.findViewHolderForAdapterPosition(pageToPosition(position))
+    }
+
+    override fun findViewHolderForLayoutPosition(position: Int): ViewHolder? {
+        return super.findViewHolderForLayoutPosition(pageToPosition(position))
     }
 
     final override fun smoothScrollToPosition(position: Int) {
@@ -63,13 +72,11 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
         maybeNotifySnapPositionChange(position)
     }
 
-    private fun maybeNotifySnapPositionChange(
-        snapPosition: Int = positionToPage(snapHelper.getSnapPosition(this))
-    ) {
+    private fun maybeNotifySnapPositionChange(snapPosition: Int) {
         val snapPositionChanged = currentPage != snapPosition
         if (snapPositionChanged) {
             currentPage = snapPosition
-            onPageSnap(snapPosition)
+            onPageSnapping(snapPosition)
         }
     }
 

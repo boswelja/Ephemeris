@@ -24,8 +24,8 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
         itemAnimator = PageChangeAnimator(heightAnimator)
     }
 
-    override fun onPageSnap(page: Int) {
-        super.onPageSnap(page)
+    override fun onPageSnapping(page: Int) {
+        super.onPageSnapping(page)
         remeasureAndAnimateHeight(page)
     }
 
