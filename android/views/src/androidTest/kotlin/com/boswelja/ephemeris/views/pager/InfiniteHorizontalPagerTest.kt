@@ -5,19 +5,20 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.boswelja.ephemeris.views.Direction
+import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.scrollTo
+import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.smoothScrollTo
+import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.withCurrentPage
 import com.boswelja.ephemeris.views.InfiniteHorizontalPagerFragment
 import com.boswelja.ephemeris.views.R
 import com.boswelja.ephemeris.views.pagingadapters.BasicInfinitePagerAdapter
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
+import com.boswelja.ephemeris.views.testWithScrolling
 import org.junit.Test
 import org.junit.runner.RunWith
-
-private const val SCROLL_SETTLE_TIME = 500L
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -29,45 +30,27 @@ class InfiniteHorizontalPagerTest {
         val scenario = launchFragmentInContainer<InfiniteHorizontalPagerFragment>()
         val pager = scenario.initAndGetPager()
 
-        // Scroll forwards
-        repeat(5) {
-            val initialPage = pager.currentPage
-
-            onView(withId(R.id.pager_view)).perform(swipeLeft())
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertTrue(
-                "${pager.currentPage} is not greater than $initialPage",
-                pager.currentPage > initialPage
-            )
-        }
-
-        // Scroll backwards
-        repeat(5) {
-            val initialPage = pager.currentPage
-
-            onView(withId(R.id.pager_view)).perform(swipeRight())
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertTrue(
-                "${pager.currentPage} is not less than $initialPage",
-                pager.currentPage < initialPage
-            )
-        }
-
-        // Scroll mixed
-        repeat(10) {
-            val initialPage = pager.currentPage
-
-            val action = if (it % 2 == 0) swipeLeft() else swipeRight()
-            onView(withId(R.id.pager_view)).perform(action)
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertNotEquals(
-                pager.currentPage,
-                initialPage
-            )
-        }
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val currentPage = pager.currentPage
+                val action = when (direction) {
+                    Direction.LeftToRight -> swipeRight()
+                    Direction.RightToLeft -> swipeLeft()
+                }
+                val pageMatcher = when (direction) {
+                    Direction.LeftToRight -> withCurrentPage(currentPage - 1)
+                    Direction.RightToLeft -> withCurrentPage(currentPage + 1)
+                }
+                onView(withId(R.id.pager_view))
+                    .perform(action)
+                    .check(matches(pageMatcher))
+            },
+            onResetState = {
+                scenario.onFragment {
+                    it.pager.scrollToPosition(0)
+                }
+            }
+        )
     }
 
     @Test
@@ -76,51 +59,22 @@ class InfiniteHorizontalPagerTest {
         val scenario = launchFragmentInContainer<InfiniteHorizontalPagerFragment>()
         val pager = scenario.initAndGetPager()
 
-        // Scroll forwards
-        repeat(5) {
-            val initialPage = pager.currentPage
-
-            scenario.onFragment {
-                it.pager.smoothScrollToPosition(initialPage + 1)
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val nextPage = when (direction) {
+                    Direction.LeftToRight -> pager.currentPage - 1
+                    Direction.RightToLeft -> pager.currentPage + 1
+                }
+                onView(withId(R.id.pager_view))
+                    .perform(smoothScrollTo(nextPage))
+                    .check(matches(withCurrentPage(nextPage)))
+            },
+            onResetState = {
+                scenario.onFragment {
+                    it.pager.scrollToPosition(0)
+                }
             }
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertTrue(
-                "${pager.currentPage} is not greater than $initialPage",
-                pager.currentPage > initialPage
-            )
-        }
-
-        // Scroll backwards
-        repeat(5) {
-            val initialPage = pager.currentPage
-
-            scenario.onFragment {
-                it.pager.smoothScrollToPosition(initialPage - 1)
-            }
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertTrue(
-                "${pager.currentPage} is not less than $initialPage",
-                pager.currentPage < initialPage
-            )
-        }
-
-        // Scroll mixed
-        repeat(10) { iteration ->
-            val initialPage = pager.currentPage
-
-            val offset = if (iteration % 2 == 0) 1 else -1
-            scenario.onFragment {
-                it.pager.smoothScrollToPosition(initialPage + offset)
-            }
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertNotEquals(
-                pager.currentPage,
-                initialPage
-            )
-        }
+        )
     }
 
     @Test
@@ -129,87 +83,38 @@ class InfiniteHorizontalPagerTest {
         val scenario = launchFragmentInContainer<InfiniteHorizontalPagerFragment>()
         val pager = scenario.initAndGetPager()
 
-        // Scroll forwards
-        repeat(5) {
-            val initialPage = pager.currentPage
-
-            scenario.onFragment {
-                it.pager.scrollToPosition(initialPage + 1)
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val nextPage = when (direction) {
+                    Direction.LeftToRight -> pager.currentPage - 1
+                    Direction.RightToLeft -> pager.currentPage + 1
+                }
+                onView(withId(R.id.pager_view))
+                    .perform(scrollTo(nextPage))
+                    .check(matches(withCurrentPage(nextPage)))
+            },
+            onResetState = {
+                scenario.onFragment {
+                    it.pager.scrollToPosition(0)
+                }
             }
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertTrue(
-                "${pager.currentPage} is not greater than $initialPage",
-                pager.currentPage > initialPage
-            )
-        }
-
-        // Scroll backwards
-        repeat(5) {
-            val initialPage = pager.currentPage
-
-            scenario.onFragment {
-                it.pager.scrollToPosition(initialPage - 1)
-            }
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertTrue(
-                "${pager.currentPage} is not less than $initialPage",
-                pager.currentPage < initialPage
-            )
-        }
-
-        // Scroll mixed
-        repeat(10) { iteration ->
-            val initialPage = pager.currentPage
-
-            val offset = if (iteration % 2 == 0) 1 else -1
-            scenario.onFragment {
-                it.pager.scrollToPosition(initialPage + offset)
-            }
-            Thread.sleep(SCROLL_SETTLE_TIME)
-
-            assertNotEquals(
-                pager.currentPage,
-                initialPage
-            )
-        }
-    }
-
-    @Test
-    fun canScrollFarBack() {
-        val scenario = launchFragmentInContainer<InfiniteHorizontalPagerFragment>()
-        val pager = scenario.initAndGetPager()
-
-        // Heading back 1000 pages from the start
-        val targetPosition = -100000
-        scenario.onFragment {
-            it.pager.scrollToPosition(targetPosition)
-        }
-        Thread.sleep(SCROLL_SETTLE_TIME)
-
-        assertEquals(
-            targetPosition,
-            pager.currentPage
         )
     }
 
     @Test
-    fun canScrollFarForward() {
+    fun canScrollFar() {
         val scenario = launchFragmentInContainer<InfiniteHorizontalPagerFragment>()
-        val pager = scenario.initAndGetPager()
+        scenario.initAndGetPager()
 
-        // Heading back 1000 pages from the start
-        val targetPosition = 100000
-        scenario.onFragment {
-            it.pager.scrollToPosition(targetPosition)
-        }
-        Thread.sleep(SCROLL_SETTLE_TIME)
+        val targetForwardPage = 100000
+        onView(withId(R.id.pager_view))
+            .perform(scrollTo(targetForwardPage))
+            .check(matches(withCurrentPage(targetForwardPage)))
 
-        assertEquals(
-            targetPosition,
-            pager.currentPage
-        )
+        val targetBackwardPage = -100000
+        onView(withId(R.id.pager_view))
+            .perform(scrollTo(targetBackwardPage))
+            .check(matches(withCurrentPage(targetBackwardPage)))
     }
 
     private fun FragmentScenario<InfiniteHorizontalPagerFragment>.initAndGetPager(
