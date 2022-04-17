@@ -12,6 +12,7 @@ import androidx.test.filters.LargeTest
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.datetime.YearMonth
+import com.boswelja.ephemeris.views.EphemerisCalendarViewActions.scrollTo
 import com.boswelja.ephemeris.views.datebinders.BasicDateBinder
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
@@ -36,34 +37,22 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
-        // Scroll backwards
-        repeat(5) {
-            // Get the current value and scroll
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
-            scenario.onFragment {
-                it.calendarView.scrollToDate(initialItem.start.minus(1, DateTimeUnit.DAY))
-            }
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+                val dateToScroll = when (direction) {
+                    Direction.LeftToRight -> initialItem.start.minus(1, DateTimeUnit.DAY)
+                    Direction.RightToLeft -> initialItem.endInclusive.plus(1, DateTimeUnit.DAY)
+                }
+                onView(withId(R.id.calendar_view)).perform(scrollTo(dateToScroll))
 
-            // Check the displayed date range updated
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
-        // Scroll forward
-        repeat(5) {
-            // Get the current value and scroll
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
-            scenario.onFragment {
-                it.calendarView.scrollToDate(initialItem.endInclusive.plus(1, DateTimeUnit.DAY))
+                // Check the displayed date range updated
+                assertNotEquals(
+                    initialItem,
+                    calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
+                )
             }
-
-            // Check the displayed date range updated
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
+        )
     }
 
     @Test
@@ -71,40 +60,27 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
-        // Scroll backwards
-        repeat(5) {
-            // Get the current value and scroll
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
-            scenario.onFragment {
-                it.lifecycleScope.launch {
-                    it.calendarView.animateScrollToDate(initialItem.start.minus(1, DateTimeUnit.DAY))
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+                val dateToScroll = when (direction) {
+                    Direction.LeftToRight -> initialItem.start.minus(1, DateTimeUnit.DAY)
+                    Direction.RightToLeft -> initialItem.endInclusive.plus(1, DateTimeUnit.DAY)
                 }
-            }
-            Thread.sleep(ANIMATION_TIMEOUT)
-
-            // Check the displayed date range updated
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
-        // Scroll forward
-        repeat(5) {
-            // Get the current value and scroll
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
-            scenario.onFragment {
-                it.lifecycleScope.launch {
-                    it.calendarView.animateScrollToDate(initialItem.endInclusive.plus(1, DateTimeUnit.DAY))
+                scenario.onFragment {
+                    it.lifecycleScope.launch {
+                        it.calendarView.animateScrollToDate(dateToScroll)
+                    }
                 }
-            }
-            Thread.sleep(ANIMATION_TIMEOUT)
+                Thread.sleep(ANIMATION_TIMEOUT)
 
-            // Check the displayed date range updated
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
+                // Check the displayed date range updated
+                assertNotEquals(
+                    initialItem,
+                    calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
+                )
+            }
+        )
     }
 
     @Test
@@ -113,43 +89,22 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
-        // Scrolling forward
-        repeat(5) {
-            // Get the current displayed date range
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+                val action = when (direction) {
+                    Direction.LeftToRight -> swipeRight()
+                    Direction.RightToLeft -> swipeLeft()
+                }
+                onView(withId(R.id.calendar_view)).perform(action)
 
-            // Perform swipe and assert state
-            onView(withId(R.id.calendar_view)).perform(swipeLeft())
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
-        // Scrolling backward
-        repeat(5) {
-            // Get the current displayed date range
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
-
-            // Perform swipe and assert state
-            onView(withId(R.id.calendar_view)).perform(swipeRight())
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
-        // Mixed scrolling
-        repeat(10) {
-            // Get the current displayed date range
-            val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
-
-            // Perform swipe and assert state
-            val action = if (it % 2 == 0) swipeLeft() else swipeRight()
-            onView(withId(R.id.calendar_view)).perform(action)
-            assertNotEquals(
-                initialItem,
-                calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
-            )
-        }
+                // Check the displayed date range updated
+                assertNotEquals(
+                    initialItem,
+                    calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
+                )
+            }
+        )
     }
 
     private fun FragmentScenario<EphemerisCalendarFragment>.initAndGetCalendarView(
