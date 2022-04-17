@@ -65,8 +65,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         // TODO suspend until scroll finishes
     }
 
-    override fun onPageSnap(page: Int) {
-        super.onPageSnap(page)
+    override fun onPageSnapping(page: Int) {
+        super.onPageSnapping(page)
         updateDisplayedDateRange(page)
     }
 
