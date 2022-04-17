@@ -95,7 +95,7 @@ internal class PageChangeAnimator(
         postInfo: ItemHolderInfo
     ): Boolean {
         val fromHeight = preInfo.bottom - preInfo.top
-        val toHeight = postInfo.bottom - preInfo.top
+        val toHeight = postInfo.bottom - postInfo.top
         if (fromHeight != toHeight) {
             heightAnimator.setIntValues(fromHeight, toHeight)
             heightAnimator.addUpdateListener { animator ->
