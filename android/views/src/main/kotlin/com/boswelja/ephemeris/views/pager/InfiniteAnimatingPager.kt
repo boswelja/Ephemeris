@@ -1,7 +1,5 @@
 package com.boswelja.ephemeris.views.pager
 
-import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
@@ -10,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 /**
  * An implementation of [InfiniteHorizontalPager] that automatically animates page height changes.
@@ -21,7 +20,9 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
     private val heightAnimator = ValueAnimator()
 
     init {
-        itemAnimator = PageChangeAnimator(heightAnimator)
+        itemAnimator = PageChangeAnimator { viewHolder, fromHeight, toHeight ->
+            animateHeight(viewHolder, toHeight, fromHeight)
+        }
     }
 
     override fun onPageSnapping(page: Int) {
@@ -38,42 +39,58 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
     }
 
     private fun remeasureAndAnimateHeight(position: Int) {
-        // TODO This assumes there are 3 views, not good
-        val view = findViewHolderForAdapterPosition(position)?.itemView
-        view?.post {
-            val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
+        val viewHolder = findViewHolderForAdapterPosition(position)
+        viewHolder?.itemView?.post {
+            val wMeasureSpec = MeasureSpec.makeMeasureSpec(viewHolder.itemView.width, MeasureSpec.EXACTLY)
             val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
-            view.measure(wMeasureSpec, hMeasureSpec)
-            if (view.height != view.measuredHeight) {
-                val prevView = findViewHolderForAdapterPosition(position - 1)?.itemView
-                val nextView = findViewHolderForAdapterPosition(position + 1)?.itemView
+            viewHolder.itemView.measure(wMeasureSpec, hMeasureSpec)
+            val targetHeight = viewHolder.itemView.measuredHeight
+            animateHeight(
+                viewHolder,
+                targetHeight
+            )
+        }
+    }
+
+    private fun animateHeight(
+        viewHolder: ViewHolder,
+        toHeight: Int,
+        fromHeight: Int = height
+    ) {
+        if (fromHeight != toHeight) {
+            val page = positionToPage(viewHolder.bindingAdapterPosition)
+            if (page == currentPage) {
                 heightAnimator.apply {
-                    setIntValues(view.height, view.measuredHeight)
+                    removeAllUpdateListeners()
+                    setIntValues(fromHeight, toHeight)
                     addUpdateListener { animator ->
-                        prevView?.layoutParams = prevView!!.layoutParams.also {
-                            it.height = animator.animatedValue as Int
-                        }
-                        nextView?.layoutParams = nextView!!.layoutParams.also {
-                            it.height = animator.animatedValue as Int
-                        }
-                        view.layoutParams = view.layoutParams.also {
-                            it.height = animator.animatedValue as Int
-                        }
+                        val animatedHeight = animator.animatedValue as Int
+                        setHeight(animatedHeight)
                     }
                 }
                 heightAnimator.start()
             }
         }
     }
+
+    private fun setHeight(targetHeight: Int) {
+        for (index in 0 until childCount) {
+            getChildAt(index).apply {
+                layoutParams = layoutParams.also {
+                    it.height = targetHeight
+                }
+            }
+        }
+    }
 }
 
 internal class PageChangeAnimator(
-    private val heightAnimator: ValueAnimator
+    private val onAnimateHeight: (viewHolder: ViewHolder, fromHeight: Int, toHeight: Int) -> Unit
 ) : DefaultItemAnimator() {
 
     override fun recordPostLayoutInformation(
         state: RecyclerView.State,
-        viewHolder: RecyclerView.ViewHolder
+        viewHolder: ViewHolder
     ): ItemHolderInfo {
         viewHolder.itemView.apply {
             val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
@@ -89,50 +106,16 @@ internal class PageChangeAnimator(
     }
 
     override fun animateChange(
-        oldHolder: RecyclerView.ViewHolder,
-        newHolder: RecyclerView.ViewHolder,
+        oldHolder: ViewHolder,
+        newHolder: ViewHolder,
         preInfo: ItemHolderInfo,
         postInfo: ItemHolderInfo
     ): Boolean {
         val fromHeight = preInfo.bottom - preInfo.top
         val toHeight = postInfo.bottom - postInfo.top
-        if (fromHeight != toHeight) {
-            heightAnimator.setIntValues(fromHeight, toHeight)
-            heightAnimator.addUpdateListener { animator ->
-                newHolder.itemView.layoutParams = newHolder.itemView.layoutParams.also {
-                    it.height = animator.animatedValue as Int
-                }
-            }
-            heightAnimator.addListener(
-                object : AnimatorListener {
-                    override fun onAnimationStart(p0: Animator?) {
-                        // No-op
-                    }
-                    override fun onAnimationRepeat(p0: Animator?) {
-                        // No-op
-                    }
-
-                    override fun onAnimationEnd(p0: Animator?) {
-                        heightAnimator.removeAllListeners()
-                        heightAnimator.removeAllUpdateListeners()
-                        dispatchAnimationFinished(oldHolder)
-                        if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
-                    }
-
-                    override fun onAnimationCancel(p0: Animator?) {
-                        heightAnimator.removeAllListeners()
-                        heightAnimator.removeAllUpdateListeners()
-                        dispatchAnimationFinished(oldHolder)
-                        if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
-                    }
-
-                }
-            )
-            heightAnimator.start()
-        } else {
-            dispatchAnimationFinished(oldHolder)
-            if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
-        }
+        onAnimateHeight(newHolder, fromHeight, toHeight)
+        dispatchAnimationFinished(oldHolder)
+        if (oldHolder != newHolder) dispatchAnimationFinished(newHolder)
         return false
     }
 }
