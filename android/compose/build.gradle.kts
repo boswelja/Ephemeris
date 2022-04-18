@@ -26,7 +26,7 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            artifactId = "android-views"
+            artifactId = "android-compose"
 
             pom {
                 name.set("android-compose")
