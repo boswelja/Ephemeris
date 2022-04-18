@@ -37,6 +37,8 @@ See module READMEs for more details on importing and using Ephemeris.
 
 #### [Android (Views)](https://github.com/boswelja/Ephemeris/tree/main/android/views/README.md)
 
+#### [Android (Compose)](https://github.com/boswelja/Ephemeris/tree/main/android/compose/README.md)
+
 ### Page Sources
 
 Ephemeris uses a `CalendarPageSource` to load data for each calendar page.
