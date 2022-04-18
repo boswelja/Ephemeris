@@ -38,32 +38,46 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
     }
 
     private fun remeasureAndAnimateHeight(position: Int) {
-        // TODO This assumes there are 3 views, not good
-        val view = findViewHolderForAdapterPosition(position)?.itemView
-        view?.post {
-            val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
+        val viewHolder = findViewHolderForAdapterPosition(position)
+        viewHolder?.itemView?.post {
+            val wMeasureSpec = MeasureSpec.makeMeasureSpec(viewHolder.itemView.width, MeasureSpec.EXACTLY)
             val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
-            view.measure(wMeasureSpec, hMeasureSpec)
-            val targetHeight = view.measuredHeight
-            if (height != targetHeight) {
-                val prevView = findViewHolderForAdapterPosition(position - 1)?.itemView
-                val nextView = findViewHolderForAdapterPosition(position + 1)?.itemView
-                heightAnimator.apply {
-                    setIntValues(height, targetHeight)
-                    addUpdateListener { animator ->
-                        prevView?.layoutParams = prevView!!.layoutParams.also {
-                            it.height = animator.animatedValue as Int
-                        }
-                        nextView?.layoutParams = nextView!!.layoutParams.also {
-                            it.height = animator.animatedValue as Int
-                        }
-                        view.layoutParams = view.layoutParams.also {
+            viewHolder.itemView.measure(wMeasureSpec, hMeasureSpec)
+            val targetHeight = viewHolder.itemView.measuredHeight
+            animateHeight(
+                viewHolder,
+                targetHeight
+            )
+        }
+    }
+
+    private fun animateHeight(
+        viewHolder: ViewHolder,
+        toHeight: Int
+    ) {
+        if (height != toHeight) {
+            val page = positionToPage(viewHolder.bindingAdapterPosition)
+            // TODO This assumes there are 3 views, not good
+            val prevView = findViewHolderForAdapterPosition(page - 1)?.itemView
+            val nextView = findViewHolderForAdapterPosition(page + 1)?.itemView
+            heightAnimator.apply {
+                removeAllUpdateListeners()
+                setIntValues(height, toHeight)
+                addUpdateListener { animator ->
+                    prevView?.layoutParams = prevView!!.layoutParams.also {
+                        it.height = animator.animatedValue as Int
+                    }
+                    nextView?.layoutParams = nextView!!.layoutParams.also {
+                        it.height = animator.animatedValue as Int
+                    }
+                    viewHolder.itemView.apply {
+                        layoutParams = layoutParams.also {
                             it.height = animator.animatedValue as Int
                         }
                     }
                 }
-                heightAnimator.start()
             }
+            heightAnimator.start()
         }
     }
 }
@@ -95,6 +109,8 @@ internal class PageChangeAnimator(
         preInfo: ItemHolderInfo,
         postInfo: ItemHolderInfo
     ): Boolean {
+        // TODO This is responsible for incorrect heights when changing page sources. Since it doesn't
+        // consider the current page and can therefore animate the height to match the wrong page.
         val fromHeight = preInfo.bottom - preInfo.top
         val toHeight = postInfo.bottom - postInfo.top
         if (fromHeight != toHeight) {
