@@ -23,8 +23,9 @@ Ephemeris Core currently runs on the following platforms
 
 | Platform | Supported |
 | -- | -- |
-| Android (Jetpack Compose) | Coming Soon |
+| Android (Jetpack Compose) | ✔️ |
 | Android (XML Views) | ✔️ |
+| iOS (SwiftUI) | Coming soon |
 
 ## How to Use
 
