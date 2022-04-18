@@ -1,7 +1,6 @@
 package com.boswelja.ephemeris.views.pager
 
 import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.min
 
 /**
  * An implementation of [InfiniteHorizontalPager] that automatically animates page height changes.
@@ -57,27 +57,46 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
     ) {
         if (height != toHeight) {
             val page = positionToPage(viewHolder.bindingAdapterPosition)
-            // TODO This assumes there are 3 views, not good
-            val prevView = findViewHolderForAdapterPosition(page - 1)?.itemView
-            val nextView = findViewHolderForAdapterPosition(page + 1)?.itemView
-            heightAnimator.apply {
-                removeAllUpdateListeners()
-                setIntValues(height, toHeight)
-                addUpdateListener { animator ->
-                    prevView?.layoutParams = prevView!!.layoutParams.also {
-                        it.height = animator.animatedValue as Int
-                    }
-                    nextView?.layoutParams = nextView!!.layoutParams.also {
-                        it.height = animator.animatedValue as Int
-                    }
-                    viewHolder.itemView.apply {
-                        layoutParams = layoutParams.also {
-                            it.height = animator.animatedValue as Int
+            if (page == currentPage) {
+                // TODO This assumes there are 3 views, not good
+                val prevView = findViewHolderForAdapterPosition(page - 1)?.itemView
+                val nextView = findViewHolderForAdapterPosition(page + 1)?.itemView
+                prevView?.layoutParams = prevView!!.layoutParams.also {
+                    it.height = min(height, toHeight)
+                }
+                nextView?.layoutParams = nextView!!.layoutParams.also {
+                    it.height = min(height, toHeight)
+                }
+                heightAnimator.apply {
+                    removeAllUpdateListeners()
+                    setIntValues(height, toHeight)
+                    addUpdateListener { animator ->
+                        val animatedHeight = animator.animatedValue as Int
+                        viewHolder.itemView.apply {
+                            layoutParams = layoutParams.also {
+                                it.height = animatedHeight
+                            }
+                        }
+                        if (animatedHeight == toHeight) {
+                            prevView.layoutParams = prevView.layoutParams.also {
+                                it.height = animatedHeight
+                            }
+                            nextView.layoutParams = nextView.layoutParams.also {
+                                it.height = animatedHeight
+                            }
                         }
                     }
                 }
+                heightAnimator.start()
+            } else {
+                // Set the view to the minimum height, we can assume that when the current page is
+                // animated, this will also be updated
+                viewHolder.itemView.apply {
+                    layoutParams = layoutParams.also {
+                        it.height = min(height, toHeight)
+                    }
+                }
             }
-            heightAnimator.start()
         }
     }
 }
@@ -121,7 +140,7 @@ internal class PageChangeAnimator(
                 }
             }
             heightAnimator.addListener(
-                object : AnimatorListener {
+                object : Animator.AnimatorListener {
                     override fun onAnimationStart(p0: Animator?) {
                         // No-op
                     }
