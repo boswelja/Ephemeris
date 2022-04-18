@@ -4,7 +4,7 @@ A UI module enabling the use of Ephemeris on Android with XML Views.
 
 ## Usage
 
-Add the library to your module's `build.gradle`
+Add the library to your module's `build.gradle.kts`
 
 ```kotlin
 implementation("io.github.boswelja.ephemeris:android-views:<latest_version>")
