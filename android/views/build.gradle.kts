@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 plugins {
     kotlin("android")
     id("com.ephemeris.library.android")
@@ -8,6 +10,18 @@ plugins {
 android {
     namespace = "com.boswelja.ephemeris.views"
     buildFeatures.viewBinding = true
+
+    testOptions {
+        managedDevices {
+            devices {
+                create<ManagedVirtualDevice>("pixel4api31") {
+                    device = "Pixel 4"
+                    apiLevel = 31
+                    systemImageSource = "aosp"
+                }
+            }
+        }
+    }
 
     publishing {
         singleVariant("release") {
