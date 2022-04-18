@@ -44,11 +44,12 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
             val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
             val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             view.measure(wMeasureSpec, hMeasureSpec)
-            if (view.height != view.measuredHeight) {
+            val targetHeight = view.measuredHeight
+            if (height != targetHeight) {
                 val prevView = findViewHolderForAdapterPosition(position - 1)?.itemView
                 val nextView = findViewHolderForAdapterPosition(position + 1)?.itemView
                 heightAnimator.apply {
-                    setIntValues(view.height, view.measuredHeight)
+                    setIntValues(height, targetHeight)
                     addUpdateListener { animator ->
                         prevView?.layoutParams = prevView!!.layoutParams.also {
                             it.height = animator.animatedValue as Int
