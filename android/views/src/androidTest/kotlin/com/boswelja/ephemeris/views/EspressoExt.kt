@@ -1,6 +1,9 @@
 package com.boswelja.ephemeris.views
 
+import android.graphics.drawable.ColorDrawable
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
@@ -105,6 +108,37 @@ object CustomViewMatchers {
                     appendText("Checking the matcher on received view: ")
                     appendText("with height=$height")
                 }
+            }
+        }
+    }
+
+    fun withBackgroundColor(color: Int): Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description?) {
+                description?.apply {
+                    appendText("Checking the matcher on received view: ")
+                    appendText("with backgroundColor=$color")
+                }
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                return (item?.background is ColorDrawable) && (item.background as ColorDrawable).color == color
+            }
+        }
+    }
+
+    fun hasChild(matcher: Matcher<View>): Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description?) {
+                description?.apply {
+                    appendText("Checking the matcher on received view: ")
+                    appendText("with any child matching=$matcher")
+                }
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                if (item !is ViewGroup) return false
+                return item.children.any { matcher.matches(it) }
             }
         }
     }
