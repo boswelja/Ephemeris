@@ -87,6 +87,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         _displayedDateRange = MutableStateFlow(
             calendarAdapter.pageLoader!!.getDateRangeFor(currentPage)
         )
+        scrollToPosition(currentPage)
     }
 
     /**
@@ -103,9 +104,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     public fun notifyDateRangeChanged(dates: ClosedRange<LocalDate>) {
         val startPage = pageSource.getPageFor(dates.start)
         val endPage = pageSource.getPageFor(dates.endInclusive)
+        val itemsChanged = endPage - startPage + 1
         calendarAdapter.notifyItemRangeChanged(
             pageToPosition(startPage),
-            pageToPosition(endPage)
+            itemsChanged
         )
     }
 
