@@ -25,8 +25,8 @@ Ephemeris Core currently runs on the following platforms
 | -- | -- |
 | Android (Jetpack Compose) | ✔️ |
 | Android (XML Views) | ✔️ |
-| iOS (SwiftUI) | Coming soon (#37) |
-| MacOS (SwiftUI) | Coming soon (#37) |
+| iOS (SwiftUI) | Coming soon (See [#37](https://github.com/boswelja/Ephemeris/issues/37)) |
+| MacOS (SwiftUI) | Coming soon (See [#37](https://github.com/boswelja/Ephemeris/issues/37)) |
 
 ## How to Use
 
