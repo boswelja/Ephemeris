@@ -33,4 +33,4 @@ jobs:
         if: success() || failure()
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: build/reports/detekt.sarif
+          sarif_file: /build/reports/detekt.sarif
