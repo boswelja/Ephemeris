@@ -1,5 +1,7 @@
 # android-views
 
+![Maven Central](https://img.shields.io/maven-central/v/io.github.boswelja.ephemeris/android-views)
+
 A UI module enabling the use of Ephemeris on Android with XML Views.
 
 ## Usage
