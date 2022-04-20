@@ -26,10 +26,8 @@ jobs:
           distribution: 'adopt'
           java-version: 11
           cache: 'gradle'
-      - name: Generate reports
-        run: ./gradlew detektReport --continue
-      - name: Compile reports
-        run: ./gradlew detektMergeReport
+      - name: Detekt Report
+        run: ./gradlew detektReport detektMergeReport --continue
       - uses: actions/upload-artifact@v3
         with:
           name: reports
