@@ -28,6 +28,10 @@ jobs:
           cache: 'gradle'
       - name: Detekt Report
         run: ./gradlew detektReport detektMergeReport --continue
+      - uses: actions/upload-artifact@v3
+        with:
+          name: reports
+          path: build/reports/
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
