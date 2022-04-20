@@ -2,7 +2,7 @@ plugins {
     kotlin("android")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
-    id("com.ephemeris.quality")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -21,6 +21,13 @@ dependencies {
     api(project(":core"))
     api(libs.bundles.compose.lib)
     implementation(libs.compose.snapper)
+}
+
+detekt {
+    config = files(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+        "${rootDir.absolutePath}/config/detekt/detekt-compose.yml"
+    )
 }
 
 publishing {
