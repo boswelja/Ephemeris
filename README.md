@@ -2,6 +2,8 @@
 
 The flexible, multiplatform calendar library!
 
+Ephemeris provides a fast, familiar calendar library framework for you to use across your projects.
+
 ## Supported Platforms
 
 ### Core
