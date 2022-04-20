@@ -8,8 +8,9 @@ on:
     - cron: '30 15 * * 5'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  static-code:
+    name: Static Code Analysis
+    runs-on: macos-latest
     permissions:
       # required for all workflows
       security-events: write
