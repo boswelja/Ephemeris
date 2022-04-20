@@ -28,6 +28,9 @@ nexusPublishing {
 val detektMergeReport by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
     val outFile = rootProject.buildDir.resolve("reports/detekt.sarif")
     output.set(outFile)
+    doLast {
+        println("Wrote Detekt SARIF report to ${outFile.path}")
+    }
 }
 
 subprojects {
