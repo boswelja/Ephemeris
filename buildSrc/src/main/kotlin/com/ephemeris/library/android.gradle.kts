@@ -2,6 +2,7 @@ package com.ephemeris.library
 
 plugins {
     id("com.android.library")
+    id("org.jetbrains.dokka")
 }
 
 val isMultiplatform = plugins.hasPlugin("kotlin-multiplatform")
