@@ -31,9 +31,6 @@ val detektMergeReport by tasks.registering(io.gitlab.arturbosch.detekt.report.Re
 
 subprojects {
     plugins.withType(io.gitlab.arturbosch.detekt.DetektPlugin::class) {
-        detekt {
-            basePath = projectDir.absolutePath
-        }
         tasks.create<Detekt>("detektReport") {
             reports.sarif.required.set(true)
             finalizedBy(detektMergeReport)
