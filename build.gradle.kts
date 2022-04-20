@@ -26,7 +26,8 @@ nexusPublishing {
 
 // Enable SARIF reports for Detekt
 val detektMergeReport by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
-    output.set(rootProject.buildDir.resolve("reports/detekt.sarif"))
+    val outFile = rootProject.buildDir.resolve("reports/detekt.sarif")
+    output.set(outFile)
 }
 
 subprojects {

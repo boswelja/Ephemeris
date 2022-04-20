@@ -27,7 +27,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Detekt Report
-        run: ./gradlew detektReport detektMergeReport
+        run: ./gradlew detektReport detektMergeReport --continue
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
