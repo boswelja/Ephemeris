@@ -1,5 +1,7 @@
 # core
 
+![Maven Central](https://img.shields.io/maven-central/v/io.github.boswelja.ephemeris/core)
+
 The core module of Ephemeris. This provides all generic implementations for platform-specific modules to use, such as page loaders, caching and data types.
 
 ## Usage

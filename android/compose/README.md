@@ -1,5 +1,7 @@
 # android-compose
 
+![Maven Central](https://img.shields.io/maven-central/v/io.github.boswelja.ephemeris/android-compose)
+
 A UI module enabling the use of Ephemeris on Android with Jetpack Compose.
 
 ## Usage
