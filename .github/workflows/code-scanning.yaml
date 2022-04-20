@@ -31,10 +31,10 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: reports
-          path: build/reports/
+          path: "**/build/reports/"
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: /build/reports/detekt.sarif
+          sarif_file: "build/reports/detekt.sarif"
