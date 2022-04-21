@@ -1,3 +1,7 @@
+import java.net.URL
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.dokka.utilities.cast
+
 plugins {
     kotlin("android")
     id("com.ephemeris.library.android")
@@ -91,3 +95,25 @@ tasks
             kotlinCompile.kotlinOptions.freeCompilerArgs += "-Xexplicit-api=strict"
         }
     }
+
+tasks.withType<DokkaTaskPartial>().configureEach {
+    moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
+
+    // Hide inherited members
+    suppressInheritedMembers.set(true)
+
+    dokkaSourceSets {
+        named("main") {
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+
+                remoteUrl.set(URL(
+                    "https://github.com/boswelja/Ephemeris/blob/main/android/views/src/main/kotlin"))
+            }
+        }
+        named("debug") {
+            // Hide debug from public API
+            suppress.set(true)
+        }
+    }
+}
