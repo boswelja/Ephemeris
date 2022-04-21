@@ -39,12 +39,11 @@ val detektMergeReport by tasks.registering(io.gitlab.arturbosch.detekt.report.Re
 
 subprojects {
     plugins.withType(io.gitlab.arturbosch.detekt.DetektPlugin::class) {
-        tasks.create<Detekt>("detektReport") {
-            reports.sarif.required.set(true)
+        tasks.withType<Detekt> {
             finalizedBy(detektMergeReport)
 
             detektMergeReport.configure {
-                input.from(this@create.sarifReportFile)
+                input.from(this@withType.sarifReportFile)
             }
         }
     }

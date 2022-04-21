@@ -15,14 +15,17 @@ jobs:
       # This step checks out a copy of your repository.
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: 11
           cache: 'gradle'
+
       - name: Detekt Report
         run: ./gradlew detektReport detektMergeReport --continue
+
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
