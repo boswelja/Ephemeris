@@ -31,6 +31,7 @@ detekt {
         "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
         "${rootDir.absolutePath}/config/detekt/detekt-compose.yml"
     )
+    basePath = rootDir.absolutePath
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {

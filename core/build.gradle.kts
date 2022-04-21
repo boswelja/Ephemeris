@@ -65,6 +65,7 @@ android {
 
 detekt {
     config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    basePath = rootDir.absolutePath
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
