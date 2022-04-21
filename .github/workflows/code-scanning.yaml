@@ -24,7 +24,7 @@ jobs:
           cache: 'gradle'
 
       - name: Detekt Report
-        run: ./gradlew detekt collateDetektReports --continue
+        run: ./gradlew collateDetektReports --continue
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2

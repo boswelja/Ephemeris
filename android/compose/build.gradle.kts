@@ -34,9 +34,7 @@ detekt {
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
-    reports {
-        sarif.required.set(true)
-    }
+    reports.sarif.required.set(true)
 }
 
 publishing {

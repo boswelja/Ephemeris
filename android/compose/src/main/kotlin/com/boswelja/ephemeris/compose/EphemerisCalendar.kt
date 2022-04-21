@@ -14,15 +14,6 @@ import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
 
-/**
- * EphemerisCalendar displays a calendar Composable that takes configuration from [calendarState].
- * @param calendarState The [EphemerisCalendarState] to use for controlling the calendar. This will
- * usually be created via [rememberCalendarState].
- * @param modifier The [Modifier] to be applied to the calendar Composable.
- * @param contentPadding The [PaddingValues] to apply to the calendar Composable. Content will not be
- * clipped to the padding when using this.
- * @param dayContent A Composable that takes a [CalendarDay] and renders a date cell on the calendar.
- */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun EphemerisCalendar(

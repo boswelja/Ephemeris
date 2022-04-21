@@ -22,7 +22,12 @@ nexusPublishing {
     }
 }
 
-tasks.register<Copy>("collateDetektReports") {
+tasks.register<Copy>("detektCollateReports") {
+    mustRunAfter(
+        ":android:views:detekt",
+        ":android:compose:detekt",
+        ":core:detekt"
+    )
     from(
         rootDir.resolve("android/views/build/reports/detekt/"),
         rootDir.resolve("android/compose/build/reports/detekt/"),
@@ -34,5 +39,4 @@ tasks.register<Copy>("collateDetektReports") {
         val totalCount = destinationDir.list().count()
         "$totalCount-$it"
     }
-    duplicatesStrategy = DuplicatesStrategy.FAIL
 }
