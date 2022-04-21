@@ -67,10 +67,6 @@ detekt {
     config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
 }
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>() {
-    reports.sarif.required.set(true)
-}
-
 tasks.koverVerify {
     rule {
         name = "Code line coverage"

@@ -33,10 +33,6 @@ detekt {
     )
 }
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>() {
-    reports.sarif.required.set(true)
-}
-
 publishing {
     publications {
         register<MavenPublication>("release") {
