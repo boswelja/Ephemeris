@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
-    id("com.ephemeris.quality")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 kotlin {
@@ -61,6 +61,15 @@ android {
             withJavadocJar()
         }
     }
+}
+
+detekt {
+    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    basePath = rootDir.absolutePath
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
+    reports.sarif.required.set(true)
 }
 
 tasks.koverVerify {

@@ -2,7 +2,7 @@ plugins {
     kotlin("android")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
-    id("com.ephemeris.quality")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -28,6 +28,15 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.test.ext.junit)
+}
+
+detekt {
+    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    basePath = rootDir.absolutePath
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
+    reports.sarif.required.set(true)
 }
 
 publishing {

@@ -2,7 +2,7 @@ plugins {
     kotlin("android")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
-    id("com.ephemeris.quality")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -15,12 +15,27 @@ android {
             withJavadocJar()
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
+    }
 }
 
 dependencies {
     api(project(":core"))
     api(libs.bundles.compose.lib)
     implementation(libs.compose.snapper)
+}
+
+detekt {
+    config = files(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+        "${rootDir.absolutePath}/config/detekt/detekt-compose.yml"
+    )
+    basePath = rootDir.absolutePath
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
+    reports.sarif.required.set(true)
 }
 
 publishing {

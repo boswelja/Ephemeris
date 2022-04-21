@@ -2,6 +2,7 @@
 plugins {
     id("org.jetbrains.kotlinx.kover") version "0.5.0" apply false
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.gitlab.arturbosch.detekt") version "1.20.0"
 }
 
 group = "io.github.boswelja.ephemeris"
@@ -18,5 +19,24 @@ nexusPublishing {
             username.set(ossrhUsername)
             password.set(ossrhPassword)
         }
+    }
+}
+
+tasks.register<Copy>("detektCollateReports") {
+    mustRunAfter(
+        ":android:views:detekt",
+        ":android:compose:detekt",
+        ":core:detekt"
+    )
+    from(
+        rootDir.resolve("android/views/build/reports/detekt/"),
+        rootDir.resolve("android/compose/build/reports/detekt/"),
+        rootDir.resolve("core/build/reports/detekt/")
+    )
+    include("detekt.sarif")
+    destinationDir = buildDir.resolve("reports/detekt/")
+    rename {
+        val totalCount = destinationDir.list().count()
+        "$totalCount-$it"
     }
 }
