@@ -15,6 +15,9 @@ android {
             withJavadocJar()
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
+    }
 }
 
 dependencies {

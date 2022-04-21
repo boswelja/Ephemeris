@@ -1,5 +1,5 @@
 [versions]
-androidx-compose = "1.2.0-alpha06"
+androidx-compose = "1.2.0-alpha08"
 androidx-navigation = "2.4.1"
 
 [libraries]
@@ -7,7 +7,7 @@ androidx-navigation = "2.4.1"
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.4.1" }
 androidx-core = { module = "androidx.core:core-ktx", version = "1.7.0" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.4.1" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.6.0" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.6.1" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.3.2" }
 
 # Views-related libs
@@ -22,7 +22,7 @@ google-material = { module = "com.google.android.material:material", version = "
 androidx-activity = { module = "androidx.activity:activity-compose", version = "1.4.0" }
 compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx.compose" }
-compose-material3 = { module = "androidx.compose.material3:material3", version = "1.0.0-alpha08" }
+compose-material3 = { module = "androidx.compose.material3:material3", version = "1.0.0-alpha10" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
 compose-snapper = { module = "dev.chrisbanes.snapper:snapper", version = "0.2.0" }
 
