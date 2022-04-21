@@ -24,7 +24,7 @@ jobs:
           cache: 'gradle'
 
       - name: Detekt Report
-        run: ./gradlew detektReport detektMergeReport --continue
+        run: ./gradlew assembleDebug detektReport detektMergeReport --continue # For some reason we need to run assembleDebug here, seem to be related to building the task tree and properly getting Detekt configured
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
