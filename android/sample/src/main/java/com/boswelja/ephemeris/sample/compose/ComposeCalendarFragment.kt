@@ -71,6 +71,7 @@ fun CalendarScreen(
         Text(
             text = headerText,
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 24.dp)
