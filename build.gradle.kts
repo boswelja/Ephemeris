@@ -21,3 +21,18 @@ nexusPublishing {
         }
     }
 }
+
+tasks.register<Copy>("collateDetektReports") {
+    from(
+        rootDir.resolve("android/views/build/reports/detekt/"),
+        rootDir.resolve("android/compose/build/reports/detekt/"),
+        rootDir.resolve("core/build/reports/detekt/")
+    )
+    include("detekt.sarif")
+    destinationDir = buildDir.resolve("reports/detekt/")
+    rename {
+        val totalCount = destinationDir.list().count()
+        "$totalCount-$it"
+    }
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+}
