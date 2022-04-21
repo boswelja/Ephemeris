@@ -29,7 +29,11 @@ val detektMergeReport by tasks.registering(io.gitlab.arturbosch.detekt.report.Re
     val outFile = rootProject.buildDir.resolve("reports/detekt.sarif")
     output.set(outFile)
     doLast {
-        println("Wrote Detekt SARIF report to ${outFile.path}")
+        if (outFile.exists()) {
+            println("Wrote Detekt SARIF report to ${outFile.path}")
+        } else {
+            println("Failed to write SARIF report")
+        }
     }
 }
 
