@@ -18,7 +18,6 @@ import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.smoothScrollT
 import com.boswelja.ephemeris.views.R
 import com.boswelja.ephemeris.views.pagingadapters.AlternatingHeightPagerAdapter
 import com.boswelja.ephemeris.views.pagingadapters.BasicInfinitePagerAdapter
-import com.boswelja.ephemeris.views.pagingadapters.ChangeablePagingAdapter
 import com.boswelja.ephemeris.views.testWithScrolling
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -132,55 +131,13 @@ class InfiniteAnimatingPagerHeightTest {
         )
     }
 
-    @Test
-    fun afterScroll_onItemChanged_heightChanges() {
-        val initialHeight = 700
-        val changedHeight = 500
-        val adapter = ChangeablePagingAdapter(initialHeight, changedHeight)
-        val scenario = launchFragmentInContainer<InfiniteAnimatingPagerFragment>()
-        val pager = scenario.initAndGetPager(
-            adapter = adapter
-        )
-
-        // Do a scroll
-        onView(withId(R.id.pager_view)).perform(swipeLeft())
-
-        repeat(4) {
-            val useChangedHeight = it % 2 == 0
-            scenario.onFragment {
-                adapter.changeItem(pager.currentPage, useChangedHeight)
-            }
-            onView(withId(R.id.pager_view))
-                .check(matches(withHeight(if (useChangedHeight) changedHeight else initialHeight)))
-        }
-    }
-
-    @Test
-    fun onItemChanged_heightChanges() {
-        val initialHeight = 700
-        val changedHeight = 500
-        val adapter = ChangeablePagingAdapter(initialHeight, changedHeight)
-        val scenario = launchFragmentInContainer<InfiniteAnimatingPagerFragment>()
-        val pager = scenario.initAndGetPager(
-            adapter = adapter
-        )
-
-        repeat(4) {
-            val useChangedHeight = it % 2 == 0
-            scenario.onFragment {
-                adapter.changeItem(pager.currentPage, useChangedHeight)
-            }
-            onView(withId(R.id.pager_view))
-                .check(matches(withHeight(if (useChangedHeight) changedHeight else initialHeight)))
-        }
-    }
-
     private fun FragmentScenario<InfiniteAnimatingPagerFragment>.initAndGetPager(
         adapter: InfinitePagerAdapter<*> = BasicInfinitePagerAdapter()
     ): InfiniteAnimatingPager {
         var pager: InfiniteAnimatingPager? = null
         onFragment {
             pager = it.pager
+            it.pager.animateHeight = false
             it.pager.adapter = adapter
         }
         return pager!!
