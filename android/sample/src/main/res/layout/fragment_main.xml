@@ -6,13 +6,24 @@
     android:orientation="vertical">
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:textAppearance="?textAppearanceLabelLarge"
+        android:textColor="?colorPrimary"
+        android:text="Collapsing Calendar" />
+
+    <TextView
         android:id="@+id/compose_link"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:background="?selectableItemBackground"
         android:textAppearance="?textAppearanceBodyMedium"
-        android:text="Compose Calendar" />
+        android:text="Compose" />
 
     <TextView
         android:id="@+id/xmlviews_link"
@@ -21,6 +32,6 @@
         android:padding="16dp"
         android:background="?selectableItemBackground"
         android:textAppearance="?textAppearanceBodyMedium"
-        android:text="Views Calendar" />
+        android:text="Views" />
 
 </LinearLayout>
