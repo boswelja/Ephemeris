@@ -19,6 +19,10 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
 
     private val heightAnimator = ValueAnimator()
 
+    /**
+     * Controls whether animations will play when the pager height changes. If false, the pager will
+     * jump to the new height rather than animate smoothly.
+     */
     public var animateHeight: Boolean = true
 
     init {
