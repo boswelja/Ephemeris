@@ -181,6 +181,7 @@ class InfiniteAnimatingPagerHeightTest {
         var pager: InfiniteAnimatingPager? = null
         onFragment {
             pager = it.pager
+            it.pager.animateHeight = false
             it.pager.adapter = adapter
         }
         return pager!!
