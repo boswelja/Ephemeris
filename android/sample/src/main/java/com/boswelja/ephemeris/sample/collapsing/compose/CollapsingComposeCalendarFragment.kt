@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.compose
+package com.boswelja.ephemeris.sample.collapsing.compose
 
 import android.os.Bundle
 import android.view.LayoutInflater

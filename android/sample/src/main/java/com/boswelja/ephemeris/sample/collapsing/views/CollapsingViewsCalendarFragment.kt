@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.views
+package com.boswelja.ephemeris.sample.collapsing.views
 
 import android.os.Bundle
 import android.view.View
@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.core.data.CalendarWeekPageSource
 import com.boswelja.ephemeris.sample.R
+import com.boswelja.ephemeris.sample.collapsing.CollapsingCalendarViewModel
 import com.boswelja.ephemeris.sample.databinding.FragmentViewsCalendarBinding
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -20,10 +21,10 @@ import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-class ViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
+class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_views_calendar) {
 
     private val binding by viewBinding(FragmentViewsCalendarBinding::bind)
-    private val vm by viewModels<CalendarViewVM>()
+    private val vm by viewModels<CollapsingCalendarViewModel>()
     private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

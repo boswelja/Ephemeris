@@ -28,7 +28,6 @@ class MainFragment : Fragment() {
             }
             xmlviewsLink.setOnClickListener {
                 findNavController().navigate(R.id.action_mainFragment_to_viewsCalendarFragment)
-
             }
         }
     }

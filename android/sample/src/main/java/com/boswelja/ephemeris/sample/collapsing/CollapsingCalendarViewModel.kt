@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.views
+package com.boswelja.ephemeris.sample.collapsing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class CalendarViewVM : ViewModel() {
+class CollapsingCalendarViewModel : ViewModel() {
 
     private val _toggleView = MutableStateFlow(false)
     val toggle: Flow<Boolean> = _toggleView

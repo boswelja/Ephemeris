@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.views
+package com.boswelja.ephemeris.sample.collapsing.views
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
