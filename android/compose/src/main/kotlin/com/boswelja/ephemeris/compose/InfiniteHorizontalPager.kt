@@ -49,7 +49,7 @@ internal fun InfiniteHorizontalPager(
     var pagerHeight by remember { mutableStateOf(0) }
 
     // Switch the Modifier used to animate height once pagerHeight has had it's initial update
-    val layoutModifier = if (pagerHeight > 0) {
+    val layoutModifier = if (pagerHeight > 0 && state.animateHeight) {
         Modifier
             .animateContentSize()
             .then(modifier)
@@ -108,6 +108,8 @@ internal class InfinitePagerState internal constructor(
     val internalPageOffset: Int = maxPages / 2
 
     var page: Int by mutableStateOf(startPage)
+
+    var animateHeight: Boolean = true
 
     fun calculatePageFromInternal(internalPage: Int): Int {
         return internalPage - internalPageOffset
