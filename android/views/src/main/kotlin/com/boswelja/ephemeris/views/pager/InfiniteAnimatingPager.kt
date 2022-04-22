@@ -19,6 +19,8 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
 
     private val heightAnimator = ValueAnimator()
 
+    public var animateHeight: Boolean = true
+
     init {
         itemAnimator = PageChangeAnimator { viewHolder, fromHeight, toHeight ->
             animateHeight(viewHolder, toHeight, fromHeight)
@@ -58,17 +60,21 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
         fromHeight: Int = height
     ) {
         if (fromHeight != toHeight) {
-            val page = positionToPage(viewHolder.bindingAdapterPosition)
-            if (page == currentPage) {
-                heightAnimator.apply {
-                    removeAllUpdateListeners()
-                    setIntValues(fromHeight, toHeight)
-                    addUpdateListener { animator ->
-                        val animatedHeight = animator.animatedValue as Int
-                        setHeight(animatedHeight)
+            if (animateHeight) {
+                val page = positionToPage(viewHolder.bindingAdapterPosition)
+                if (page == currentPage) {
+                    heightAnimator.apply {
+                        removeAllUpdateListeners()
+                        setIntValues(fromHeight, toHeight)
+                        addUpdateListener { animator ->
+                            val animatedHeight = animator.animatedValue as Int
+                            setHeight(animatedHeight)
+                        }
                     }
+                    heightAnimator.start()
                 }
-                heightAnimator.start()
+            } else {
+                setHeight(toHeight)
             }
         }
     }
