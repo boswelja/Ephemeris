@@ -130,7 +130,7 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
             it.calendarView.apply {
                 calendarView = this
                 animateHeight = false
-                dayBinder = BasicDateBinder()
+                dateBinder = BasicDateBinder()
                 this.pageSource = pageSource
                 // TODO For some reason the initial page isn't set correctly in tests
                 scrollToPosition(0)

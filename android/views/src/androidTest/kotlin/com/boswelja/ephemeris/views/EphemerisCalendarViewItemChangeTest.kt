@@ -95,7 +95,7 @@ class EphemerisCalendarViewItemChangeTest {
             it.calendarView.apply {
                 calendarView = this
                 animateHeight = false
-                dayBinder = ChangeableDateBinder { backgroundColor }
+                dateBinder = ChangeableDateBinder { backgroundColor }
                 this.pageSource = pageSource
             }
         }

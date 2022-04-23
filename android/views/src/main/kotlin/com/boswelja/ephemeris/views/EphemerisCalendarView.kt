@@ -15,8 +15,8 @@ import kotlinx.datetime.LocalDate
 public typealias DateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
 
 /**
- * A [android.view.View] that displays the Ephemeris calendar. Don't forget to call [initCalendar]
- * to initialize the calendar.
+ * A [android.view.View] that displays the Ephemeris calendar. You must set a [dateBinder] and
+ * [pageSource] for the calendar to work correctly.
  */
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -38,11 +38,11 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      * The current [CalendarDateBinder] used to bind date cells. Setting this will cause the calendar
      * view to redraw itself.
      */
-    public var dayBinder: CalendarDateBinder<*>
-        get() = calendarAdapter.dayBinder!!
+    public var dateBinder: CalendarDateBinder<*>
+        get() = calendarAdapter.dateBinder!!
         set(value) {
             @Suppress("UNCHECKED_CAST")
-            calendarAdapter.dayBinder = value as CalendarDateBinder<ViewHolder>
+            calendarAdapter.dateBinder = value as CalendarDateBinder<ViewHolder>
         }
 
     /**

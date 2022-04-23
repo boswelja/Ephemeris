@@ -25,7 +25,7 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
             }
         }
 
-    var dayBinder: CalendarDateBinder<ViewHolder>? = null
+    var dateBinder: CalendarDateBinder<ViewHolder>? = null
         @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
         set(value) {
             if (value != null && field != value) {
@@ -35,7 +35,7 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
         }
 
     override fun getItemCount(): Int {
-        return if (pageLoader != null && dayBinder != null) {
+        return if (pageLoader != null && dateBinder != null) {
             super.getItemCount()
         } else {
             0
@@ -48,7 +48,7 @@ internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolde
 
     override fun onBindHolder(holder: CalendarPageViewHolder, page: Int) {
         val pageState = pageLoader!!.getPageData(page)
-        holder.bindDisplayRows(pageLoader!!, dayBinder!!, pageState)
+        holder.bindDisplayRows(pageLoader!!, dateBinder!!, pageState)
     }
 }
 
