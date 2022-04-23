@@ -19,28 +19,11 @@ The `EphemerisCalendar` Composable utilises a `LazyRow` under the hood to provid
 Basic usage is as follows:
 
 ```kotlin
-val calendarState = rememberCalendarState {
-    CalendarMonthPageSource(
-        DayOfWeek.SUNDAY
-    )
-}
+val calendarState = rememberCalendarState()
 EphemerisCalendar(
+    pageSource = CalendarMonthPageSource(DayOfWeek.SUNDAY),
     calendarState = calendarState
 ) { dateCellState ->
     // Your date cell content here
-}
-```
-
-### EphemerisCalendarState
-
-`EphemerisCalendarState` is a state holder for the `EphemerisCalendar` Composable. You can use it to configure the calendar as you see fit.
-
-When creating a `EphemerisCalendarState`, it is required you provide an initial page source.
-
-```kotlin
-val calendarState = rememberCalendarState {
-    CalendarMonthPageSource(
-        DayOfWeek.SUNDAY
-    )
 }
 ```
