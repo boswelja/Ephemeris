@@ -3,7 +3,6 @@ package com.boswelja.ephemeris.views
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.lifecycleScope
-import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
@@ -128,9 +127,14 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
     ): EphemerisCalendarView {
         var calendarView: EphemerisCalendarView? = null
         onFragment {
-            calendarView = it.calendarView
-            it.calendarView.animateHeight = false
-            it.calendarView.initCalendar(pageSource, BasicDateBinder())
+            it.calendarView.apply {
+                calendarView = this
+                animateHeight = false
+                dayBinder = BasicDateBinder()
+                this.pageSource = pageSource
+                // TODO For some reason the initial page isn't set correctly in tests
+                scrollToPosition(0)
+            }
         }
         return calendarView!!
     }

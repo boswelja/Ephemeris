@@ -92,24 +92,6 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     }
 
     /**
-     * Initializes the calendar with [pageSource] and [dayBinder]. This must be called before
-     * performing any operations.
-     */
-    @Suppress("UNCHECKED_CAST")
-    public fun initCalendar(
-        pageSource: CalendarPageSource,
-        dayBinder: CalendarDateBinder<*>
-    ) {
-        calendarAdapter.dayBinder = dayBinder as CalendarDateBinder<ViewHolder>
-        calendarAdapter.pageLoader = CalendarPageLoader(
-            coroutineScope,
-            pageSource
-        )
-        updateDisplayedDateRange(currentPage)
-        scrollToPosition(currentPage)
-    }
-
-    /**
      * Notifies the calendar that a single [date] has changed, and should be re-bound.
      */
     public fun notifyDateChanged(date: LocalDate) {

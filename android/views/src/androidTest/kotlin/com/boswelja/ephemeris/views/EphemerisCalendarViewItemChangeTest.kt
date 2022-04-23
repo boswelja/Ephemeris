@@ -92,11 +92,12 @@ class EphemerisCalendarViewItemChangeTest {
         var calendarView: EphemerisCalendarView? = null
         onFragment {
             calendarView = it.calendarView
-            it.calendarView.animateHeight = false
-            it.calendarView.initCalendar(
-                pageSource,
-                ChangeableDateBinder { backgroundColor }
-            )
+            it.calendarView.apply {
+                calendarView = this
+                animateHeight = false
+                dayBinder = ChangeableDateBinder { backgroundColor }
+                this.pageSource = pageSource
+            }
         }
         return calendarView!!
     }
