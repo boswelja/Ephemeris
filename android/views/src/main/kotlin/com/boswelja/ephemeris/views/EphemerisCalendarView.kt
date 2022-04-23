@@ -25,6 +25,9 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
     private var displayedDateRangeChangeListener: DisplayedDateRangeChangeListener? = null
 
+    public lateinit var displayedDateRange: ClosedRange<LocalDate>
+        private set
+
     /**
      * The current [CalendarDateBinder] used to bind date cells. Setting this will cause the calendar
      * view to redraw itself.
@@ -83,6 +86,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             coroutineScope,
             pageSource
         )
+        updateDisplayedDateRange(currentPage)
         scrollToPosition(currentPage)
     }
 
@@ -108,8 +112,9 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     }
 
     private fun updateDisplayedDateRange(page: Int) {
+        displayedDateRange = calendarAdapter.pageLoader!!.getDateRangeFor(page)
         displayedDateRangeChangeListener?.let {
-            it(calendarAdapter.pageLoader!!.getDateRangeFor(page))
+            it(displayedDateRange)
         }
     }
 }

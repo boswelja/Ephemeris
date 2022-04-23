@@ -3,6 +3,7 @@ package com.boswelja.ephemeris.views
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.lifecycleScope
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
@@ -21,11 +22,11 @@ import kotlinx.datetime.Month
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.DayOfWeek
 
-private const val FLOW_UPDATE_TIMEOUT = 500L
 private const val ANIMATION_TIMEOUT = 400L
 
 @RunWith(AndroidJUnit4::class)
@@ -37,9 +38,13 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
+        var notifiedDateRange: ClosedRange<LocalDate>? = null
+        calendarView.setOnDisplayedDateRangeChangeListener {
+            notifiedDateRange = it
+        }
         testWithScrolling(
             onScroll = { _, direction ->
-                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange
                 val dateToScroll = when (direction) {
                     Direction.LeftToRight -> initialItem.start.minus(1, DateTimeUnit.DAY)
                     Direction.RightToLeft -> initialItem.endInclusive.plus(1, DateTimeUnit.DAY)
@@ -47,9 +52,10 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
                 onView(withId(R.id.calendar_view)).perform(scrollTo(dateToScroll))
 
                 // Check the displayed date range updated
+                assertNotNull(notifiedDateRange)
                 assertNotEquals(
                     initialItem,
-                    calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
+                    notifiedDateRange
                 )
             }
         )
@@ -60,9 +66,13 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
+        var notifiedDateRange: ClosedRange<LocalDate>? = null
+        calendarView.setOnDisplayedDateRangeChangeListener {
+            notifiedDateRange = it
+        }
         testWithScrolling(
             onScroll = { _, direction ->
-                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange
                 val dateToScroll = when (direction) {
                     Direction.LeftToRight -> initialItem.start.minus(1, DateTimeUnit.DAY)
                     Direction.RightToLeft -> initialItem.endInclusive.plus(1, DateTimeUnit.DAY)
@@ -75,9 +85,10 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
                 Thread.sleep(ANIMATION_TIMEOUT)
 
                 // Check the displayed date range updated
+                assertNotNull(notifiedDateRange)
                 assertNotEquals(
                     initialItem,
-                    calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
+                    notifiedDateRange
                 )
             }
         )
@@ -89,9 +100,13 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView()
 
+        var notifiedDateRange: ClosedRange<LocalDate>? = null
+        calendarView.setOnDisplayedDateRangeChangeListener {
+            notifiedDateRange = it
+        }
         testWithScrolling(
             onScroll = { _, direction ->
-                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange.value
+                val initialItem: ClosedRange<LocalDate> = calendarView.displayedDateRange
                 val action = when (direction) {
                     Direction.LeftToRight -> swipeRight()
                     Direction.RightToLeft -> swipeLeft()
@@ -99,9 +114,10 @@ class EphemerisCalendarViewDisplayedDateRangeTest {
                 onView(withId(R.id.calendar_view)).perform(action)
 
                 // Check the displayed date range updated
+                assertNotNull(notifiedDateRange)
                 assertNotEquals(
                     initialItem,
-                    calendarView.displayedDateRange.getOrAwaitValue(FLOW_UPDATE_TIMEOUT)
+                    notifiedDateRange
                 )
             }
         )
