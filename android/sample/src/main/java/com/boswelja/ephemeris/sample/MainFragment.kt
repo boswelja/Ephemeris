@@ -24,10 +24,10 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding?.apply {
             composeLink.setOnClickListener {
-                findNavController().navigate(R.id.action_mainFragment_to_composeCalendarFragment)
+                findNavController().navigate(R.id.action_mainFragment_to_collapsingComposeCalendarFragment)
             }
             xmlviewsLink.setOnClickListener {
-                findNavController().navigate(R.id.action_mainFragment_to_viewsCalendarFragment)
+                findNavController().navigate(R.id.action_mainFragment_to_collapsingViewsCalendarFragment)
             }
         }
     }

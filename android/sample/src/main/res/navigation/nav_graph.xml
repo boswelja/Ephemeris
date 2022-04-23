@@ -9,18 +9,32 @@
         android:name="com.boswelja.ephemeris.sample.MainFragment"
         android:label="MainFragment" >
         <action
-            android:id="@+id/action_mainFragment_to_composeCalendarFragment"
-            app:destination="@id/composeCalendarFragment" />
+            android:id="@+id/action_mainFragment_to_collapsingComposeCalendarFragment"
+            app:destination="@id/collapsingComposeCalendarFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_viewsCalendarFragment"
-            app:destination="@id/viewsCalendarFragment" />
+            android:id="@+id/action_mainFragment_to_collapsingViewsCalendarFragment"
+            app:destination="@id/collapsingViewsCalendarFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_customSourceViewsCalendarFragment"
+            app:destination="@id/customSourceViewsCalendarFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_customSourceComposeCalendarFragment"
+            app:destination="@id/customSourceComposeCalendarFragment" />
     </fragment>
     <fragment
-        android:id="@+id/composeCalendarFragment"
+        android:id="@+id/collapsingComposeCalendarFragment"
         android:name="com.boswelja.ephemeris.sample.collapsing.compose.CollapsingComposeCalendarFragment"
         android:label="ComposeCalendarFragment" />
     <fragment
-        android:id="@+id/viewsCalendarFragment"
+        android:id="@+id/collapsingViewsCalendarFragment"
         android:name="com.boswelja.ephemeris.sample.collapsing.views.CollapsingViewsCalendarFragment"
         android:label="ViewsCalendarFragment" />
+    <fragment
+        android:id="@+id/customSourceViewsCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.custompagesource.views.CustomSourceViewsCalendarFragment"
+        android:label="CustomSourceViewsCalendarFragment" />
+    <fragment
+        android:id="@+id/customSourceComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.custompagesource.compose.CustomSourceComposeCalendarFragment"
+        android:label="CustomSourceComposeCalendarFragment" />
 </navigation>
