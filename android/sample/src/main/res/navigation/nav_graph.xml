@@ -17,10 +17,10 @@
     </fragment>
     <fragment
         android:id="@+id/composeCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.compose.ComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.collapsing.compose.ComposeCalendarFragment"
         android:label="ComposeCalendarFragment" />
     <fragment
         android:id="@+id/viewsCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.views.ViewsCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.collapsing.views.CollapsingViewsCalendarFragment"
         android:label="ViewsCalendarFragment" />
 </navigation>

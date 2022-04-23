@@ -32,6 +32,7 @@
         style="@style/Theme.Ephemeris"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/toggle_calendar_view"
         app:cornerRadius="25dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/switch_calendar" />
