@@ -9,7 +9,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.LocalDate
 
-public typealias DisplayedDateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
+/**
+ * A listener to be called when a date range changes.
+ */
+public typealias DateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
 
 /**
  * A [android.view.View] that displays the Ephemeris calendar. Don't forget to call [initCalendar]
@@ -23,8 +26,11 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
     private val calendarAdapter = CalendarPagerAdapter()
 
-    private var displayedDateRangeChangeListener: DisplayedDateRangeChangeListener? = null
+    private var displayedDateRangeChangeListener: DateRangeChangeListener? = null
 
+    /**
+     * The date range currently displayed by the calendar.
+     */
     public lateinit var displayedDateRange: ClosedRange<LocalDate>
         private set
 
@@ -39,6 +45,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             calendarAdapter.dayBinder = value as CalendarDateBinder<ViewHolder>
         }
 
+    /**
+     * The [CalendarPageSource] used to build and display pages in the calendar view. Setting this
+     * will cause the calendar to recreate it's views.
+     */
     public var pageSource: CalendarPageSource
         get() = calendarAdapter.pageLoader!!.calendarPageSource
         set(value) {
@@ -58,17 +68,26 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         updateDisplayedDateRange(page)
     }
 
+    /**
+     * Scrolls the calendar to the page with the given date.
+     */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
         scrollToPosition(page)
     }
 
+    /**
+     * Animates scrolling the calendar to the page with the given date.
+     */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
         smoothScrollToPosition(page)
     }
 
-    public fun setOnDisplayedDateRangeChangeListener(listener: DisplayedDateRangeChangeListener) {
+    /**
+     * Sets a listener to be notified when [displayedDateRange] changes.
+     */
+    public fun setOnDisplayedDateRangeChangeListener(listener: DateRangeChangeListener) {
         displayedDateRangeChangeListener = listener
     }
 
@@ -111,6 +130,9 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         )
     }
 
+    /**
+     * Updates the displayed date range for the given page. This will notify any listeners present.
+     */
     private fun updateDisplayedDateRange(page: Int) {
         displayedDateRange = calendarAdapter.pageLoader!!.getDateRangeFor(page)
         displayedDateRangeChangeListener?.let {

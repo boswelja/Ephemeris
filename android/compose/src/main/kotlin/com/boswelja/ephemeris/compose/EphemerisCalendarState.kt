@@ -11,19 +11,35 @@ import com.boswelja.ephemeris.core.data.CalendarPageSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.LocalDate
 
+/**
+ * The base class representing the Composable calendar state
+ */
 public abstract class EphemerisCalendarState {
+
     /**
      * The internal [InfinitePagerState] that [EphemerisCalendar] uses to control its page state.
      */
     internal abstract val pagerState: InfinitePagerState
 
-    internal abstract var pageSource: CalendarPageSource
+    /**
+     * [EphemerisCalendar] provides & updates its page source for use within the calendar state.
+     */
+    internal lateinit var pageSource: CalendarPageSource
 
+    /**
+     * The currently displayed range of dates in the calendar view.
+     */
     public abstract var displayedDateRange: ClosedRange<LocalDate>
         internal set
 
+    /**
+     * Scroll the calendar view to the page containing the given date.
+     */
     public abstract suspend fun scrollToDate(date: LocalDate)
 
+    /**
+     * Animates scrolling the calendar view to the page containing the given date.
+     */
     public abstract suspend fun animateScrollToDate(date: LocalDate)
 }
 
@@ -38,8 +54,6 @@ internal class EphemerisCalendarStateImpl internal constructor(
 ) : EphemerisCalendarState() {
 
     override var displayedDateRange by mutableStateOf(LocalDate(1990, 1, 1)..LocalDate(1990, 1, 1))
-
-    override lateinit var pageSource: CalendarPageSource
 
     override suspend fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
