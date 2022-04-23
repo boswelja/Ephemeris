@@ -41,7 +41,7 @@ class ComposeCalendarFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 EphemerisTheme {
-                    CalendarScreen()
+                    CollapsingCalendarScreen()
                 }
             }
         }
@@ -49,7 +49,7 @@ class ComposeCalendarFragment : Fragment() {
 }
 
 @Composable
-fun CalendarScreen(
+fun CollapsingCalendarScreen(
     modifier: Modifier = Modifier,
     viewModel: CollapsingCalendarViewModel = viewModel()
 ) {
