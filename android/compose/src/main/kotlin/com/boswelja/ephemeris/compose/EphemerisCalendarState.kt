@@ -8,13 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.ui.CalendarState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.LocalDate
 
-/**
- * A base implementation of [CalendarState] designed to be used with [EphemerisCalendar].
- */
 public abstract class EphemerisCalendarState {
     /**
      * The internal [InfinitePagerState] that [EphemerisCalendar] uses to control its page state.
