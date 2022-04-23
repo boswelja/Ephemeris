@@ -9,15 +9,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
+import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 /**
  * EphemerisCalendar displays a calendar Composable that takes configuration from [calendarState].
- * @param calendarState The [EphemerisCalendarState] to use for controlling the calendar. This will
- * usually be created via [rememberCalendarState].
+ * @param calendarState The [EphemerisCalendarState] used to control the calendar. See [rememberCalendarState]
+ * for more information.
  * @param modifier The [Modifier] to be applied to the calendar Composable.
  * @param contentPadding The [PaddingValues] to apply to the calendar Composable. Content will not be
  * clipped to the padding when using this.
@@ -26,19 +30,36 @@ import com.boswelja.ephemeris.core.model.CalendarPage
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun EphemerisCalendar(
+    pageSource: CalendarPageSource,
     calendarState: EphemerisCalendarState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
-    AnimatedContent(targetState = calendarState.pageLoader) { pageLoader ->
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = remember(calendarState) { calendarState.pagerState }
+    val pageLoader = remember(coroutineScope, pageSource) {
+        CalendarPageLoader(coroutineScope, pageSource)
+    }
+
+    // Pass page source changes on to the calendar state
+    LaunchedEffect(pageSource) {
+        calendarState.pageSource = pageSource
+    }
+
+    // Notify calendar state of displayed date range changes
+    LaunchedEffect(pagerState.page) {
+        calendarState.displayedDateRange = pageLoader.getDateRangeFor(pagerState.page)
+    }
+
+    AnimatedContent(targetState = pageLoader) { targetPageLoader ->
         InfiniteHorizontalPager(
             modifier = modifier.fillMaxWidth(),
-            state = calendarState.pagerState,
+            state = pagerState,
             contentPadding = contentPadding
         ) {
             val pageData = remember {
-                pageLoader.getPageData(it)
+                targetPageLoader.getPageData(it)
             }
             CalendarPage(
                 pageData = pageData,
