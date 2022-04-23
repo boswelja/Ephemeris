@@ -44,10 +44,8 @@ class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_views_calenda
                 }
             }
         }
-        lifecycleScope.launch {
-            binding.switchCalendar.displayedDateRange.collectLatest {
-                viewModel.handlePageChanged(it)
-            }
+        binding.switchCalendar.setOnDisplayedDateRangeChangeListener {
+            viewModel.handlePageChanged(it)
         }
     }
 
