@@ -10,7 +10,7 @@ import com.boswelja.ephemeris.views.CalendarDateBinder
 import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
 
-class CalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
+class CollapsingCalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
     override fun onCreateViewHolder(
         inflater: LayoutInflater,
         parent: ViewGroup

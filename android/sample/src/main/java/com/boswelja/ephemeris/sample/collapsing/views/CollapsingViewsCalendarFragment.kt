@@ -35,7 +35,7 @@ class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_collapsing_ca
     private fun setupCalendar() {
         binding.switchCalendar.initCalendar(
             pageSource = CalendarMonthPageSource(DayOfWeek.SUNDAY),
-            dayBinder = CalendarDayBinder()
+            dayBinder = CollapsingCalendarDayBinder()
         )
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

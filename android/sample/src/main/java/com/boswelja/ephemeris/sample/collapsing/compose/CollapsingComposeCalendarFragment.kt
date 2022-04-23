@@ -32,7 +32,7 @@ import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.DayOfWeek
 
-class ComposeCalendarFragment : Fragment() {
+class CollapsingComposeCalendarFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

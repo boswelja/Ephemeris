@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/composeCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.collapsing.compose.ComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.collapsing.compose.CollapsingComposeCalendarFragment"
         android:label="ComposeCalendarFragment" />
     <fragment
         android:id="@+id/viewsCalendarFragment"
