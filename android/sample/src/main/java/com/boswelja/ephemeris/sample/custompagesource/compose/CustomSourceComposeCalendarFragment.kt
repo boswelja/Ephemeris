@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,12 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
 import com.boswelja.ephemeris.core.model.CalendarDay
+import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.custompagesource.CustomCalendarPageSource
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 
@@ -40,13 +44,41 @@ class CustomSourceComposeCalendarFragment : Fragment() {
 
 @Composable
 fun CalendarScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp)
 ) {
     val calendarState = rememberCalendarState { CustomCalendarPageSource() }
 
     Column(modifier) {
+        Row(Modifier.padding(contentPadding)) {
+            Text(
+                text = stringResource(R.string.day_mon),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = stringResource(R.string.day_tue),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = stringResource(R.string.day_wed),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = stringResource(R.string.day_thu),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = stringResource(R.string.day_fri),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+        }
         EphemerisCalendar(
-            contentPadding = PaddingValues(horizontal = 16.dp),
+            contentPadding = contentPadding,
             calendarState = calendarState
         ) { calendarDay ->
             CollapsingCalendarDate(

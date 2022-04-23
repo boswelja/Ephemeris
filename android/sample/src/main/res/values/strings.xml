@@ -9,4 +9,9 @@
     <string name="toggle_calendar_view">Switch</string>
 
     <string name="header_custom_source">Custom Page Source</string>
+    <string name="day_mon">Mon</string>
+    <string name="day_tue">Tue</string>
+    <string name="day_wed">Wed</string>
+    <string name="day_thu">Thu</string>
+    <string name="day_fri">Fri</string>
 </resources>
