@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -47,7 +48,8 @@ fun CalendarScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp)
 ) {
-    val calendarState = rememberCalendarState { CustomCalendarPageSource() }
+    val calendarState = rememberCalendarState()
+    val pageSource = remember { CustomCalendarPageSource() }
 
     Column(modifier) {
         Row(Modifier.padding(contentPadding)) {
@@ -78,6 +80,7 @@ fun CalendarScreen(
             )
         }
         EphemerisCalendar(
+            pageSource = pageSource,
             contentPadding = contentPadding,
             calendarState = calendarState
         ) { calendarDay ->

@@ -18,9 +18,9 @@ class CustomSourceViewsCalendarFragment : Fragment(R.layout.fragment_custom_sour
     }
 
     private fun setupCalendar() {
-        binding.switchCalendar.initCalendar(
-            pageSource = CustomCalendarPageSource(),
-            dayBinder = CustomSourceCalendarDayBinder()
-        )
+        binding.switchCalendar.apply {
+            pageSource = CustomCalendarPageSource()
+            dateBinder = CustomSourceCalendarDayBinder()
+        }
     }
 }

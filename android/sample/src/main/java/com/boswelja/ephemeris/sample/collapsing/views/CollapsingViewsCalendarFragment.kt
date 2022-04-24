@@ -7,14 +7,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.collapsing.CollapsingCalendarViewModel
 import com.boswelja.ephemeris.sample.databinding.FragmentCollapsingCalendarBinding
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DayOfWeek
 
 class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_collapsing_calendar) {
 
@@ -33,20 +31,17 @@ class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_collapsing_ca
     }
 
     private fun setupCalendar() {
-        binding.switchCalendar.initCalendar(
-            pageSource = CalendarMonthPageSource(DayOfWeek.SUNDAY),
-            dayBinder = CollapsingCalendarDayBinder()
-        )
+        binding.switchCalendar.apply {
+            dateBinder = CollapsingCalendarDayBinder()
+            setOnDisplayedDateRangeChangeListener {
+                viewModel.handlePageChanged(it)
+            }
+        }
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.calendarPageSource.collectLatest {
                     binding.switchCalendar.pageSource = it
                 }
-            }
-        }
-        lifecycleScope.launch {
-            binding.switchCalendar.displayedDateRange.collectLatest {
-                viewModel.handlePageChanged(it)
             }
         }
     }
