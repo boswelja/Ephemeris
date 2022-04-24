@@ -24,13 +24,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
-import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.collapsing.CollapsingCalendarViewModel
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.datetime.DayOfWeek
 
 class CollapsingComposeCalendarFragment : Fragment() {
     override fun onCreateView(
@@ -53,23 +50,12 @@ fun CollapsingCalendarScreen(
     modifier: Modifier = Modifier,
     viewModel: CollapsingCalendarViewModel = viewModel()
 ) {
-    val calendarState = rememberCalendarState {
-        CalendarMonthPageSource(
-            DayOfWeek.SUNDAY
-        )
-    }
-
+    val calendarState = rememberCalendarState()
+    val pageSource by viewModel.calendarPageSource.collectAsState()
     val headerText by viewModel.headerText.collectAsState()
 
-    LaunchedEffect(calendarState) {
-        calendarState.displayedDateRange.collectLatest {
-            viewModel.handlePageChanged(it)
-        }
-    }
-    LaunchedEffect(viewModel) {
-        viewModel.calendarPageSource.collectLatest {
-            calendarState.pageSource = it
-        }
+    LaunchedEffect(calendarState.displayedDateRange) {
+        viewModel.handlePageChanged(calendarState.displayedDateRange)
     }
 
     Column(modifier) {
@@ -82,6 +68,7 @@ fun CollapsingCalendarScreen(
                 .padding(top = 24.dp)
         )
         EphemerisCalendar(
+            pageSource = pageSource,
             contentPadding = PaddingValues(horizontal = 16.dp),
             calendarState = calendarState
         ) { calendarDay ->

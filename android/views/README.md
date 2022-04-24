@@ -25,16 +25,16 @@ You can add `EphemerisCalendarView` to your layouts like so:
     android:layout_height="wrap_content" />
 ```
 
-And to configure the calendar, you must call `initCalendar` on your `EphemerisCalendarView` **once**. Calling `initCalendar` more than once may result in unexpected behavior.
+And to configure the calendar, simply set a `dateBinder` and a `pageSource`.
 
 ```kotlin
-binding.calendarView.initCalendar(
+binding.calendarView.apply {
     pageSource = CalendarMonthPageSource(
         firstDayOfWeek = DayOfWeek.SUNDAY,
         focusMode = CalendarMonthPageSource.FocusMode.MONTH
-    ),
-    dayBinder = CalendarDayBinder()
-)
+    )
+    dateBinder = CalendarDayBinder()
+}
 ```
 
 Since Ephemeris provides no date cells out-of-the-box, you need to tell it how to create a cell. This is done by providing a class that extends the `CalendarDateBinder` interface. `CalendarDateBinder` wraps a `RecyclerView.ViewHolder` and tells Ephemeris how to create and bind a cell. See below for a simple example that displays dates, with emphasis on "in focus" dates.

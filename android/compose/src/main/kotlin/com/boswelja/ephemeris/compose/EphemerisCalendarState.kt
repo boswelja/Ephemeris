@@ -7,34 +7,40 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import com.boswelja.ephemeris.core.data.CalendarPageSource
-import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.core.ui.CalendarState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 /**
- * A base implementation of [CalendarState] designed to be used with [EphemerisCalendar].
+ * The base class representing the Composable calendar state
  */
-public abstract class EphemerisCalendarState : CalendarState {
+public abstract class EphemerisCalendarState {
+
     /**
      * The internal [InfinitePagerState] that [EphemerisCalendar] uses to control its page state.
      */
     internal abstract val pagerState: InfinitePagerState
 
     /**
-     * The internal [CalendarPageLoader] that [EphemerisCalendar] uses to load page data. This should
-     * be backed by a Composable State so the calendar can react to changes properly.
+     * [EphemerisCalendar] provides & updates its page source for use within the calendar state.
      */
-    internal abstract var pageLoader: CalendarPageLoader
+    internal lateinit var pageSource: CalendarPageSource
+
+    /**
+     * The currently displayed range of dates in the calendar view.
+     */
+    public abstract var displayedDateRange: ClosedRange<LocalDate>
+        internal set
+
+    /**
+     * Scroll the calendar view to the page containing the given date.
+     */
+    public abstract suspend fun scrollToDate(date: LocalDate)
+
+    /**
+     * Animates scrolling the calendar view to the page containing the given date.
+     */
+    public abstract suspend fun animateScrollToDate(date: LocalDate)
 }
 
 /**
@@ -43,40 +49,15 @@ public abstract class EphemerisCalendarState : CalendarState {
  * @param coroutineScope A coroutine scope to use for running Calendar-related jobs.
  */
 internal class EphemerisCalendarStateImpl internal constructor(
-    calendarPageSource: CalendarPageSource,
     private val coroutineScope: CoroutineScope,
     override val pagerState: InfinitePagerState
 ) : EphemerisCalendarState() {
 
-    override var pageLoader by mutableStateOf(CalendarPageLoader(coroutineScope, calendarPageSource))
+    override var displayedDateRange by mutableStateOf(LocalDate(1990, 1, 1)..LocalDate(1990, 1, 1))
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val displayedDateRange: StateFlow<ClosedRange<LocalDate>> = snapshotFlow { pageLoader }
-        .flatMapLatest { snapshotFlow { pagerState.page } }
-        .map { pageLoader.getDateRangeFor(it) }
-        .stateIn(
-            coroutineScope,
-            SharingStarted.Eagerly,
-            pageLoader.getDateRangeFor(pagerState.page)
-        )
-
-    override var pageSource: CalendarPageSource = calendarPageSource
-        set(value) {
-            if (field != value) {
-                field = value
-                pageLoader = CalendarPageLoader(
-                    coroutineScope,
-                    value
-                )
-            }
-        }
-
-    override fun scrollToDate(date: LocalDate) {
-        // We launch this in a coroutine to avoid any thread blocking
-        coroutineScope.launch {
-            val page = pageSource.getPageFor(date)
-            pagerState.scrollToPage(page)
-        }
+    override suspend fun scrollToDate(date: LocalDate) {
+        val page = pageSource.getPageFor(date)
+        pagerState.scrollToPage(page)
     }
 
     override suspend fun animateScrollToDate(date: LocalDate) {
@@ -88,17 +69,13 @@ internal class EphemerisCalendarStateImpl internal constructor(
 /**
  * Remembers an [EphemerisCalendarState] for use with [EphemerisCalendar]. Note any changes to parameters
  * will trigger recomposition, and the calendar state will be recreated.
- * @param calendarPageSource A block that produces a [CalendarPageSource] for [EphemerisCalendar] to use
- * by default. This can be changed later by setting [EphemerisCalendarState.pageSource].
  */
 @Composable
 @Stable
-public fun rememberCalendarState(
-    calendarPageSource: () -> CalendarPageSource
-): EphemerisCalendarState {
+public fun rememberCalendarState(): EphemerisCalendarState {
     val pagerState = rememberInfinitePagerState()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
-    return remember(calendarPageSource, coroutineScope, pagerState) {
-        EphemerisCalendarStateImpl(calendarPageSource(), coroutineScope, pagerState)
+    return remember(coroutineScope, pagerState) {
+        EphemerisCalendarStateImpl(coroutineScope, pagerState)
     }
 }

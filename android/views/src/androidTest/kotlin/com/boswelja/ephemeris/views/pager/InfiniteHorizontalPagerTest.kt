@@ -124,6 +124,8 @@ class InfiniteHorizontalPagerTest {
         onFragment {
             pager = it.pager
             it.pager.adapter = adapter
+            // TODO For some reason the initial page isn't set correctly in tests
+            it.pager.scrollToPosition(0)
         }
         return pager!!
     }
