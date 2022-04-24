@@ -68,20 +68,17 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
         toHeight: Int,
         fromHeight: Int = height
     ) {
-        if (fromHeight != toHeight) {
-            val page = positionToPage(viewHolder.bindingAdapterPosition)
-            if (animateHeight && page == currentPage) {
-                heightAnimator.run {
-                    if (isRunning) {
-                        setIntValues(animatedValue as Int, toHeight)
-                    } else {
-                        setIntValues(fromHeight, toHeight)
-                    }
-                    start()
-                }
-            } else {
-                setHeight(toHeight)
+        if (fromHeight == toHeight) return
+
+        val page = positionToPage(viewHolder.bindingAdapterPosition)
+        if (animateHeight && page == currentPage) {
+            heightAnimator.run {
+                val currentHeight = if (isRunning) animatedValue as Int else fromHeight
+                setIntValues(currentHeight, toHeight)
+                start()
             }
+        } else {
+            setHeight(toHeight)
         }
     }
 
