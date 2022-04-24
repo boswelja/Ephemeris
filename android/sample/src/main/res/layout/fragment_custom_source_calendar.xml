@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/mon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/day_mon"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tue" />
+
+    <TextView
+        android:id="@+id/tue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/day_tue"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mon"
+        app:layout_constraintEnd_toStartOf="@id/wed" />
+
+    <TextView
+        android:id="@+id/wed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/day_wed"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tue"
+        app:layout_constraintEnd_toStartOf="@id/thu" />
+
+    <TextView
+        android:id="@+id/thu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/day_thu"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/wed"
+        app:layout_constraintEnd_toStartOf="@id/fri" />
+
+    <TextView
+        android:id="@+id/fri"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/day_fri"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/thu"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.boswelja.ephemeris.views.EphemerisCalendarView
+        android:id="@+id/switch_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/mon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

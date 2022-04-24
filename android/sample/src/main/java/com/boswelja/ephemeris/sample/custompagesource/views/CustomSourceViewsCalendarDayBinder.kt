@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.collapsing.views
+package com.boswelja.ephemeris.sample.custompagesource.views
 
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import com.boswelja.ephemeris.views.CalendarDateBinder
 import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
 
-class CollapsingCalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
+class CustomSourceCalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
     override fun onCreateViewHolder(
         inflater: LayoutInflater,
         parent: ViewGroup
