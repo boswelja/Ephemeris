@@ -43,6 +43,9 @@ jobs:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
 
+      - name: Build Android Sample
+        run: ./gradlew :android:sample:assembleRelease
+
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1.9.0
         with:
@@ -51,3 +54,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: ${{ github.event.inputs.prerelease }}
           generateReleaseNotes: true
+          artifacts: 'android/sample/build/outputs/apk/release/sample-release.apk'
