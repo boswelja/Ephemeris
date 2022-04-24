@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
+    id("dev.petuska.npm.publish") version "2.1.2"
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -18,10 +19,9 @@ kotlin {
     jvm()
 
     // JS targets
-    js {
+    js(IR) {
+        binaries.library()
         nodejs()
-        browser()
-        binaries.executable()
     }
 
     // Windows targets
@@ -110,4 +110,17 @@ publishing {
             }
         }
     }
+}
+
+npmPublishing {
+    repositories {
+        repository("npmjs") {
+            val npmToken: String? by project
+            registry = uri("https://registry.npmjs.org")
+            authToken = npmToken
+        }
+    }
+
+    readme = file("README.md")
+    organization = "io.github.boswelja.ephemeris"
 }
