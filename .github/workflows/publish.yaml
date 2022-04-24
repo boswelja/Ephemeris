@@ -33,7 +33,7 @@ jobs:
           release-branch: main
           log-paths: ./
 
-      - name: Publish modules
+      - name: Publish to Maven
         run: ./gradlew  publishToSonatype --max-workers 1 closeAndReleaseSonatypeStagingRepository
         env:
           ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.ORG_GRADLE_PROJECT_OSSRHUSERNAME }}
@@ -41,6 +41,15 @@ jobs:
           ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEYID }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
+
+      - name: Publish to NPM
+        run: ./gradlew publishJsNpmPublicationToNpmjs
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEYID }}
+          ORG_GRADLE_PROJECT_npmToken: ${{ secrets.ORG_GRADLE_PROJECT_npmToken }}
           ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
 
       - name: Build Android Sample
