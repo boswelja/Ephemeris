@@ -17,7 +17,12 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : InfiniteHorizontalPager(context, attrs, defStyleAttr) {
 
-    private val heightAnimator = ValueAnimator()
+    private val heightAnimator = ValueAnimator().apply {
+        addUpdateListener { animator ->
+            val animatedHeight = animator.animatedValue as Int
+            setHeight(animatedHeight)
+        }
+    }
 
     /**
      * Controls whether animations will play when the pager height changes. If false, the pager will
@@ -66,15 +71,14 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
         if (fromHeight != toHeight) {
             val page = positionToPage(viewHolder.bindingAdapterPosition)
             if (animateHeight && page == currentPage) {
-                heightAnimator.apply {
-                    removeAllUpdateListeners()
-                    setIntValues(fromHeight, toHeight)
-                    addUpdateListener { animator ->
-                        val animatedHeight = animator.animatedValue as Int
-                        setHeight(animatedHeight)
+                heightAnimator.run {
+                    if (isRunning) {
+                        setIntValues(animatedValue as Int, toHeight)
+                    } else {
+                        setIntValues(fromHeight, toHeight)
                     }
+                    start()
                 }
-                heightAnimator.start()
             } else {
                 setHeight(toHeight)
             }
