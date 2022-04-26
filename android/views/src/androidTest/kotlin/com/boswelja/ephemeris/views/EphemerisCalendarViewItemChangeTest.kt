@@ -98,7 +98,7 @@ class EphemerisCalendarViewItemChangeTest {
                 dateBinder = ChangeableDateBinder { backgroundColor }
                 this.pageSource = pageSource
                 // TODO For some reason the initial page isn't set correctly in tests
-                scrollToPosition(0)
+                scrollToPage(0)
             }
         }
         return calendarView!!

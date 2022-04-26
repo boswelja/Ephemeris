@@ -1,6 +1,5 @@
 package com.boswelja.ephemeris.views
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,41 +13,18 @@ import com.boswelja.ephemeris.views.databinding.CalendarPageBinding
 import com.boswelja.ephemeris.views.databinding.CalendarRowBinding
 import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
 
-internal class CalendarPagerAdapter : InfinitePagerAdapter<CalendarPageViewHolder>() {
-
-    var pageLoader: CalendarPageLoader? = null
-        @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
-        set(value) {
-            if (value != null && field != value) {
-                field = value
-                notifyDataSetChanged()
-            }
-        }
-
-    var dateBinder: CalendarDateBinder<ViewHolder>? = null
-        @SuppressLint("NotifyDataSetChanged") // The entire dataset is invalidated when this changes
-        set(value) {
-            if (value != null && field != value) {
-                field = value
-                notifyDataSetChanged()
-            }
-        }
-
-    override fun getItemCount(): Int {
-        return if (pageLoader != null && dateBinder != null) {
-            super.getItemCount()
-        } else {
-            0
-        }
-    }
+internal class CalendarPagerAdapter(
+    val pageLoader: CalendarPageLoader,
+    val dateBinder: CalendarDateBinder<ViewHolder>
+) : InfinitePagerAdapter<CalendarPageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
         return CalendarPageViewHolder.create(parent)
     }
 
     override fun onBindHolder(holder: CalendarPageViewHolder, page: Int) {
-        val pageState = pageLoader!!.getPageData(page)
-        holder.bindDisplayRows(pageLoader!!, dateBinder!!, pageState)
+        val pageState = pageLoader.getPageData(page)
+        holder.bindDisplayRows(pageLoader, dateBinder, pageState)
     }
 }
 

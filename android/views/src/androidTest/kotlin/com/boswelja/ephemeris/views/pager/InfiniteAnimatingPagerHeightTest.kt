@@ -33,7 +33,7 @@ class InfiniteAnimatingPagerHeightTest {
         var pager: InfiniteAnimatingPager? = null
         scenario.onFragment {
             pager = it.pager
-            it.pager.adapter = adapter
+            it.pager.setAdapter(adapter)
         }
 
         val initialHeight = pager!!.height
@@ -138,7 +138,7 @@ class InfiniteAnimatingPagerHeightTest {
         onFragment {
             pager = it.pager
             it.pager.animateHeight = false
-            it.pager.adapter = adapter
+            it.pager.setAdapter(adapter)
         }
         return pager!!
     }

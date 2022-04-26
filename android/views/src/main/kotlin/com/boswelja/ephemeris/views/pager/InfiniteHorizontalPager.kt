@@ -17,6 +17,7 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
+    private var snapPositionChangeListener: ((page: Int) -> Unit)? = null
     private val snapHelper = PagerSnapHelper()
 
     /**
@@ -34,7 +35,13 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
      * Called when the pager is snapping to a new page.
      */
     @CallSuper
-    public open fun onPageSnapping(page: Int) { }
+    public open fun onPageSnapping(page: Int) {
+        snapPositionChangeListener?.invoke(page)
+    }
+
+    public fun setOnSnapPositionChangeListener(listener: (page: Int) -> Unit) {
+        snapPositionChangeListener = listener
+    }
 
     @CallSuper
     override fun onScrolled(dx: Int, dy: Int) {
@@ -83,14 +90,14 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
     /**
      * Maps a position from the underlying RecyclerView to a pager page.
      */
-    protected fun positionToPage(position: Int): Int {
+    internal fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
     }
 
     /**
      * Maps a pager page to the underlying RecyclerView position
      */
-    protected fun pageToPosition(page: Int): Int {
+    internal fun pageToPosition(page: Int): Int {
         return page + (Int.MAX_VALUE / 2)
     }
 
