@@ -2,10 +2,9 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.pager.InfiniteAnimatingPager
+import com.boswelja.ephemeris.views.pager.InfiniteHorizontalPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.LocalDate
@@ -21,7 +20,7 @@ public typealias DateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
  */
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : InfiniteAnimatingPager(context, attrs, defStyleAttr) {
+) : InfiniteHorizontalPager(context, attrs, defStyleAttr) {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -50,7 +49,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             _dateBinder = value as CalendarDateBinder<ViewHolder>
             if (_dateBinder != null && _pageLoader != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
-                setAdapter(calendarAdapter)
+                adapter = calendarAdapter
             }
         }
 
@@ -67,7 +66,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             )
             if (_dateBinder != null && _pageLoader != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
-                setAdapter(calendarAdapter)
+                adapter = calendarAdapter
             }
             updateDisplayedDateRange(currentPage)
         }
@@ -82,7 +81,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        scrollToPage(page)
+        scrollToPosition(page)
     }
 
     /**
@@ -90,7 +89,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        smoothScrollToPage(page)
+        smoothScrollToPosition(page)
     }
 
     /**
