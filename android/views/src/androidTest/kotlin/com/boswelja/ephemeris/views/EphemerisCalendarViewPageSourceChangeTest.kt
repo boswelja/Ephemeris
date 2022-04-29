@@ -106,7 +106,6 @@ class EphemerisCalendarViewPageSourceChangeTest {
         onFragment {
             it.calendarView.apply {
                 calendarView = this
-                animateHeight = false
                 dateBinder = BasicDateBinder()
                 this.pageSource = pageSource
             }

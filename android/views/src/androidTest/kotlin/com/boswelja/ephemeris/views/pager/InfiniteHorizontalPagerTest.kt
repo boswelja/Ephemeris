@@ -9,12 +9,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.boswelja.ephemeris.views.CustomViewMatchers.withHeight
 import com.boswelja.ephemeris.views.Direction
 import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.scrollTo
 import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.smoothScrollTo
 import com.boswelja.ephemeris.views.InfiniteHorizontalPagerActions.withCurrentPage
 import com.boswelja.ephemeris.views.InfiniteHorizontalPagerFragment
 import com.boswelja.ephemeris.views.R
+import com.boswelja.ephemeris.views.pagingadapters.AlternatingHeightPagerAdapter
 import com.boswelja.ephemeris.views.pagingadapters.BasicInfinitePagerAdapter
 import com.boswelja.ephemeris.views.testWithScrolling
 import org.junit.Test
@@ -115,6 +117,33 @@ class InfiniteHorizontalPagerTest {
         onView(withId(R.id.pager_view))
             .perform(scrollTo(targetBackwardPage))
             .check(matches(withCurrentPage(targetBackwardPage)))
+    }
+
+    @Test
+    fun userScrolls_heightIsCorrect() {
+        val scenario = launchFragmentInContainer<InfiniteHorizontalPagerFragment>()
+        val adapter = AlternatingHeightPagerAdapter(300, 500)
+        val pager = scenario.initAndGetPager(adapter)
+
+        testWithScrolling(
+            onScroll = { _, direction ->
+                val action = when (direction) {
+                    Direction.LeftToRight -> swipeRight()
+                    Direction.RightToLeft -> swipeLeft()
+                }
+                onView(withId(R.id.pager_view))
+                    .perform(action)
+                val newPage = pager.currentPage
+                val newHeight = adapter.getHeightFor(newPage)
+                onView(withId(R.id.pager_view))
+                    .check(matches(withHeight(newHeight)))
+            },
+            onResetState = {
+                scenario.onFragment {
+                    it.pager.scrollToPosition(0)
+                }
+            }
+        )
     }
 
     private fun FragmentScenario<InfiniteHorizontalPagerFragment>.initAndGetPager(
