@@ -66,7 +66,7 @@ public open class InfiniteAnimatingPager @JvmOverloads constructor(
     private fun animateHeight(
         viewHolder: ViewHolder,
         toHeight: Int,
-        fromHeight: Int = height
+        fromHeight: Int = height - paddingTop - paddingBottom
     ) {
         if (fromHeight == toHeight) return
 
