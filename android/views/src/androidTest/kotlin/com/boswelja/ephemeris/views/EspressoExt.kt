@@ -34,6 +34,26 @@ object EphemerisCalendarViewActions {
             }
         }
     }
+
+    fun animateScrollTo(date: LocalDate): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return Matchers.allOf(
+                    ViewMatchers.isDisplayed(),
+                    ViewMatchers.isAssignableFrom(EphemerisCalendarView::class.java)
+                )
+            }
+
+            override fun getDescription(): String {
+                return "performing smooth scroll to date $date"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                (view as EphemerisCalendarView).scrollToDate(date)
+                uiController?.loopMainThreadForAtLeast(300)
+            }
+        }
+    }
 }
 
 object InfiniteHorizontalPagerActions {
