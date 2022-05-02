@@ -122,5 +122,5 @@ npmPublishing {
     }
 
     readme = file("README.md")
-    organization = "io.github.boswelja.ephemeris"
+    organization = "ephemeris"
 }
