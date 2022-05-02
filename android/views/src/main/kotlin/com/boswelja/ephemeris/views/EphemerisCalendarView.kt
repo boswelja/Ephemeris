@@ -2,6 +2,9 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.widget.FrameLayout
+import androidx.core.view.get
+import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.pager.HeightAdjustingPager
@@ -20,15 +23,18 @@ public typealias DateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
  */
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : HeightAdjustingPager(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+
+    private val currentPager: HeightAdjustingPager
+        get() = get(0) as HeightAdjustingPager
 
     private lateinit var calendarAdapter: CalendarPagerAdapter
 
     private var _pageLoader: CalendarPageLoader? = null
 
-    private var _dateBinder: CalendarDateBinder<ViewHolder>? = null
+    private var _dateBinder: CalendarDateBinder<RecyclerView.ViewHolder>? = null
 
     private var displayedDateRangeChangeListener: DateRangeChangeListener? = null
 
@@ -38,6 +44,9 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     public lateinit var displayedDateRange: ClosedRange<LocalDate>
         private set
 
+    public val currentPage: Int
+        get() = currentPager.currentPage
+
     /**
      * The current [CalendarDateBinder] used to bind date cells. Setting this will cause the calendar
      * view to redraw itself.
@@ -46,10 +55,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         get() = _dateBinder!!
         set(value) {
             @Suppress("UNCHECKED_CAST")
-            _dateBinder = value as CalendarDateBinder<ViewHolder>
+            _dateBinder = value as CalendarDateBinder<RecyclerView.ViewHolder>
             if (_dateBinder != null && _pageLoader != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
-                adapter = calendarAdapter
+                initView()
             }
         }
 
@@ -66,22 +75,16 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             )
             if (_dateBinder != null && _pageLoader != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
-                adapter = calendarAdapter
+                initView()
             }
-            updateDisplayedDateRange(currentPage)
         }
-
-    override fun onPageSnapping(page: Int) {
-        super.onPageSnapping(page)
-        updateDisplayedDateRange(page)
-    }
 
     /**
      * Scrolls the calendar to the page with the given date.
      */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        scrollToPosition(page)
+        currentPager.scrollToPosition(page)
     }
 
     /**
@@ -89,7 +92,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        smoothScrollToPosition(page)
+        currentPager.smoothScrollToPosition(page)
     }
 
     /**
@@ -118,6 +121,16 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             calendarAdapter.pageToPosition(startPage),
             itemsChanged
         )
+    }
+
+    private fun initView() {
+        removeAllViews()
+        val newView = HeightAdjustingPager(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            adapter = calendarAdapter
+        }
+        addView(newView)
+        updateDisplayedDateRange(currentPager.currentPage)
     }
 
     /**
