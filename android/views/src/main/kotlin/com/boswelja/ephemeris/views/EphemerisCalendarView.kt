@@ -46,9 +46,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     public lateinit var displayedDateRange: ClosedRange<LocalDate>
         private set
 
-    public val currentPage: Int
-        get() = currentPager.currentPage
-
+    /**
+     * Whether height changes should be animated for the calendar view. WARNING: This applies a
+     * [LayoutTransition] to the parent ViewGroup. This might have unintended side-effects.
+     */
     public var animateHeight: Boolean = false
         set(value) {
             if (value) {

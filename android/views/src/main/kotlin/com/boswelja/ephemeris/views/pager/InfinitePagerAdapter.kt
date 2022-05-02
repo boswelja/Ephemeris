@@ -3,9 +3,9 @@ package com.boswelja.ephemeris.views.pager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
-public abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
+internal abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
 
-    public abstract fun onBindHolder(holder: T, page: Int)
+    abstract fun onBindHolder(holder: T, page: Int)
 
     override fun getItemCount(): Int = MAX_PAGES
 
@@ -15,7 +15,7 @@ public abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
         onBindHolder(holder, positionToPage(position))
     }
 
-    internal fun positionToPage(position: Int): Int {
+    private fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
     }
 
