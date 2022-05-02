@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
@@ -30,7 +29,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val currentPager: HeightAdjustingPager
-        get() = get(0) as HeightAdjustingPager
+        get() = getChildAt(0) as HeightAdjustingPager
 
     private lateinit var calendarAdapter: CalendarPagerAdapter
 
