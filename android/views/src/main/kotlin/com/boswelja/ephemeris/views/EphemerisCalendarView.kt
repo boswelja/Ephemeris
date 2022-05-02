@@ -49,6 +49,22 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     public val currentPage: Int
         get() = currentPager.currentPage
 
+    public var animateHeight: Boolean = false
+        set(value) {
+            if (value) {
+                layoutTransition = LayoutTransition().apply {
+                    this.enableTransitionType(LayoutTransition.CHANGING)
+                }
+                (parent as ViewGroup).layoutTransition = LayoutTransition().apply {
+                    this.enableTransitionType(LayoutTransition.CHANGING)
+                }
+            } else {
+                layoutTransition = null
+                (parent as ViewGroup).layoutTransition = null
+            }
+            field = value
+        }
+
     /**
      * The current [CalendarDateBinder] used to bind date cells. Setting this will cause the calendar
      * view to redraw itself.
@@ -80,20 +96,6 @@ public class EphemerisCalendarView @JvmOverloads constructor(
                 initView()
             }
         }
-
-    init {
-        layoutTransition = LayoutTransition().apply {
-            this.enableTransitionType(LayoutTransition.CHANGING)
-        }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        // TODO This could have unintended side effects
-        (parent as ViewGroup).layoutTransition = LayoutTransition().apply {
-            this.enableTransitionType(LayoutTransition.CHANGING)
-        }
-    }
 
     /**
      * Scrolls the calendar to the page with the given date.
