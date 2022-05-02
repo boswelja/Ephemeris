@@ -1,7 +1,9 @@
 package com.boswelja.ephemeris.views
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
@@ -78,6 +80,20 @@ public class EphemerisCalendarView @JvmOverloads constructor(
                 initView()
             }
         }
+
+    init {
+        layoutTransition = LayoutTransition().apply {
+            this.enableTransitionType(LayoutTransition.CHANGING)
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        // TODO This could have unintended side effects
+        (parent as ViewGroup).layoutTransition = LayoutTransition().apply {
+            this.enableTransitionType(LayoutTransition.CHANGING)
+        }
+    }
 
     /**
      * Scrolls the calendar to the page with the given date.
