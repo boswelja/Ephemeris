@@ -26,7 +26,7 @@ private const val ANIMATION_TIMEOUT = 300L
 class EphemerisCalendarViewPageSourceChangeTest {
 
     @Test
-    fun withScrolling_onPageSourceChange_heightChanges() {
+    fun afterScrolling_onPageSourceChange_heightChanges() {
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
         val calendarView = scenario.initAndGetCalendarView(
             CalendarMonthPageSource(

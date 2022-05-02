@@ -28,7 +28,7 @@ import kotlin.properties.Delegates
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class EphemerisCalendarViewItemChangeTest {
+class EphemerisCalendarViewDateChangeTest {
 
     private var backgroundColor by Delegates.notNull<Int>()
 
@@ -61,6 +61,31 @@ class EphemerisCalendarViewItemChangeTest {
     }
 
     @Test
+    fun notifyDateChanged_doesNotRebindExtraCells() {
+        val startDate = LocalDate(2022, 4, 19)
+        val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
+        scenario.initAndGetCalendarView(
+            pageSource = CalendarMonthPageSource(
+                firstDayOfWeek = DayOfWeek.SUNDAY,
+                startYearMonth = startDate.yearMonth
+            )
+        )
+
+        onIdle()
+
+        backgroundColor = Color.GREEN
+        scenario.onFragment {
+            it.calendarView.notifyDateChanged(startDate)
+        }
+        Thread.sleep(300)
+
+        onView(allOf(isCompletelyDisplayed(), hasChild(withText((startDate.dayOfMonth - 1).toString()))))
+            .check(matches(withBackgroundColor(Color.RED)))
+        onView(allOf(isCompletelyDisplayed(), hasChild(withText((startDate.dayOfMonth + 1).toString()))))
+            .check(matches(withBackgroundColor(Color.RED)))
+    }
+
+    @Test
     fun notifyDateRangeChanged_correctlyReBindsCell() {
         val startDate = LocalDate(2022, 4, 9)
         val targetRange = startDate..startDate.plus(10, DateTimeUnit.DAY)
@@ -84,6 +109,32 @@ class EphemerisCalendarViewItemChangeTest {
             .check(matches(withBackgroundColor(Color.GREEN)))
         onView(allOf(isCompletelyDisplayed(), hasChild(withText(targetRange.endInclusive.dayOfMonth.toString()))))
             .check(matches(withBackgroundColor(Color.GREEN)))
+    }
+
+    @Test
+    fun notifyDateRangeChanged_doesNotRebindExtraCells() {
+        val startDate = LocalDate(2022, 4, 9)
+        val targetRange = startDate..startDate.plus(10, DateTimeUnit.DAY)
+        val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
+        scenario.initAndGetCalendarView(
+            pageSource = CalendarMonthPageSource(
+                firstDayOfWeek = DayOfWeek.SUNDAY,
+                startYearMonth = startDate.yearMonth
+            )
+        )
+
+        onIdle()
+
+        backgroundColor = Color.GREEN
+        scenario.onFragment {
+            it.calendarView.notifyDateRangeChanged(targetRange)
+        }
+        Thread.sleep(300)
+
+        onView(allOf(isCompletelyDisplayed(), hasChild(withText((targetRange.start.dayOfMonth - 1).toString()))))
+            .check(matches(withBackgroundColor(Color.RED)))
+        onView(allOf(isCompletelyDisplayed(), hasChild(withText((targetRange.endInclusive.dayOfMonth + 1).toString()))))
+            .check(matches(withBackgroundColor(Color.RED)))
     }
 
     private fun FragmentScenario<EphemerisCalendarFragment>.initAndGetCalendarView(
