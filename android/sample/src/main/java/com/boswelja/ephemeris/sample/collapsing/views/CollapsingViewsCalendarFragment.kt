@@ -32,6 +32,7 @@ class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_collapsing_ca
 
     private fun setupCalendar() {
         binding.switchCalendar.apply {
+            animateHeight = true
             dateBinder = CollapsingCalendarDayBinder()
             setOnDisplayedDateRangeChangeListener {
                 viewModel.handlePageChanged(it)

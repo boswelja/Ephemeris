@@ -1,10 +1,14 @@
 package com.boswelja.ephemeris.views
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.pager.InfiniteAnimatingPager
+import com.boswelja.ephemeris.views.pager.HeightAdjustingPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.LocalDate
@@ -20,11 +24,18 @@ public typealias DateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
  */
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : InfiniteAnimatingPager(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val calendarAdapter = CalendarPagerAdapter()
+    private val currentPager: HeightAdjustingPager
+        get() = getChildAt(0) as HeightAdjustingPager
+
+    private lateinit var calendarAdapter: CalendarPagerAdapter
+
+    private var _pageLoader: CalendarPageLoader? = null
+
+    private var _dateBinder: CalendarDateBinder<RecyclerView.ViewHolder>? = null
 
     private var displayedDateRangeChangeListener: DateRangeChangeListener? = null
 
@@ -35,14 +46,38 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         private set
 
     /**
+     * Whether height changes should be animated for the calendar view. WARNING: This applies a
+     * [LayoutTransition] to the parent ViewGroup. This might have unintended side-effects.
+     */
+    public var animateHeight: Boolean = false
+        set(value) {
+            if (value) {
+                layoutTransition = LayoutTransition().apply {
+                    this.enableTransitionType(LayoutTransition.CHANGING)
+                }
+                (parent as ViewGroup).layoutTransition = LayoutTransition().apply {
+                    this.enableTransitionType(LayoutTransition.CHANGING)
+                }
+            } else {
+                layoutTransition = null
+                (parent as ViewGroup).layoutTransition = null
+            }
+            field = value
+        }
+
+    /**
      * The current [CalendarDateBinder] used to bind date cells. Setting this will cause the calendar
      * view to redraw itself.
      */
     public var dateBinder: CalendarDateBinder<*>
-        get() = calendarAdapter.dateBinder!!
+        get() = _dateBinder!!
         set(value) {
             @Suppress("UNCHECKED_CAST")
-            calendarAdapter.dateBinder = value as CalendarDateBinder<ViewHolder>
+            _dateBinder = value as CalendarDateBinder<RecyclerView.ViewHolder>
+            if (_dateBinder != null && _pageLoader != null) {
+                calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
+                initView()
+            }
         }
 
     /**
@@ -50,30 +85,24 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      * will cause the calendar to recreate it's views.
      */
     public var pageSource: CalendarPageSource
-        get() = calendarAdapter.pageLoader!!.calendarPageSource
+        get() = _pageLoader!!.calendarPageSource
         set(value) {
-            calendarAdapter.pageLoader = CalendarPageLoader(
+            _pageLoader = CalendarPageLoader(
                 coroutineScope,
                 value
             )
-            updateDisplayedDateRange(currentPage)
+            if (_dateBinder != null && _pageLoader != null) {
+                calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
+                initView()
+            }
         }
-
-    init {
-        adapter = calendarAdapter
-    }
-
-    override fun onPageSnapping(page: Int) {
-        super.onPageSnapping(page)
-        updateDisplayedDateRange(page)
-    }
 
     /**
      * Scrolls the calendar to the page with the given date.
      */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        scrollToPosition(page)
+        currentPager.scrollToPosition(page)
     }
 
     /**
@@ -81,7 +110,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        smoothScrollToPosition(page)
+        currentPager.smoothScrollToPosition(page)
     }
 
     /**
@@ -96,7 +125,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun notifyDateChanged(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        calendarAdapter.notifyItemChanged(pageToPosition(page))
+        calendarAdapter.notifyItemChanged(calendarAdapter.pageToPosition(page))
     }
 
     /**
@@ -107,16 +136,27 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         val endPage = pageSource.getPageFor(dates.endInclusive)
         val itemsChanged = endPage - startPage + 1
         calendarAdapter.notifyItemRangeChanged(
-            pageToPosition(startPage),
+            calendarAdapter.pageToPosition(startPage),
             itemsChanged
         )
+    }
+
+    private fun initView() {
+        removeAllViews()
+        val newView = HeightAdjustingPager(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            adapter = calendarAdapter
+            setOnSnapPositionChangeListener { updateDisplayedDateRange(it) }
+        }
+        addView(newView)
+        updateDisplayedDateRange(currentPager.currentPage)
     }
 
     /**
      * Updates the displayed date range for the given page. This will notify any listeners present.
      */
     private fun updateDisplayedDateRange(page: Int) {
-        displayedDateRange = calendarAdapter.pageLoader!!.getDateRangeFor(page)
+        displayedDateRange = calendarAdapter.pageLoader.getDateRangeFor(page)
         displayedDateRangeChangeListener?.let {
             it(displayedDateRange)
         }
