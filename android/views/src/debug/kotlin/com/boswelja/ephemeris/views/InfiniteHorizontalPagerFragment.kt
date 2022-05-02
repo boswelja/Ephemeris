@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.boswelja.ephemeris.views.databinding.FragmentPagerBinding
-import com.boswelja.ephemeris.views.pager.InfiniteHorizontalPager
+import com.boswelja.ephemeris.views.pager.HeightAdjustingPager
 
 public class InfiniteHorizontalPagerFragment : Fragment() {
-    public lateinit var pager: InfiniteHorizontalPager
+    public lateinit var pager: HeightAdjustingPager
 
     override fun onCreateView(
         inflater: LayoutInflater,

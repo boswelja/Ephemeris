@@ -2,6 +2,9 @@ package com.boswelja.ephemeris.views.pager
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
+import android.view.View
+import android.view.View.MeasureSpec
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -11,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
  * An implementation of [RecyclerView] that provides seemingly infinite left/right paging support.
  * Implementations of this must subclass [InfinitePagerAdapter] for their adapter.
  */
-public open class InfiniteHorizontalPager @JvmOverloads constructor(
+public open class HeightAdjustingPager @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -83,25 +86,54 @@ public open class InfiniteHorizontalPager @JvmOverloads constructor(
         val snapPositionChanged = currentPage != snapPosition
         if (snapPositionChanged) {
             currentPage = snapPosition
+            updateHeight()
             onPageSnapping(snapPosition)
         }
+    }
+
+    private fun updateHeight() {
+        val viewHolder = findViewHolderForLayoutPosition(currentPage)
+        if (viewHolder == null) {
+            Log.w("HeightAdjustingPager", "Failed to get the child view holder at page $currentPage")
+            return
+        }
+
+        // Measure the child
+        val newHeight = viewHolder.itemView.measureForUnboundedHeight()
+
+        // Apply the new height
+        setHeight(newHeight)
     }
 
     /**
      * Maps a position from the underlying RecyclerView to a pager page.
      */
-    internal fun positionToPage(position: Int): Int {
+    private fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
     }
 
     /**
      * Maps a pager page to the underlying RecyclerView position
      */
-    internal fun pageToPosition(page: Int): Int {
+    private fun pageToPosition(page: Int): Int {
         return page + (Int.MAX_VALUE / 2)
     }
 
     private companion object {
         private const val MAX_PAGES = Int.MAX_VALUE
+    }
+}
+
+private fun View.measureForUnboundedHeight(): Int {
+    measure(
+        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+    )
+    return measuredHeight
+}
+
+private fun View.setHeight(newHeight: Int) {
+    layoutParams = layoutParams.apply {
+        height = newHeight
     }
 }

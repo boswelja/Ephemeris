@@ -148,8 +148,8 @@ class InfiniteHorizontalPagerTest {
 
     private fun FragmentScenario<InfiniteHorizontalPagerFragment>.initAndGetPager(
         adapter: InfinitePagerAdapter<*> = BasicInfinitePagerAdapter()
-    ): InfiniteHorizontalPager {
-        var pager: InfiniteHorizontalPager? = null
+    ): HeightAdjustingPager {
+        var pager: HeightAdjustingPager? = null
         onFragment {
             pager = it.pager
             it.pager.adapter = adapter

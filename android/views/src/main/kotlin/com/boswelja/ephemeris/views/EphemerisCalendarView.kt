@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.pager.InfiniteHorizontalPager
+import com.boswelja.ephemeris.views.pager.HeightAdjustingPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.LocalDate
@@ -20,7 +20,7 @@ public typealias DateRangeChangeListener = (ClosedRange<LocalDate>) -> Unit
  */
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : InfiniteHorizontalPager(context, attrs, defStyleAttr) {
+) : HeightAdjustingPager(context, attrs, defStyleAttr) {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 

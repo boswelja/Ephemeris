@@ -7,7 +7,7 @@ import androidx.core.view.children
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
-import com.boswelja.ephemeris.views.pager.InfiniteHorizontalPager
+import com.boswelja.ephemeris.views.pager.HeightAdjustingPager
 import kotlinx.datetime.LocalDate
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -47,7 +47,7 @@ object InfiniteHorizontalPagerActions {
             }
 
             override fun matchesSafely(item: View?): Boolean {
-                require(item is InfiniteHorizontalPager?)
+                require(item is HeightAdjustingPager?)
                 return item?.currentPage == currentPage
             }
         }
@@ -62,12 +62,12 @@ object InfiniteHorizontalPagerActions {
             override fun getConstraints(): Matcher<View> {
                 return Matchers.allOf(
                     ViewMatchers.isDisplayed(),
-                    ViewMatchers.isAssignableFrom(InfiniteHorizontalPager::class.java)
+                    ViewMatchers.isAssignableFrom(HeightAdjustingPager::class.java)
                 )
             }
 
             override fun perform(uiController: UiController?, view: View?) {
-                require(view is InfiniteHorizontalPager)
+                require(view is HeightAdjustingPager)
                 view.smoothScrollToPosition(page)
                 uiController?.loopMainThreadForAtLeast(300) // 300ms to account for scrolling
             }
@@ -83,12 +83,12 @@ object InfiniteHorizontalPagerActions {
             override fun getConstraints(): Matcher<View> {
                 return Matchers.allOf(
                     ViewMatchers.isDisplayed(),
-                    ViewMatchers.isAssignableFrom(InfiniteHorizontalPager::class.java)
+                    ViewMatchers.isAssignableFrom(HeightAdjustingPager::class.java)
                 )
             }
 
             override fun perform(uiController: UiController?, view: View?) {
-                require(view is InfiniteHorizontalPager)
+                require(view is HeightAdjustingPager)
                 view.scrollToPosition(page)
                 uiController?.loopMainThreadUntilIdle()
             }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.boswelja.ephemeris.views.pager.InfiniteHorizontalPager
+    <com.boswelja.ephemeris.views.pager.HeightAdjustingPager
         android:id="@+id/pager_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
