@@ -128,6 +128,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         val newView = HeightAdjustingPager(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             adapter = calendarAdapter
+            setOnSnapPositionChangeListener { updateDisplayedDateRange(it) }
         }
         addView(newView)
         updateDisplayedDateRange(currentPager.currentPage)
