@@ -10,5 +10,5 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20")
     implementation("com.android.library:com.android.library.gradle.plugin:7.3.0-alpha09")
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.6.20")
+    implementation("org.jetbrains.dokka:dokka-gradle-plugin:1.6.21")
 }
