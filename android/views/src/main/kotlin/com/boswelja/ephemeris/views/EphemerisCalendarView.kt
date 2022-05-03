@@ -26,6 +26,12 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    // We capture any padding set on EphemerisCalendarView and pass it on to the inner pagers. This
+    // allows clipToPadding to work correctly. Fortunately the calendar only ever scrolls horizontally
+    private var internalPaddingLeft: Int = 0
+    private var internalPaddingRight: Int = 0
+    private var internalClipToPadding: Boolean = false
+
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val currentPager: HeightAdjustingPager
@@ -97,6 +103,51 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             }
         }
 
+    init {
+        if (super.getPaddingLeft() > 0 || super.getPaddingRight() > 0) {
+            internalPaddingLeft = super.getPaddingLeft()
+            internalPaddingRight = super.getPaddingRight()
+            super.setPadding(0, super.getPaddingTop(), 0, super.getPaddingBottom())
+        }
+    }
+
+    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        internalPaddingLeft = left
+        internalPaddingRight = right
+        super.setPadding(0, top, 0, bottom)
+    }
+
+    override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
+        when (layoutDirection) {
+            LAYOUT_DIRECTION_RTL -> setPadding(end, top, start, bottom)
+            else -> setPadding(start, top, end, bottom)
+        }
+    }
+
+    override fun getPaddingStart(): Int {
+        return currentPager.paddingStart
+    }
+
+    override fun getPaddingLeft(): Int {
+        return currentPager.paddingLeft
+    }
+
+    override fun getPaddingEnd(): Int {
+        return currentPager.paddingEnd
+    }
+
+    override fun getPaddingRight(): Int {
+        return currentPager.paddingRight
+    }
+
+    override fun setClipToPadding(clipToPadding: Boolean) {
+        internalClipToPadding = clipToPadding
+    }
+
+    override fun getClipToPadding(): Boolean {
+        return internalClipToPadding
+    }
+
     /**
      * Scrolls the calendar to the page with the given date.
      */
@@ -145,6 +196,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         removeAllViews()
         val newView = HeightAdjustingPager(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            clipToPadding = internalClipToPadding
+            setPadding(internalPaddingLeft, 0, internalPaddingRight, 0)
             adapter = calendarAdapter
             setOnSnapPositionChangeListener { updateDisplayedDateRange(it) }
         }
