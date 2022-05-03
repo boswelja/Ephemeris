@@ -34,8 +34,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val currentPager: HeightAdjustingPager
-        get() = getChildAt(0) as HeightAdjustingPager
+    private val currentPager: HeightAdjustingPager?
+        get() = getChildAt(0) as? HeightAdjustingPager
 
     private lateinit var calendarAdapter: CalendarPagerAdapter
 
@@ -115,6 +115,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         internalPaddingLeft = left
         internalPaddingRight = right
         super.setPadding(0, top, 0, bottom)
+        currentPager?.setPadding(internalPaddingLeft, 0, internalPaddingRight, 0)
     }
 
     override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
@@ -125,23 +126,24 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     }
 
     override fun getPaddingStart(): Int {
-        return currentPager.paddingStart
+        return currentPager!!.paddingStart
     }
 
     override fun getPaddingLeft(): Int {
-        return currentPager.paddingLeft
+        return currentPager!!.paddingLeft
     }
 
     override fun getPaddingEnd(): Int {
-        return currentPager.paddingEnd
+        return currentPager!!.paddingEnd
     }
 
     override fun getPaddingRight(): Int {
-        return currentPager.paddingRight
+        return currentPager!!.paddingRight
     }
 
     override fun setClipToPadding(clipToPadding: Boolean) {
         internalClipToPadding = clipToPadding
+        currentPager?.clipToPadding = internalClipToPadding
     }
 
     override fun getClipToPadding(): Boolean {
@@ -153,7 +155,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        currentPager.scrollToPosition(page)
+        currentPager!!.scrollToPosition(page)
     }
 
     /**
@@ -161,7 +163,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        currentPager.smoothScrollToPosition(page)
+        currentPager!!.smoothScrollToPosition(page)
     }
 
     /**
@@ -202,7 +204,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             setOnSnapPositionChangeListener { updateDisplayedDateRange(it) }
         }
         addView(newView)
-        updateDisplayedDateRange(currentPager.currentPage)
+        updateDisplayedDateRange(currentPager!!.currentPage)
     }
 
     /**
