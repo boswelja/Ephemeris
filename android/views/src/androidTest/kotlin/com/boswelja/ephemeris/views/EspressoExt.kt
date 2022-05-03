@@ -86,4 +86,37 @@ object CustomViewMatchers {
             }
         }
     }
+
+    fun withPadding(left: Int, top: Int, right: Int, bottom: Int): Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description?) {
+                description?.apply {
+                    appendText("Checking the matcher on received view: ")
+                    appendText("with paddingLeft=$left paddingTop=$top paddingRight=$right paddingBottom=$bottom")
+                }
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                return item?.let {
+                    it.paddingLeft == left && it.paddingTop == top && it.paddingRight == right && it.paddingBottom == bottom
+                } ?: false
+            }
+        }
+    }
+
+    fun withClipToPadding(clipToPadding: Boolean): Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description?) {
+                description?.apply {
+                    appendText("Checking the matcher on received view: ")
+                    appendText("with clipToPadding=$clipToPadding")
+                }
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                if (item !is ViewGroup) return false
+                return item.clipToPadding == clipToPadding
+            }
+        }
+    }
 }
