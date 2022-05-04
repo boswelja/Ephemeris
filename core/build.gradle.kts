@@ -8,6 +8,7 @@ plugins {
     id("com.ephemeris.publish.maven")
     id("dev.petuska.npm.publish") version "2.1.2"
     id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
 }
 
 kotlin {

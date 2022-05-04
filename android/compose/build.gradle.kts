@@ -7,6 +7,7 @@ plugins {
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
     id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
 }
 
 android {
