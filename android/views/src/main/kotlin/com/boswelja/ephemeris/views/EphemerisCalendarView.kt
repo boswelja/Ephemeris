@@ -76,7 +76,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      * view to redraw itself.
      */
     public var dateBinder: CalendarDateBinder<*>
-        get() = _dateBinder!!
+        get() = checkNotNull(_dateBinder) { MissingDateBinderException }
         set(value) {
             @Suppress("UNCHECKED_CAST")
             _dateBinder = value as CalendarDateBinder<RecyclerView.ViewHolder>
@@ -91,7 +91,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      * will cause the calendar to recreate it's views.
      */
     public var pageSource: CalendarPageSource
-        get() = _pageLoader!!.calendarPageSource
+        get() = checkNotNull(_pageLoader?.calendarPageSource) { MissingPageSourceException }
         set(value) {
             _pageLoader = CalendarPageLoader(
                 coroutineScope,
@@ -126,19 +126,19 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     }
 
     override fun getPaddingStart(): Int {
-        return currentPager!!.paddingStart
+        return checkNotNull(currentPager?.paddingStart) { GenericCalendarInitException }
     }
 
     override fun getPaddingLeft(): Int {
-        return currentPager!!.paddingLeft
+        return checkNotNull(currentPager?.paddingLeft) { GenericCalendarInitException }
     }
 
     override fun getPaddingEnd(): Int {
-        return currentPager!!.paddingEnd
+        return checkNotNull(currentPager?.paddingEnd) { GenericCalendarInitException }
     }
 
     override fun getPaddingRight(): Int {
-        return currentPager!!.paddingRight
+        return checkNotNull(currentPager?.paddingRight) { GenericCalendarInitException }
     }
 
     override fun setClipToPadding(clipToPadding: Boolean) {
@@ -155,7 +155,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        currentPager!!.scrollToPosition(page)
+        checkNotNull(currentPager) { GenericCalendarInitException }
+            .scrollToPosition(page)
     }
 
     /**
@@ -163,7 +164,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        currentPager!!.smoothScrollToPosition(page)
+        checkNotNull(currentPager) { GenericCalendarInitException }
+            .smoothScrollToPosition(page)
     }
 
     /**
@@ -204,7 +206,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             setOnSnapPositionChangeListener { updateDisplayedDateRange(it) }
         }
         addView(newView)
-        updateDisplayedDateRange(currentPager!!.currentPage)
+        updateDisplayedDateRange(newView.currentPage)
     }
 
     /**
@@ -215,5 +217,11 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         displayedDateRangeChangeListener?.let {
             it(displayedDateRange)
         }
+    }
+
+    private companion object {
+        private const val MissingPageSourceException = "No page source found! Did you forget to set up the calendar?"
+        private const val MissingDateBinderException = "No date binder found! Did you forget to set up the calendar?"
+        private const val GenericCalendarInitException = "Calendar not configured correctly"
     }
 }
