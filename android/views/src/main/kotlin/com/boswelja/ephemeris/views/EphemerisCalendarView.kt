@@ -155,7 +155,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun scrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        currentPager!!.scrollToPosition(page)
+        checkNotNull(currentPager) { GenericCalendarInitException }
+            .scrollToPosition(page)
     }
 
     /**
@@ -163,7 +164,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun animateScrollToDate(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        currentPager!!.smoothScrollToPosition(page)
+        checkNotNull(currentPager) { GenericCalendarInitException }
+            .smoothScrollToPosition(page)
     }
 
     /**
