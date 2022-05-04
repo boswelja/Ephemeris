@@ -76,7 +76,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      * view to redraw itself.
      */
     public var dateBinder: CalendarDateBinder<*>
-        get() = requireNotNull(_dateBinder) { MissingDateBinderException }
+        get() = checkNotNull(_dateBinder) { MissingDateBinderException }
         set(value) {
             @Suppress("UNCHECKED_CAST")
             _dateBinder = value as CalendarDateBinder<RecyclerView.ViewHolder>
@@ -91,7 +91,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      * will cause the calendar to recreate it's views.
      */
     public var pageSource: CalendarPageSource
-        get() = requireNotNull(_pageLoader?.calendarPageSource) { MissingPageSourceException }
+        get() = checkNotNull(_pageLoader?.calendarPageSource) { MissingPageSourceException }
         set(value) {
             _pageLoader = CalendarPageLoader(
                 coroutineScope,
@@ -126,19 +126,19 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     }
 
     override fun getPaddingStart(): Int {
-        return requireNotNull(currentPager?.paddingStart) { GenericCalendarInitException }
+        return checkNotNull(currentPager?.paddingStart) { GenericCalendarInitException }
     }
 
     override fun getPaddingLeft(): Int {
-        return requireNotNull(currentPager?.paddingLeft) { GenericCalendarInitException }
+        return checkNotNull(currentPager?.paddingLeft) { GenericCalendarInitException }
     }
 
     override fun getPaddingEnd(): Int {
-        return requireNotNull(currentPager?.paddingEnd) { GenericCalendarInitException }
+        return checkNotNull(currentPager?.paddingEnd) { GenericCalendarInitException }
     }
 
     override fun getPaddingRight(): Int {
-        return requireNotNull(currentPager?.paddingRight) { GenericCalendarInitException }
+        return checkNotNull(currentPager?.paddingRight) { GenericCalendarInitException }
     }
 
     override fun setClipToPadding(clipToPadding: Boolean) {
