@@ -20,6 +20,12 @@
         <action
             android:id="@+id/action_mainFragment_to_customSourceComposeCalendarFragment"
             app:destination="@id/customSourceComposeCalendarFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_dateSelectionComposeCalendarFragment"
+            app:destination="@id/dateSelectionCalendarFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_dateSelectionViewsCalendarFragment"
+            app:destination="@id/dateSelectionViewsCalendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/collapsingComposeCalendarFragment"
@@ -37,4 +43,12 @@
         android:id="@+id/customSourceComposeCalendarFragment"
         android:name="com.boswelja.ephemeris.sample.custompagesource.compose.CustomSourceComposeCalendarFragment"
         android:label="CustomSourceComposeCalendarFragment" />
+    <fragment
+        android:id="@+id/dateSelectionCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.dateselection.compose.DateSelectionComposeCalendarFragment"
+        android:label="DateSelectionCalendarFragment" />
+    <fragment
+        android:id="@+id/dateSelectionViewsCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.dateselection.views.DateSelectionViewsCalendarFragment"
+        android:label="DateSelectionViewsCalendarFragment" />
 </navigation>
