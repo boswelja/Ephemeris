@@ -1,3 +1,4 @@
+name: Generate GH Pages
 on:
   release:
     types: [published]
