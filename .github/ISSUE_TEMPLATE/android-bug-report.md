@@ -1,8 +1,8 @@
 ---
-name: Android bug report
-about: Report an issue with Android-related components
+name: android-views bug report
+about: Report an issue with the android-views module
 title: ''
-labels: android, bug
+labels: android-views, bug
 assignees: ''
 
 ---
@@ -24,5 +24,5 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment**
- - Android version: [e.g. 12]
- - Library version: [e.g. 0.2.1]
+ - Android version: [e.g. 12L]
+ - Library version: [e.g. 1.0.2]
