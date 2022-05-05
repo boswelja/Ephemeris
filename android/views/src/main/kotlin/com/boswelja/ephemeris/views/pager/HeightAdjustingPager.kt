@@ -8,6 +8,7 @@ import android.view.View.MeasureSpec
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 
 /**
  * An implementation of [RecyclerView] that provides seemingly infinite left/right paging support.
@@ -31,6 +32,8 @@ internal class HeightAdjustingPager @JvmOverloads constructor(
     init {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         snapHelper.attachToRecyclerView(this)
+        // Disable item change animations, otherwise we get a crossfade when changing a page
+        (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         super.scrollToPosition(pageToPosition(currentPage))
     }
 

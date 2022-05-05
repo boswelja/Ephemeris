@@ -40,6 +40,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             Sample(
                 navAction = R.id.action_mainFragment_to_customSourceViewsCalendarFragment,
                 text = getString(R.string.views_sample)
+            ),
+            Header(getString(R.string.header_date_selection)),
+            Sample(
+                navAction = R.id.action_mainFragment_to_dateSelectionComposeCalendarFragment,
+                text = getString(R.string.compose_sample)
+            ),
+            Sample(
+                navAction = R.id.action_mainFragment_to_dateSelectionViewsCalendarFragment,
+                text = getString(R.string.views_sample)
             )
         )
 }
