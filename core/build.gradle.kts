@@ -1,3 +1,6 @@
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import java.net.URL
+
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlinx.kover")
@@ -5,6 +8,7 @@ plugins {
     id("com.ephemeris.publish.maven")
     id("dev.petuska.npm.publish") version "2.1.2"
     id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
 }
 
 kotlin {
@@ -123,4 +127,20 @@ npmPublishing {
 
     readme = file("README.md")
     organization = "ephemeris"
+}
+
+tasks.withType<DokkaTaskPartial>().configureEach {
+    dokkaSourceSets.configureEach {
+        sourceLink {
+            localDirectory.set(file("src/commonMain/kotlin"))
+
+            remoteUrl.set(
+                URL(
+                    "https://github.com/boswelja/Ephemeris/blob/main/core/src/commonMain/kotlin"
+                )
+            )
+        }
+
+        externalDocumentationLink("https://kotlin.github.io/kotlinx.coroutines/")
+    }
 }

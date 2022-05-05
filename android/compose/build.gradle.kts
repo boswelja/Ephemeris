@@ -1,8 +1,13 @@
+import java.net.URL
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.dokka.utilities.cast
+
 plugins {
     kotlin("android")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
     id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
 }
 
 android {
@@ -83,3 +88,24 @@ tasks
             kotlinCompile.kotlinOptions.freeCompilerArgs += "-Xexplicit-api=strict"
         }
     }
+
+tasks.withType<DokkaTaskPartial>().configureEach {
+    moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
+
+    dokkaSourceSets {
+        named("main") {
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+
+                remoteUrl.set(URL(
+                    "https://github.com/boswelja/Ephemeris/blob/main/android/compose/src/main/kotlin"))
+            }
+
+            // Workaround for https://github.com/Kotlin/dokka/issues/2455
+            externalDocumentationLink(
+                "https://developer.android.com/reference/kotlin/",
+                "https://developer.android.com/reference/kotlin/androidx/package-list"
+            )
+        }
+    }
+}
