@@ -1,0 +1,12 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:core
+com.boswelja.ephemeris.core.data
+com.boswelja.ephemeris.core.datetime
+com.boswelja.ephemeris.core.model
+com.boswelja.ephemeris.core.ui
+module:android-compose
+com.boswelja.ephemeris.compose
+module:android-views
+com.boswelja.ephemeris.views
