@@ -19,6 +19,6 @@ jobs:
       - name: Publish Page
         uses: crazy-max/ghaction-github-pages@v2
         with:
-          build_dir: build/dokka/dokkaHtmlMultiModule
+          build_dir: build/dokka/htmlMultiModule
           keep_history: true
   
