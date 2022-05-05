@@ -3,6 +3,7 @@ import java.net.URL
 
 plugins {
     kotlin("multiplatform")
+    kotlin("native.cocoapods")
     id("org.jetbrains.kotlinx.kover")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
@@ -10,6 +11,11 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
 }
+
+version = findProperty("version")?.let {
+    if (it == Project.DEFAULT_VERSION) null
+    else it
+} ?: "0.1.0"
 
 kotlin {
     explicitApi()
@@ -53,6 +59,16 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
             }
+        }
+    }
+
+    cocoapods {
+        summary = "The flexible, multiplatform calendar library!"
+        homepage = "https://boswelja.github.io/Ephemeris"
+        license = "MIT"
+
+        framework {
+            baseName = "EphemerisCore"
         }
     }
 }
