@@ -12,7 +12,7 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-version = findProperty("version")?.let {
+version = rootProject.findProperty("version")?.let {
     if (it == Project.DEFAULT_VERSION) null
     else it
 } ?: "0.1.0"
