@@ -38,14 +38,12 @@ public class CalendarMonthPageSource(
                 val startDate = firstDisplayedDate.plus(weekIndex, DateTimeUnit.WEEK)
                 days(daysInWeek) { dayIndex ->
                     val date = startDate.plus(dayIndex, DateTimeUnit.DAY)
-                    date { date }
-                    focused {
-                        when (focusMode) {
-                            FocusMode.MONTH -> date.yearMonth == month
-                            FocusMode.WEEKDAYS -> !weekends.contains(date.dayOfWeek)
-                            FocusMode.ALL -> true
-                            FocusMode.NONE -> false
-                        }
+                    this.date = date
+                    focused = when (focusMode) {
+                        FocusMode.MONTH -> date.yearMonth == month
+                        FocusMode.WEEKDAYS -> !weekends.contains(date.dayOfWeek)
+                        FocusMode.ALL -> true
+                        FocusMode.NONE -> false
                     }
                 }
             }

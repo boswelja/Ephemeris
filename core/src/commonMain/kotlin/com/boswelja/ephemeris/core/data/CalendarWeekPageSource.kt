@@ -34,13 +34,11 @@ public class CalendarWeekPageSource(
             row {
                 days(daysInWeek) { index ->
                     val date = startOfWeek.plus(index, DateTimeUnit.DAY)
-                    date { date }
-                    focused {
-                        when (focusMode) {
-                            FocusMode.WEEKDAYS -> !weekends.contains(date.dayOfWeek)
-                            FocusMode.ALL -> true
-                            FocusMode.NONE -> false
-                        }
+                    this.date = date
+                    focused = when (focusMode) {
+                        FocusMode.WEEKDAYS -> !weekends.contains(date.dayOfWeek)
+                        FocusMode.ALL -> true
+                        FocusMode.NONE -> false
                     }
                 }
             }
