@@ -34,14 +34,12 @@ class CustomCalendarPageSource(
                 val startOfRow = startDate.plus((page * rowCount) + rowNum, DateTimeUnit.WEEK)
                 days(daysInRow) { dayNum ->
                     val date = startOfRow.plus(dayNum, DateTimeUnit.DAY)
-                    date { date }
-                    focused {
-                        when (date.dayOfWeek) {
-                            DayOfWeek.MONDAY,
-                            DayOfWeek.WEDNESDAY,
-                            DayOfWeek.FRIDAY -> true
-                            else -> false
-                        }
+                    this.date = date
+                    focused = when (date.dayOfWeek) {
+                        DayOfWeek.MONDAY,
+                        DayOfWeek.WEDNESDAY,
+                        DayOfWeek.FRIDAY -> true
+                        else -> false
                     }
                 }
             }

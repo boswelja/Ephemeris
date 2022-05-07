@@ -32,8 +32,8 @@ class CalendarPageBuilderTest {
         val builder = CalendarPageBuilder().apply {
             rows(calendarPage.rows.size) { index ->
                 days(calendarPage.rows[index].days.size) {
-                    date { LocalDate(2022, 3, 26) }
-                    focused { true }
+                    date = LocalDate(2022, 3, 26)
+                    focused = true
                 }
             }
         }
@@ -48,8 +48,8 @@ class CalendarPageBuilderTest {
         val page = CalendarPageBuilder().apply {
             row {
                 day {
-                    date { LocalDate(2022, 6, 26) }
-                    focused { true }
+                    date = LocalDate(2022, 6, 26)
+                    focused = true
                 }
             }
         }.build()
@@ -68,8 +68,8 @@ class CalendarPageBuilderTest {
             val calendarPage = CalendarPageBuilder().apply {
                 rows(count) {
                     days(7) {
-                        date { LocalDate(2022, 3, 26) }
-                        focused { true }
+                        date = LocalDate(2022, 3, 26)
+                        focused = true
                     }
                 }
             }.build()
@@ -104,8 +104,8 @@ class CalendarRowBuilderTest {
 
         val builder = CalendarRowBuilder().apply {
             days(calendarRow.days.size) {
-                date { LocalDate(2022, 3, 26) }
-                focused { true }
+                date = LocalDate(2022, 3, 26)
+                focused = true
             }
         }
 
@@ -122,8 +122,8 @@ class CalendarRowBuilderTest {
         testCounts.forEach { count ->
             val calendarRow = CalendarRowBuilder().apply {
                 days(count) {
-                    date { LocalDate(2022, 3, 26) }
-                    focused { true }
+                    date = LocalDate(2022, 3, 26)
+                    focused = true
                 }
             }.build()
             assertEquals(
@@ -137,8 +137,8 @@ class CalendarRowBuilderTest {
     fun day_addsSingleDay() {
         val calendarRow = CalendarRowBuilder().apply {
             day {
-                date { LocalDate(2022, 3, 26) }
-                focused { true }
+                date = LocalDate(2022, 3, 26)
+                focused = true
             }
         }.build()
         assertEquals(
@@ -153,7 +153,7 @@ class CalendarDayBuilderTest {
     @Test
     fun build_failsWhenDateMissing() {
         val builder = CalendarDayBuilder().apply {
-            focused { true }
+            focused = true
         }
         assertFails {
             builder.build()
@@ -163,7 +163,7 @@ class CalendarDayBuilderTest {
     @Test
     fun build_failsWhenFocusMissing() {
         val builder = CalendarDayBuilder().apply {
-            date { LocalDate(2022, 3, 26) }
+            date = LocalDate(2022, 3, 26)
         }
         assertFails {
             builder.build()
@@ -177,8 +177,8 @@ class CalendarDayBuilderTest {
             isFocusedDate = true
         )
         val builder = CalendarDayBuilder().apply {
-            focused { calendarDay.isFocusedDate }
-            date { calendarDay.date }
+            focused = calendarDay.isFocusedDate
+            date = calendarDay.date
         }
         assertEquals(
             calendarDay,

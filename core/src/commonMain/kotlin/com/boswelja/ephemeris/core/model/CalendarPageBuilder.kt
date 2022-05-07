@@ -1,6 +1,7 @@
 package com.boswelja.ephemeris.core.model
 
 import kotlinx.datetime.LocalDate
+import kotlin.properties.Delegates
 
 @DslMarker
 public annotation class CalendarPageDsl
@@ -87,22 +88,34 @@ public class CalendarRowBuilder internal constructor() {
  */
 @CalendarPageDsl
 public class CalendarDayBuilder internal constructor() {
-    private var date: LocalDate? = null
-    private var focused: Boolean? = null
+    public lateinit var date: LocalDate
+    public var focused: Boolean by Delegates.notNull()
 
     /**
      * Set the date for this [CalendarDay].
      */
+    @Deprecated(
+        "Set the date variable directly",
+        replaceWith = ReplaceWith(
+            "date = init()"
+        )
+    )
     public fun date(init: () -> LocalDate) { date = init() }
 
     /**
      * Sets whether this [CalendarDay] is in focus.
      */
+    @Deprecated(
+        "Set the focused variable directly",
+        replaceWith = ReplaceWith(
+            "focused = init()"
+        )
+    )
     public fun focused(init: () -> Boolean) { focused = init() }
 
     internal fun build(): CalendarDay =
         CalendarDay(
-            date!!,
-            focused!!
+            date,
+            focused
         )
 }
