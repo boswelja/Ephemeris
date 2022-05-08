@@ -99,12 +99,10 @@ internal class CalendarPageViewHolder(
         }
         return binding.root.apply {
             row.days.forEach {
+                val view = createDayCell(this, it)
                 addView(
-                    createDayCell(this, it),
-                    LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply {
+                    view,
+                    (view.layoutParams as LinearLayout.LayoutParams).apply {
                         weight = 1f // Ensures a row of date cells will fill the view width
                     }
                 )
