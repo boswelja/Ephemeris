@@ -22,7 +22,8 @@ internal class AlternatingHeightPagerAdapter(
         )
     }
 
-    override fun onBindHolder(holder: VaryingHeightViewHolder, page: Int) {
+    override fun onBindViewHolder(holder: VaryingHeightViewHolder, position: Int) {
+        val page = positionToPage(position)
         val color = if (page % 2 == 0) Color.CYAN else Color.MAGENTA
         holder.binding.content.apply {
             setBackgroundColor(color)
