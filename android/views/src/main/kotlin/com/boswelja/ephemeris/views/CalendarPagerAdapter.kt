@@ -27,7 +27,7 @@ internal class CalendarPagerAdapter(
         // Performs a full update
         val page = positionToPage(position)
         val pageState = pageLoader.getPageData(page)
-        holder.fullBindDisplayRows(pageLoader, dateBinder, pageState)
+        holder.fullBindDisplayRows(dateBinder, pageState)
     }
 
     override fun onBindViewHolder(
@@ -71,29 +71,6 @@ internal class CalendarPageViewHolder(
     private val dateCellViewHolderCache = mutableListOf<ViewHolder>()
 
     private var boundDateCells = 0
-    private var trimDateCellCache = false
-
-    private var dateBinder: CalendarDateBinder<ViewHolder>? = null
-        set(value) {
-            if (field != value) {
-                field = value
-                // Clear our cached date cells on binder change
-                dateCellViewHolderCache.clear()
-            }
-        }
-    private var pageLoader: CalendarPageLoader? = null
-        set(value) {
-            if (field != value) {
-                field = value
-                // Only invalidate row cache. date cells are trimmed after binding to optimize CPU
-                rowBindingCache.removeAll {
-                    // Remove all views here to avoid issues when reusing date cells
-                    it.root.removeAllViewsInLayout()
-                    true
-                }
-                trimDateCellCache = true
-            }
-        }
 
     fun updateBoundDisplayRows(
         page: CalendarPage,
@@ -113,28 +90,21 @@ internal class CalendarPageViewHolder(
     }
 
     fun fullBindDisplayRows(
-        pageLoader: CalendarPageLoader,
-        dayBinder: CalendarDateBinder<ViewHolder>,
+        dateBinder: CalendarDateBinder<ViewHolder>,
         page: CalendarPage
     ) {
-        this.pageLoader = pageLoader
-        dateBinder = dayBinder
         boundDateCells = 0
         binding.root.apply {
             removeAllViewsInLayout() // This avoids an extra call to requestLayout and invalidate
             page.rows.forEachIndexed { index, calendarRow ->
-                val row = createPopulatedRow(this, calendarRow, index)
+                val row = createPopulatedRow(dateBinder, this, calendarRow, index)
                 addView(row)
             }
-        }
-        if (trimDateCellCache) {
-            trimDateCellCache = false
-            val count = dateCellViewHolderCache.size - boundDateCells - 1
-            if (count > 0) dateCellViewHolderCache.dropLast(count)
         }
     }
 
     private fun createPopulatedRow(
+        dateBinder: CalendarDateBinder<ViewHolder>,
         parent: ViewGroup,
         row: CalendarRow,
         rowNum: Int
@@ -150,7 +120,7 @@ internal class CalendarPageViewHolder(
         return binding.root.apply {
             row.days.forEach {
                 addView(
-                    createDayCell(this, it),
+                    createDayCell(dateBinder, this, it),
                     LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -163,15 +133,16 @@ internal class CalendarPageViewHolder(
     }
 
     private fun createDayCell(
+        dateBinder: CalendarDateBinder<ViewHolder>,
         parent: ViewGroup,
         calendarDay: CalendarDay
     ): View {
         val viewHolder = dateCellViewHolderCache.getOrNull(boundDateCells) ?: run {
-            dateBinder!!.onCreateViewHolder(inflater, parent).also {
+            dateBinder.onCreateViewHolder(inflater, parent).also {
                 dateCellViewHolderCache.add(boundDateCells, it)
             }
         }
-        dateBinder!!.onBindView(viewHolder, calendarDay)
+        dateBinder.onBindView(viewHolder, calendarDay)
         boundDateCells += 1
         return viewHolder.itemView
     }
