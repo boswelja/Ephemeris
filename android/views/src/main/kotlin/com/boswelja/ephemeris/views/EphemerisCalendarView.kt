@@ -180,7 +180,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun notifyDateChanged(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        calendarAdapter.notifyItemChanged(calendarAdapter.pageToPosition(page))
+        calendarAdapter.notifyItemChanged(
+            calendarAdapter.pageToPosition(page),
+            date..date // We pass the dates here as a range for simplicity in the adapter
+        )
     }
 
     /**
@@ -192,7 +195,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         val itemsChanged = endPage - startPage + 1
         calendarAdapter.notifyItemRangeChanged(
             calendarAdapter.pageToPosition(startPage),
-            itemsChanged
+            itemsChanged,
+            dates // We pass the date range here so the adapter can choose what to bind and unbind
         )
     }
 

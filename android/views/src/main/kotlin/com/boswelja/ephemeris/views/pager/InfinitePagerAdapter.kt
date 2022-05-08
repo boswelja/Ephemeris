@@ -5,17 +5,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 internal abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
 
-    abstract fun onBindHolder(holder: T, page: Int)
-
     override fun getItemCount(): Int = MAX_PAGES
 
     override fun getItemId(position: Int): Long = position.toLong()
 
-    final override fun onBindViewHolder(holder: T, position: Int) {
-        onBindHolder(holder, positionToPage(position))
-    }
-
-    private fun positionToPage(position: Int): Int {
+    protected fun positionToPage(position: Int): Int {
         return position - (MAX_PAGES / 2)
     }
 

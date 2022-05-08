@@ -18,7 +18,8 @@ internal class BasicInfinitePagerAdapter : InfinitePagerAdapter<ViewHolder>() {
         )
     }
 
-    override fun onBindHolder(holder: ViewHolder, page: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val page = positionToPage(position)
         holder.bind(page)
     }
 }

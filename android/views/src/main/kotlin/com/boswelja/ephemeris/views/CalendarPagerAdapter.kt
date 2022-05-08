@@ -12,19 +12,52 @@ import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.databinding.CalendarPageBinding
 import com.boswelja.ephemeris.views.databinding.CalendarRowBinding
 import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
+import kotlinx.datetime.LocalDate
 
 internal class CalendarPagerAdapter(
     val pageLoader: CalendarPageLoader,
-    val dateBinder: CalendarDateBinder<ViewHolder>
+    private val dateBinder: CalendarDateBinder<ViewHolder>
 ) : InfinitePagerAdapter<CalendarPageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
         return CalendarPageViewHolder.create(parent)
     }
 
-    override fun onBindHolder(holder: CalendarPageViewHolder, page: Int) {
+    override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
+        // Performs a full update
+        val page = positionToPage(position)
         val pageState = pageLoader.getPageData(page)
-        holder.bindDisplayRows(pageLoader, dateBinder, pageState)
+        holder.fullBindDisplayRows(pageLoader, dateBinder, pageState)
+    }
+
+    override fun onBindViewHolder(
+        holder: CalendarPageViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        } else {
+            // RecyclerView may group payloads, we need to flatten it
+            var startDate: LocalDate? = null
+            var endDate: LocalDate? = null
+            payloads.forEach {
+                @Suppress("UNCHECKED_CAST")
+                it as ClosedRange<LocalDate>
+                if (startDate == null || startDate!! > it.start) {
+                    startDate = it.start
+                }
+                if (endDate == null || endDate!! < it.endInclusive) {
+                    endDate = it.endInclusive
+                }
+            }
+            val page = positionToPage(position)
+            holder.updateBoundDisplayRows(
+                pageLoader.getPageData(page),
+                dateBinder,
+                (startDate!!..endDate!!)
+            )
+        }
     }
 }
 
@@ -62,7 +95,24 @@ internal class CalendarPageViewHolder(
             }
         }
 
-    fun bindDisplayRows(
+    fun updateBoundDisplayRows(
+        page: CalendarPage,
+        dateBinder: CalendarDateBinder<ViewHolder>,
+        dates: ClosedRange<LocalDate>
+    ) {
+        val startIndex = page.getFlatIndexOf(dates.start)
+            .coerceIn(0 until dateCellViewHolderCache.size)
+        val endIndex = page.getFlatIndexOf(dates.endInclusive)
+            .coerceIn(0 until dateCellViewHolderCache.size)
+        (startIndex..endIndex).forEach {
+            dateBinder.onBindView(
+                dateCellViewHolderCache[it],
+                page.getDateForFlatIndex(it)
+            )
+        }
+    }
+
+    fun fullBindDisplayRows(
         pageLoader: CalendarPageLoader,
         dayBinder: CalendarDateBinder<ViewHolder>,
         page: CalendarPage
