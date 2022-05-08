@@ -58,3 +58,7 @@ dependencies {
     implementation(libs.binding.delegate)
     implementation(libs.google.material)
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+}
