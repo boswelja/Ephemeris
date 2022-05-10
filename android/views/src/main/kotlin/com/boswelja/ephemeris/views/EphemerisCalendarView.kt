@@ -180,10 +180,20 @@ public class EphemerisCalendarView @JvmOverloads constructor(
      */
     public fun notifyDateChanged(date: LocalDate) {
         val page = pageSource.getPageFor(date)
-        calendarAdapter.notifyItemChanged(
-            calendarAdapter.pageToPosition(page),
-            date..date // We pass the dates here as a range for simplicity in the adapter
-        )
+        val dateRange = date..date
+        val internalPosition = calendarAdapter.pageToPosition(page)
+
+        if (pageSource.hasOverlappingDates) {
+            // Notify surrounding pages if needed
+            val changedPageCount = 3
+            calendarAdapter.notifyItemRangeChanged(
+                internalPosition - 1,
+                changedPageCount,
+                dateRange
+            )
+        } else {
+            calendarAdapter.notifyItemChanged(internalPosition, dateRange)
+        }
     }
 
     /**
@@ -193,11 +203,20 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         val startPage = pageSource.getPageFor(dates.start)
         val endPage = pageSource.getPageFor(dates.endInclusive)
         val itemsChanged = endPage - startPage + 1
-        calendarAdapter.notifyItemRangeChanged(
-            calendarAdapter.pageToPosition(startPage),
-            itemsChanged,
-            dates // We pass the date range here so the adapter can choose what to bind and unbind
-        )
+        if (pageSource.hasOverlappingDates) {
+            // Notify surrounding pages if needed
+            calendarAdapter.notifyItemRangeChanged(
+                calendarAdapter.pageToPosition(startPage) - 1,
+                itemsChanged + 2,
+                dates // We pass the date range here so the adapter can choose what to bind and unbind
+            )
+        } else {
+            calendarAdapter.notifyItemRangeChanged(
+                calendarAdapter.pageToPosition(startPage),
+                itemsChanged,
+                dates // We pass the date range here so the adapter can choose what to bind and unbind
+            )
+        }
     }
 
     private fun initView() {

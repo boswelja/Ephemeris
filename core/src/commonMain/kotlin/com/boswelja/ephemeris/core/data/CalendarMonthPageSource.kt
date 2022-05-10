@@ -29,6 +29,8 @@ public class CalendarMonthPageSource(
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
+    override val hasOverlappingDates: Boolean = true
+
     override fun loadPageData(page: Int): CalendarPage {
         val month = startYearMonth.plus(page)
         val firstDisplayedDate = month.startDate.startOfWeek(firstDayOfWeek)

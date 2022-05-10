@@ -26,6 +26,8 @@ class CustomCalendarPageSource(
     private val daysInRow = 5
     private val rowCount = 2
 
+    override val hasOverlappingDates: Boolean = false
+
     override fun loadPageData(
         page: Int
     ): CalendarPage {

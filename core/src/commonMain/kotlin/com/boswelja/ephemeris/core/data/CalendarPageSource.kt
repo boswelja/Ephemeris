@@ -11,6 +11,12 @@ import kotlinx.datetime.LocalDate
 public interface CalendarPageSource {
 
     /**
+     * Whether this page source has dates that may overlap from one page to the next. Ephemeris may
+     * use this to determine whether additional updates are necessary when changing a date.
+     */
+    public val hasOverlappingDates: Boolean
+
+    /**
      * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
      * calendar UI. This should not implement any caching itself, caching is handled by consumers.
      */
