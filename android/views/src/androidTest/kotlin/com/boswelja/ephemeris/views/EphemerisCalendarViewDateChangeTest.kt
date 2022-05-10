@@ -56,29 +56,11 @@ class EphemerisCalendarViewDateChangeTest {
         }
         Thread.sleep(300)
 
+        // Check the date cell changed
         onView(allOf(isCompletelyDisplayed(), hasChild(withText(startDate.dayOfMonth.toString()))))
             .check(matches(withBackgroundColor(Color.GREEN)))
-    }
 
-    @Test
-    fun notifyDateChanged_doesNotRebindExtraCells() {
-        val startDate = LocalDate(2022, 4, 19)
-        val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
-        scenario.initAndGetCalendarView(
-            pageSource = CalendarMonthPageSource(
-                firstDayOfWeek = DayOfWeek.SUNDAY,
-                startYearMonth = startDate.yearMonth
-            )
-        )
-
-        onIdle()
-
-        backgroundColor = Color.GREEN
-        scenario.onFragment {
-            it.calendarView.notifyDateChanged(startDate)
-        }
-        Thread.sleep(300)
-
+        // Check the before/after cells did not change
         onView(allOf(isCompletelyDisplayed(), hasChild(withText((startDate.dayOfMonth - 1).toString()))))
             .check(matches(withBackgroundColor(Color.RED)))
         onView(allOf(isCompletelyDisplayed(), hasChild(withText((startDate.dayOfMonth + 1).toString()))))
@@ -86,7 +68,7 @@ class EphemerisCalendarViewDateChangeTest {
     }
 
     @Test
-    fun notifyDateRangeChanged_correctlyReBindsCell() {
+    fun notifyDateRangeChanged_correctlyRebindsCells() {
         val startDate = LocalDate(2022, 4, 9)
         val targetRange = startDate..startDate.plus(10, DateTimeUnit.DAY)
         val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
@@ -105,32 +87,13 @@ class EphemerisCalendarViewDateChangeTest {
         }
         Thread.sleep(300)
 
+        // Check the date cells in range changed
         onView(allOf(isCompletelyDisplayed(), hasChild(withText(targetRange.start.dayOfMonth.toString()))))
             .check(matches(withBackgroundColor(Color.GREEN)))
         onView(allOf(isCompletelyDisplayed(), hasChild(withText(targetRange.endInclusive.dayOfMonth.toString()))))
             .check(matches(withBackgroundColor(Color.GREEN)))
-    }
 
-    @Test
-    fun notifyDateRangeChanged_doesNotRebindExtraCells() {
-        val startDate = LocalDate(2022, 4, 9)
-        val targetRange = startDate..startDate.plus(10, DateTimeUnit.DAY)
-        val scenario = launchFragmentInContainer<EphemerisCalendarFragment>()
-        scenario.initAndGetCalendarView(
-            pageSource = CalendarMonthPageSource(
-                firstDayOfWeek = DayOfWeek.SUNDAY,
-                startYearMonth = startDate.yearMonth
-            )
-        )
-
-        onIdle()
-
-        backgroundColor = Color.GREEN
-        scenario.onFragment {
-            it.calendarView.notifyDateRangeChanged(targetRange)
-        }
-        Thread.sleep(300)
-
+        // Check the date cells before/after did not change
         onView(allOf(isCompletelyDisplayed(), hasChild(withText((targetRange.start.dayOfMonth - 1).toString()))))
             .check(matches(withBackgroundColor(Color.RED)))
         onView(allOf(isCompletelyDisplayed(), hasChild(withText((targetRange.endInclusive.dayOfMonth + 1).toString()))))
