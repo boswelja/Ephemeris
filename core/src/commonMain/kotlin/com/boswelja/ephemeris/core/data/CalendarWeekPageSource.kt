@@ -26,6 +26,8 @@ public class CalendarWeekPageSource(
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
 
+    override val hasOverlappingDates: Boolean = false
+
     override fun loadPageData(
         page: Int
     ): CalendarPage {
