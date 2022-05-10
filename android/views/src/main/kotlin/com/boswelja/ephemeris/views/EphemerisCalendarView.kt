@@ -185,7 +185,12 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
         if (pageSource.hasOverlappingDates) {
             // Notify surrounding pages if needed
-            calendarAdapter.notifyItemRangeChanged(internalPosition - 1, 3, dateRange)
+            val changedPageCount = 3
+            calendarAdapter.notifyItemRangeChanged(
+                internalPosition - 1,
+                changedPageCount,
+                dateRange
+            )
         } else {
             calendarAdapter.notifyItemChanged(internalPosition, dateRange)
         }
