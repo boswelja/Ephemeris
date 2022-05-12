@@ -28,23 +28,6 @@ public data class CalendarPage internal constructor(
     }
 
     /**
-     * Gets the [CalendarDay] at the given flat [index], or the index of the date if this page were
-     * to be flattened to a 1d array. Throws [IllegalStateException] of the index does not exist.
-     */
-    public fun getDateForFlatIndex(index: Int): CalendarDay {
-        var currIndex = 0
-        rows.forEach { row ->
-            row.days.forEach {
-                if (currIndex == index) {
-                    return it
-                }
-                currIndex += 1
-            }
-        }
-        throw IllegalStateException("Index $index does not exist on this page")
-    }
-
-    /**
      * Retrieves the "flat" index and CalendarDay for the given [date].
      *
      * Flat index refers to the index of the date, if the 2D Array of dates were to be flattened to

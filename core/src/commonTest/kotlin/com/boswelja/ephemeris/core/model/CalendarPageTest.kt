@@ -69,7 +69,7 @@ class CalendarPageTest {
     }
 
     @Test
-    fun getDateForFlatIndex_throwsWhenOutOfBounds() {
+    fun getFlatDetailsFor_throwsWhenOutOfRange() {
         val page = calendarPage {
             rows(6) { row ->
                 val startDate = LocalDate(2022, Month.MAY, 8).plus(row, DateTimeUnit.WEEK)
@@ -82,16 +82,16 @@ class CalendarPageTest {
 
         // Check for one before start
         assertFails {
-            page.getDateForFlatIndex(-1)
+            page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 7))
         }
         // Check for one after end
         assertFails {
-            page.getDateForFlatIndex(42)
+            page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 19))
         }
     }
 
     @Test
-    fun getDateForFlatIndex_returnsWhenInBounds() {
+    fun getFlatDetailsFor_returnsWhenInBounds() {
         val page = calendarPage {
             rows(6) { row ->
                 val startDate = LocalDate(2022, Month.MAY, 8).plus(row, DateTimeUnit.WEEK)
@@ -105,19 +105,20 @@ class CalendarPageTest {
         val lastDate = page.rows.last().days.last()
 
         // Check first date
-        assertEquals(
-            firstDate,
-            page.getDateForFlatIndex(0)
-        )
+        page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 8)).let {
+            assertEquals(0, it.first)
+            assertEquals(
+                firstDate,
+                it.second
+            )
+        }
         // Check last date
-        assertEquals(
-            lastDate,
-            page.getDateForFlatIndex(41)
-        )
-        // Check arbitrary row
-        assertEquals(
-            page.rows[1].days.first(),
-            page.getDateForFlatIndex(7)
-        )
+        page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 18)).let {
+            assertEquals(41, it.first)
+            assertEquals(
+                lastDate,
+                it.second
+            )
+        }
     }
 }
