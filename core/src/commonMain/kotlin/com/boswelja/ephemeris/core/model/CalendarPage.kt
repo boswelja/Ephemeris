@@ -29,6 +29,9 @@ public data class CalendarPage internal constructor(
         throw IllegalStateException("$date does not exist on this page")
     }
 
+    /**
+     * Executes the given [block] on each date on this page that exists within [dateRange]
+     */
     public fun forEachInRange(
         dateRange: ClosedRange<LocalDate>,
         block: (flatIndex: Int, CalendarDay) -> Unit
