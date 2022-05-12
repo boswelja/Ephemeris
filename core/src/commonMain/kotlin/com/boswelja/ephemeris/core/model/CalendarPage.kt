@@ -11,23 +11,6 @@ public data class CalendarPage internal constructor(
 ) {
 
     /**
-     * Get the index of the given [date], if this page were to be flattened to a 1d array.
-     * @return -1 if the date was not found on this page, else the index of the date.
-     */
-    public fun getFlatIndexOf(date: LocalDate): Int {
-        var currIndex = 0
-        rows.forEach { row ->
-            row.days.forEach {
-                if (it.date == date) {
-                    return currIndex
-                }
-                currIndex += 1
-            }
-        }
-        return -1
-    }
-
-    /**
      * Retrieves the "flat" index and CalendarDay for the given [date].
      *
      * Flat index refers to the index of the date, if the 2D Array of dates were to be flattened to

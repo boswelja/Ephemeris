@@ -3,16 +3,16 @@ package com.boswelja.ephemeris.core.model
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
-import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertTrue
 
 class CalendarPageTest {
 
     @Test
-    fun getFlatIndexOf_returnsCorrectForOutOfBounds() {
+    fun forEachInRange_iteratesCorrectlyInBounds() {
         val page = calendarPage {
             rows(6) { row ->
                 val startDate = LocalDate(2022, Month.MAY, 8).plus(row, DateTimeUnit.WEEK)
@@ -25,20 +25,22 @@ class CalendarPageTest {
         val firstDate = page.rows.first().days.first()
         val lastDate = page.rows.last().days.last()
 
-        // Check one before the first date
+        val iteratedDates = mutableListOf<CalendarDay>()
+        page.forEachInRange(firstDate.date..lastDate.date) { _, calendarDay ->
+            iteratedDates.add(calendarDay)
+        }
+
         assertEquals(
-            -1,
-            page.getFlatIndexOf(firstDate.date.minus(1, DateTimeUnit.DAY))
+            42,
+            iteratedDates.count()
         )
-        // Check one after the last date
-        assertEquals(
-            -1,
-            page.getFlatIndexOf(lastDate.date.plus(1, DateTimeUnit.DAY))
-        )
+        iteratedDates.forEach {
+            assertTrue { (firstDate.date..lastDate.date).contains(it.date) }
+        }
     }
 
     @Test
-    fun getFlatIndexOf_returnsCorrectForInBounds() {
+    fun forEachInRange_iteratesCorrectlyOutOfBounds() {
         val page = calendarPage {
             rows(6) { row ->
                 val startDate = LocalDate(2022, Month.MAY, 8).plus(row, DateTimeUnit.WEEK)
@@ -51,21 +53,20 @@ class CalendarPageTest {
         val firstDate = page.rows.first().days.first()
         val lastDate = page.rows.last().days.last()
 
-        // Check first date
+        val iteratedDates = mutableListOf<CalendarDay>()
+        page.forEachInRange(
+            firstDate.date..lastDate.date.plus(10, DateTimeUnit.DAY)
+        ) { _, calendarDay ->
+            iteratedDates.add(calendarDay)
+        }
+
         assertEquals(
-            0,
-            page.getFlatIndexOf(firstDate.date)
+            42,
+            iteratedDates.count()
         )
-        // Check last date
-        assertEquals(
-            41,
-            page.getFlatIndexOf(lastDate.date)
-        )
-        // Check arbitrary row
-        assertEquals(
-            7,
-            page.getFlatIndexOf(page.rows[1].days.first().date)
-        )
+        iteratedDates.forEach {
+            assertTrue { (firstDate.date..lastDate.date).contains(it.date) }
+        }
     }
 
     @Test
