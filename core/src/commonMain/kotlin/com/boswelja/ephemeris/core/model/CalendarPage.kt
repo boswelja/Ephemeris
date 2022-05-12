@@ -43,4 +43,38 @@ public data class CalendarPage internal constructor(
         }
         throw IllegalStateException("Index $index does not exist on this page")
     }
+
+    /**
+     * Retrieves the "flat" index and CalendarDay for the given [date].
+     *
+     * Flat index refers to the index of the date, if the 2D Array of dates were to be flattened to
+     * a 1D Array.
+     */
+    public fun getFlatDetailsFor(date: LocalDate): Pair<Int, CalendarDay> {
+        var currIndex = 0
+        rows.forEach { row ->
+            row.days.forEach {
+                if (it.date == date) {
+                    return currIndex to it
+                }
+                currIndex += 1
+            }
+        }
+        throw IllegalStateException("$date does not exist on this page")
+    }
+
+    public fun forEachInRange(
+        dateRange: ClosedRange<LocalDate>,
+        block: (flatIndex: Int, CalendarDay) -> Unit
+    ) {
+        var currIndex = 0
+        rows.forEach { row ->
+            row.days.forEach {
+                if (dateRange.contains(it.date)) {
+                    block(currIndex, it)
+                }
+                currIndex += 1
+            }
+        }
+    }
 }

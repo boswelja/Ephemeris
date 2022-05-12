@@ -77,15 +77,21 @@ internal class CalendarPageViewHolder(
         dateBinder: CalendarDateBinder<ViewHolder>,
         dates: ClosedRange<LocalDate>
     ) {
-        val startIndex = page.getFlatIndexOf(dates.start)
-            .coerceIn(0 until dateCellViewHolderCache.size)
-        val endIndex = page.getFlatIndexOf(dates.endInclusive)
-            .coerceIn(0 until dateCellViewHolderCache.size)
-        (startIndex..endIndex).forEach {
+        if (dates.start == dates.endInclusive) {
+            // Single date, optimize work
+            val (index, calendarDate) = page.getFlatDetailsFor(dates.start)
             dateBinder.onBindView(
-                dateCellViewHolderCache[it],
-                page.getDateForFlatIndex(it)
+                dateCellViewHolderCache[index],
+                calendarDate
             )
+        } else {
+            // Multiple dates, optimize work
+            page.forEachInRange(dates) { index, calendarDate ->
+                dateBinder.onBindView(
+                    dateCellViewHolderCache[index],
+                    calendarDate
+                )
+            }
         }
     }
 
