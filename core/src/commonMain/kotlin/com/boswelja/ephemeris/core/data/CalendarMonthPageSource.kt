@@ -24,7 +24,8 @@ import kotlinx.datetime.todayAt
 public class CalendarMonthPageSource(
     private val firstDayOfWeek: DayOfWeek,
     private val startYearMonth: YearMonth = Clock.System.todayAt(TimeZone.currentSystemDefault()).yearMonth,
-    private val focusMode: FocusMode = FocusMode.MONTH
+    private val focusMode: FocusMode = FocusMode.MONTH,
+    override val maxPageRange: IntRange = IntRange(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)

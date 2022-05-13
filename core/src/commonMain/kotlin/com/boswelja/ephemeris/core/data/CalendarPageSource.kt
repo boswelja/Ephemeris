@@ -17,6 +17,13 @@ public interface CalendarPageSource {
     public val hasOverlappingDates: Boolean
 
     /**
+     * Defines the maximum number of pages to be displayed. Pages are zero-based, therefore negative
+     * values represent pages before the start page, and positive values represent pages after the
+     * start page. Note the total number of pages should not exceed [Int.MAX_VALUE].
+     */
+    public val maxPageRange: IntRange
+
+    /**
      * Takes a page number and a DisplayDate producer, and returns a set of rows to display in the
      * calendar UI. This should not implement any caching itself, caching is handled by consumers.
      */
@@ -28,4 +35,3 @@ public interface CalendarPageSource {
      */
     public fun getPageFor(date: LocalDate): Int
 }
-

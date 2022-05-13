@@ -18,7 +18,8 @@ import kotlinx.datetime.todayAt
 public class CalendarWeekPageSource(
     firstDayOfWeek: DayOfWeek,
     startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
-    private val focusMode: FocusMode = FocusMode.WEEKDAYS
+    private val focusMode: FocusMode = FocusMode.WEEKDAYS,
+    override val maxPageRange: IntRange = IntRange(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
 ) : CalendarPageSource {
 
     private val startDate = startDate.startOfWeek(firstDayOfWeek)
