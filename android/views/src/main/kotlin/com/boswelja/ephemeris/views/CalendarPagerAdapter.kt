@@ -19,6 +19,8 @@ internal class CalendarPagerAdapter(
     private val dateBinder: CalendarDateBinder<ViewHolder>
 ) : InfinitePagerAdapter<CalendarPageViewHolder>() {
 
+    override fun getItemCount(): Int = pageLoader.calendarPageSource.maxPageRange.count()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
         return CalendarPageViewHolder.create(parent)
     }

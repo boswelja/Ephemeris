@@ -5,8 +5,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 internal abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
 
-    override fun getItemCount(): Int = MAX_PAGES
-
     override fun getItemId(position: Int): Long = position.toLong()
 
     protected fun positionToPage(position: Int): Int {

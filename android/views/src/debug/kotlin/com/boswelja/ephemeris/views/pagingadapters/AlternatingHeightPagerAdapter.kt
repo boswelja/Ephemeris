@@ -15,6 +15,8 @@ internal class AlternatingHeightPagerAdapter(
 
     private val differentHeights = heights.size
 
+    override fun getItemCount(): Int = Int.MAX_VALUE
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VaryingHeightViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return VaryingHeightViewHolder(
