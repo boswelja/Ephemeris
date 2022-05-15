@@ -7,18 +7,10 @@ internal abstract class InfinitePagerAdapter<T: ViewHolder> : Adapter<T>() {
 
     override fun getItemId(position: Int): Long = position.toLong()
 
-    protected fun positionToPage(position: Int): Int {
-        return position - (MAX_PAGES / 2)
-    }
+    abstract fun positionToPage(position: Int): Int
 
     /**
      * Maps a pager page to the underlying RecyclerView position
      */
-    internal fun pageToPosition(page: Int): Int {
-        return page + (Int.MAX_VALUE / 2)
-    }
-
-    private companion object {
-        private const val MAX_PAGES = Int.MAX_VALUE
-    }
+    abstract fun pageToPosition(page: Int): Int
 }

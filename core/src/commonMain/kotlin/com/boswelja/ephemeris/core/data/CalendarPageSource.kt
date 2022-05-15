@@ -34,4 +34,20 @@ public interface CalendarPageSource {
      * as no results here are cached.
      */
     public fun getPageFor(date: LocalDate): Int
+
+    /**
+     * Maps the given internal position of a zero-based pager to the page number. Note this is not
+     * necessary if we have a pager that supports negative numbers in the first place.
+     */
+    public fun mapInternalPositionToPage(position: Int): Int {
+        return position + maxPageRange.first
+    }
+
+    /**
+     * Maps the given page number to an internal zero-based position. Note this is not
+     * necessary if we have a pager that supports negative numbers in the first place.
+     */
+    public fun mapPageToInternalPosition(page: Int): Int {
+        return page - maxPageRange.first
+    }
 }

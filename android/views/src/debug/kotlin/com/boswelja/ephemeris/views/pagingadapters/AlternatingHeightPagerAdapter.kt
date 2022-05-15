@@ -15,6 +15,14 @@ internal class AlternatingHeightPagerAdapter(
 
     private val differentHeights = heights.size
 
+    override fun pageToPosition(page: Int): Int {
+        return page + (itemCount / 2)
+    }
+
+    override fun positionToPage(position: Int): Int {
+        return position - (itemCount / 2)
+    }
+
     override fun getItemCount(): Int = Int.MAX_VALUE
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VaryingHeightViewHolder {

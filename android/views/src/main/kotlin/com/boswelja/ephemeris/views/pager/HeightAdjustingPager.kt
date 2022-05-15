@@ -34,7 +34,6 @@ internal class HeightAdjustingPager @JvmOverloads constructor(
         snapHelper.attachToRecyclerView(this)
         // Disable item change animations, otherwise we get a crossfade when changing a page
         (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        super.scrollToPosition(pageToPosition(currentPage))
     }
 
     /**
@@ -70,6 +69,11 @@ internal class HeightAdjustingPager @JvmOverloads constructor(
         maybeNotifySnapPositionChange(position)
     }
 
+    override fun setAdapter(adapter: Adapter<*>?) {
+        super.setAdapter(adapter)
+        super.scrollToPosition(pageToPosition(currentPage))
+    }
+
     private fun maybeNotifySnapPositionChange(snapPosition: Int) {
         val snapPositionChanged = currentPage != snapPosition
         if (snapPositionChanged) {
@@ -97,18 +101,14 @@ internal class HeightAdjustingPager @JvmOverloads constructor(
      * Maps a position from the underlying RecyclerView to a pager page.
      */
     private fun positionToPage(position: Int): Int {
-        return position - (MAX_PAGES / 2)
+        return (adapter as InfinitePagerAdapter).positionToPage(position)
     }
 
     /**
      * Maps a pager page to the underlying RecyclerView position
      */
     private fun pageToPosition(page: Int): Int {
-        return page + (Int.MAX_VALUE / 2)
-    }
-
-    private companion object {
-        private const val MAX_PAGES = Int.MAX_VALUE
+        return (adapter as InfinitePagerAdapter).pageToPosition(page)
     }
 }
 
