@@ -41,7 +41,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
 
-      - name: Run tests
+      - name: Run allTests
         run: bash ./gradlew test
 
       - uses: actions/upload-artifact@v2.3.1
