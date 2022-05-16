@@ -19,7 +19,7 @@ public abstract class EphemerisCalendarState {
     /**
      * The internal [InfinitePagerState] that [EphemerisCalendar] uses to control its page state.
      */
-    internal abstract val pagerState: InfinitePagerState
+    internal lateinit var pagerState: InfinitePagerState
 
     /**
      * [EphemerisCalendar] provides & updates its page source for use within the calendar state.
@@ -45,12 +45,10 @@ public abstract class EphemerisCalendarState {
 
 /**
  * The default implementation of [EphemerisCalendarState]. This is returned by [rememberCalendarState]
- * @param pagerState The default [CalendarPageSource] to use. This can be changed later.
  * @param coroutineScope A coroutine scope to use for running Calendar-related jobs.
  */
 internal class EphemerisCalendarStateImpl internal constructor(
-    private val coroutineScope: CoroutineScope,
-    override val pagerState: InfinitePagerState
+    private val coroutineScope: CoroutineScope
 ) : EphemerisCalendarState() {
 
     override var displayedDateRange by mutableStateOf(LocalDate(1990, 1, 1)..LocalDate(1990, 1, 1))
@@ -73,9 +71,8 @@ internal class EphemerisCalendarStateImpl internal constructor(
 @Composable
 @Stable
 public fun rememberCalendarState(): EphemerisCalendarState {
-    val pagerState = rememberInfinitePagerState()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
-    return remember(coroutineScope, pagerState) {
-        EphemerisCalendarStateImpl(coroutineScope, pagerState)
+    return remember(coroutineScope) {
+        EphemerisCalendarStateImpl(coroutineScope)
     }
 }

@@ -37,7 +37,6 @@ public fun EphemerisCalendar(
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val pagerState = remember(calendarState) { calendarState.pagerState }
     val pageLoader = remember(coroutineScope, pageSource) {
         CalendarPageLoader(coroutineScope, pageSource)
     }
@@ -47,15 +46,24 @@ public fun EphemerisCalendar(
         calendarState.pageSource = pageSource
     }
 
-    // Notify calendar state of displayed date range changes
-    LaunchedEffect(pagerState.page) {
-        calendarState.displayedDateRange = pageLoader.getDateRangeFor(pagerState.page)
-    }
-
     AnimatedContent(targetState = pageLoader) { targetPageLoader ->
+        val pagerState = rememberInfinitePagerState(
+            pageCount = pageSource.maxPageRange.count(),
+            calculatePageFromPosition = pageSource::mapInternalPositionToPage,
+            calculatePositionFromPage = pageSource::mapPageToInternalPosition
+        )
+        LaunchedEffect(pagerState) {
+            calendarState.pagerState = pagerState
+        }
+
+        // Notify calendar state of displayed date range changes
+        LaunchedEffect(pagerState.page) {
+            calendarState.displayedDateRange = pageLoader.getDateRangeFor(pagerState.page)
+        }
+
         InfiniteHorizontalPager(
-            modifier = modifier.fillMaxWidth(),
             state = pagerState,
+            modifier = modifier.fillMaxWidth(),
             contentPadding = contentPadding
         ) {
             val pageData = remember {
