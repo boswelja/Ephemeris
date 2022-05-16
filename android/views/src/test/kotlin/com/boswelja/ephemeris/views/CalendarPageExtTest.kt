@@ -1,15 +1,17 @@
-package com.boswelja.ephemeris.core.model
+package com.boswelja.ephemeris.views
 
+import com.boswelja.ephemeris.core.model.CalendarDay
+import com.boswelja.ephemeris.core.model.calendarPage
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.plus
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
-class CalendarPageTest {
+class CalendarPageExtTest {
 
     @Test
     fun forEachInRange_iteratesCorrectlyInBounds() {
@@ -35,7 +37,7 @@ class CalendarPageTest {
             iteratedDates.count()
         )
         iteratedDates.forEach {
-            assertTrue { (firstDate.date..lastDate.date).contains(it.date) }
+            assertTrue((firstDate.date..lastDate.date).contains(it.date))
         }
     }
 
@@ -65,7 +67,7 @@ class CalendarPageTest {
             iteratedDates.count()
         )
         iteratedDates.forEach {
-            assertTrue { (firstDate.date..lastDate.date).contains(it.date) }
+            assertTrue((firstDate.date..lastDate.date).contains(it.date))
         }
     }
 
@@ -82,13 +84,9 @@ class CalendarPageTest {
         }
 
         // Check for one before start
-        assertNull(
-            page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 7))
-        )
+        assertNull(page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 7)))
         // Check for one after end
-        assertNull(
-            page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 19))
-        )
+        assertNull(page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 19)))
     }
 
     @Test
