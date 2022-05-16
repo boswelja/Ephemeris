@@ -87,8 +87,8 @@ class CalendarWeekPageSourceTest {
         val source = CalendarMonthPageSource(
             firstDayOfWeek = DayOfWeek.SUNDAY
         )
-        source.loadPageData(Int.MIN_VALUE)
-        source.loadPageData(Int.MAX_VALUE)
+        source.loadPageData(source.maxPageRange.first)
+        source.loadPageData(source.maxPageRange.last)
         source.loadPageData(0)
     }
 
