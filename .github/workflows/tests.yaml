@@ -41,8 +41,11 @@ jobs:
           java-version: 11
           cache: 'gradle'
 
-      - name: Run tests
-        run: bash ./gradlew allTests
+      - name: Run core tests
+        run: bash ./gradlew :core:allTests
+
+      - name: Run android-views tests
+        run: bash ./gradlew :android:views:test
 
       - uses: actions/upload-artifact@v2.3.1
         if: failure()
