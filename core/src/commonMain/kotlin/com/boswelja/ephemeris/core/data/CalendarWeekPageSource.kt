@@ -13,12 +13,15 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.todayAt
 
 /**
- * An implementation of [CalendarPageSource] that loads one week per page.
+ * An implementation of [CalendarPageSource] that loads one week per page. The default range for the
+ * calendar is 500 years before and after the given [startDate], and can be overridden by setting
+ * [maxPageRange].
  */
 public class CalendarWeekPageSource(
     firstDayOfWeek: DayOfWeek,
     startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
-    private val focusMode: FocusMode = FocusMode.WEEKDAYS
+    private val focusMode: FocusMode = FocusMode.WEEKDAYS,
+    override val maxPageRange: IntRange = IntRange(-26000, 26000)
 ) : CalendarPageSource {
 
     private val startDate = startDate.startOfWeek(firstDayOfWeek)

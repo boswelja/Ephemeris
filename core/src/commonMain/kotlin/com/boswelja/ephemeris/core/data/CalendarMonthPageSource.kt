@@ -19,12 +19,14 @@ import kotlinx.datetime.todayAt
 
 /**
  * An implementation of [CalendarPageSource] that loads full months. Total rows are dynamic, and
- * will change from month to month.
+ * will change from month to month. The default range for the calendar is 500 years before and after
+ * the given [startYearMonth], and can be overridden by setting [maxPageRange].
  */
 public class CalendarMonthPageSource(
     private val firstDayOfWeek: DayOfWeek,
     private val startYearMonth: YearMonth = Clock.System.todayAt(TimeZone.currentSystemDefault()).yearMonth,
-    private val focusMode: FocusMode = FocusMode.MONTH
+    private val focusMode: FocusMode = FocusMode.MONTH,
+    override val maxPageRange: IntRange = IntRange(-6000, 6000)
 ) : CalendarPageSource {
     private val daysInWeek = DayOfWeek.values().size
     private val weekends = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)

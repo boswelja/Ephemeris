@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.filterNot
 @OptIn(ExperimentalSnapperApi::class)
 @Composable
 internal fun InfiniteHorizontalPager(
+    state: InfinitePagerState,
     modifier: Modifier = Modifier,
-    state: InfinitePagerState = rememberInfinitePagerState(),
     contentPadding: PaddingValues = PaddingValues(),
     maxItemFling: Int = 1,
     content: @Composable (page: Int) -> Unit
@@ -40,9 +40,9 @@ internal fun InfiniteHorizontalPager(
         snapshotFlow { state.lazyListState.isScrollInProgress }
             .filterNot { it }
             .collect {
-                state.page = state.calculatePageFromInternal(
-                    layoutInfo.currentItem?.index ?: state.internalPageOffset
-                )
+                state.page = layoutInfo.currentItem?.index?.let { position ->
+                    state.calculatePageFromPosition(position)
+                } ?: 0
             }
     }
 
@@ -66,8 +66,8 @@ internal fun InfiniteHorizontalPager(
         )
     ) {
         items(
-            count = state.maxPages,
-            key = state::calculatePageFromInternal
+            count = state.pageCount,
+            key = state.calculatePageFromPosition::invoke
         ) { index ->
             var pageHeight by remember { mutableStateOf(0) }
             Box(
@@ -92,7 +92,7 @@ internal fun InfiniteHorizontalPager(
                     }
                     .padding(contentPadding)
             ) {
-                content(state.calculatePageFromInternal(index))
+                content(state.calculatePageFromPosition(index))
             }
         }
     }
@@ -100,38 +100,35 @@ internal fun InfiniteHorizontalPager(
 
 internal class InfinitePagerState internal constructor(
     startPage: Int,
-    internal val lazyListState: LazyListState
+    val pageCount: Int,
+    internal val lazyListState: LazyListState,
+    internal val calculatePageFromPosition: (position: Int) -> Int = { it - (pageCount / 2) },
+    internal val calculatePositionFromPage: (page: Int) -> Int = { it + (pageCount / 2) }
 ) {
-
-    val maxPages: Int = Int.MAX_VALUE
-
-    val internalPageOffset: Int = maxPages / 2
-
     var page: Int by mutableStateOf(startPage)
 
     var animateHeight: Boolean = true
 
-    fun calculatePageFromInternal(internalPage: Int): Int {
-        return internalPage - internalPageOffset
-    }
-
     suspend fun scrollToPage(page: Int) {
-        lazyListState.scrollToItem(page + internalPageOffset)
+        lazyListState.scrollToItem(calculatePositionFromPage(page))
     }
 
     suspend fun animateScrollToPage(page: Int) {
-        lazyListState.animateScrollToItem(page + internalPageOffset)
+        lazyListState.animateScrollToItem(calculatePositionFromPage(page))
     }
 }
 
 @Composable
 internal fun rememberInfinitePagerState(
-    startPage: Int = 0
+    pageCount: Int,
+    startPage: Int = 0,
+    calculatePageFromPosition: (position: Int) -> Int = { it - (pageCount / 2) },
+    calculatePositionFromPage: (page: Int) -> Int = { it + (pageCount / 2) }
 ): InfinitePagerState {
     val lazyListState: LazyListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = startPage + (Int.MAX_VALUE / 2)
+        initialFirstVisibleItemIndex = calculatePositionFromPage(startPage)
     )
     return remember(startPage) {
-        InfinitePagerState(startPage, lazyListState)
+        InfinitePagerState(startPage, pageCount, lazyListState, calculatePageFromPosition, calculatePositionFromPage)
     }
 }

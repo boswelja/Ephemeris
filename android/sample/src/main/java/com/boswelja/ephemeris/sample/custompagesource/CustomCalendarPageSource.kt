@@ -28,6 +28,8 @@ class CustomCalendarPageSource(
 
     override val hasOverlappingDates: Boolean = false
 
+    override val maxPageRange: IntRange = -120..600
+
     override fun loadPageData(
         page: Int
     ): CalendarPage {

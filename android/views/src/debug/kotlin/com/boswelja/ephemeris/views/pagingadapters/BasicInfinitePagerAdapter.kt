@@ -7,6 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
 
 internal class BasicInfinitePagerAdapter : InfinitePagerAdapter<ViewHolder>() {
+
+    override fun pageToPosition(page: Int): Int {
+        return page + (itemCount / 2)
+    }
+
+    override fun positionToPage(position: Int): Int {
+        return position - (itemCount / 2)
+    }
+
+    override fun getItemCount(): Int = Int.MAX_VALUE
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             View(parent.context).apply {
