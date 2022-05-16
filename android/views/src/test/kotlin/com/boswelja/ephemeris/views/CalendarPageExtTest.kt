@@ -1,15 +1,17 @@
-package com.boswelja.ephemeris.core.model
+package com.boswelja.ephemeris.views
 
+import com.boswelja.ephemeris.core.model.CalendarDay
+import com.boswelja.ephemeris.core.model.calendarPage
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.plus
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
-class CalendarPageTest {
+class CalendarPageExtTest {
 
     @Test
     fun forEachInRange_iteratesCorrectlyInBounds() {
@@ -35,7 +37,7 @@ class CalendarPageTest {
             iteratedDates.count()
         )
         iteratedDates.forEach {
-            assertTrue { (firstDate.date..lastDate.date).contains(it.date) }
+            assertTrue((firstDate.date..lastDate.date).contains(it.date))
         }
     }
 
@@ -65,12 +67,12 @@ class CalendarPageTest {
             iteratedDates.count()
         )
         iteratedDates.forEach {
-            assertTrue { (firstDate.date..lastDate.date).contains(it.date) }
+            assertTrue((firstDate.date..lastDate.date).contains(it.date))
         }
     }
 
     @Test
-    fun getFlatDetailsFor_throwsWhenOutOfRange() {
+    fun getFlatDetailsFor_nullWhenOutOfRange() {
         val page = calendarPage {
             rows(6) { row ->
                 val startDate = LocalDate(2022, Month.MAY, 8).plus(row, DateTimeUnit.WEEK)
@@ -82,13 +84,9 @@ class CalendarPageTest {
         }
 
         // Check for one before start
-        assertFails {
-            page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 7))
-        }
+        assertNull(page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 7)))
         // Check for one after end
-        assertFails {
-            page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 19))
-        }
+        assertNull(page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 19)))
     }
 
     @Test
@@ -107,18 +105,18 @@ class CalendarPageTest {
 
         // Check first date
         page.getFlatDetailsFor(LocalDate(2022, Month.MAY, 8)).let {
-            assertEquals(0, it.first)
+            assertEquals(0, it?.first)
             assertEquals(
                 firstDate,
-                it.second
+                it?.second
             )
         }
         // Check last date
         page.getFlatDetailsFor(LocalDate(2022, Month.JUNE, 18)).let {
-            assertEquals(41, it.first)
+            assertEquals(41, it?.first)
             assertEquals(
                 lastDate,
-                it.second
+                it?.second
             )
         }
     }

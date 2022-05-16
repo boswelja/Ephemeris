@@ -29,6 +29,9 @@ dependencies {
 
     debugImplementation(libs.bundles.androidx.foundation)
     debugImplementation(libs.androidx.fragment.testing)
+
+    testImplementation("junit:junit:4.13.2")
+
     androidTestImplementation(libs.androidx.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)

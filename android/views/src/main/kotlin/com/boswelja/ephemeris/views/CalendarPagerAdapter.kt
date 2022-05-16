@@ -89,11 +89,12 @@ internal class CalendarPageViewHolder(
     ) {
         if (dates.start == dates.endInclusive) {
             // Single date, optimize work
-            val (index, calendarDate) = page.getFlatDetailsFor(dates.start)
-            dateBinder.onBindView(
-                dateCellViewHolderCache[index],
-                calendarDate
-            )
+            page.getFlatDetailsFor(dates.start)?.let { (index, calendarDate) ->
+                dateBinder.onBindView(
+                    dateCellViewHolderCache[index],
+                    calendarDate
+                )
+            }
         } else {
             // Multiple dates, optimize work
             page.forEachInRange(dates) { index, calendarDate ->
