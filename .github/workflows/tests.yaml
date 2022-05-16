@@ -47,12 +47,5 @@ jobs:
       - name: Run android-views tests
         run: bash ./gradlew :android:views:test
 
-      - uses: actions/upload-artifact@v2.3.1
-        if: failure()
-        with:
-          name: Unit test results
-          path: ./**/build/reports/tests/
-          if-no-files-found: ignore
-
       - name: Code Coverage
         run: bash ./gradlew koverVerify
