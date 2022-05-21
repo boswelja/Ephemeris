@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("org.jetbrains.kotlinx.kover") version "0.5.0" apply false
+    id("org.jetbrains.kotlinx.kover") version "0.5.1" apply false
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.20.0"
     id("org.jetbrains.dokka")
