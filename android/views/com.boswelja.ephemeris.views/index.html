@@ -44,7 +44,7 @@ if(savedDarkMode === true){
     <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>boswelja.</span><wbr><span>ephemeris.</span><wbr><span>views</span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
     <div class="tabs-section-body">
       <h2 class="">Types</h2>
       <div class="table" data-togglable="Types"><a data-name="1294233334%2FClasslikes%2F1582525986" anchor-label="CalendarDateBinder" id="1294233334%2FClasslikes%2F1582525986" data-filterable-set=":android:views:dokkaHtmlPartial/release"></a>
@@ -88,6 +88,38 @@ if(savedDarkMode === true){
             <div>
               <div class="title">
                 <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":android:views:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="-ephemeris-calendar-view/index.html">EphemerisCalendarView</a>&nbsp;<span><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;attrs<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/util/AttributeSet.html">AttributeSet</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;defStyleAttr<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/widget/FrameLayout.html">FrameLayout</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A <a href="https://developer.android.com/reference/kotlin/android/view/View.html">android.view.View</a> that displays the Ephemeris calendar. You must set a <a href="-ephemeris-calendar-view/date-binder.html">dateBinder</a> and <a href="-ephemeris-calendar-view/page-source.html">pageSource</a> for the calendar to work correctly.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-639959356%2FFunctions%2F1582525986" anchor-label="forEachInRange" id="-639959356%2FFunctions%2F1582525986" data-filterable-set=":android:views:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":android:views:dokkaHtmlPartial/release" data-filterable-set=":android:views:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="for-each-in-range.html"><span>for</span><wbr><span>Each</span><wbr><span>In</span><wbr><span><span>Range</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-639959356%2FFunctions%2F1582525986"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":android:views:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../core/com.boswelja.ephemeris.core.model/-calendar-page/index.html">CalendarPage</a><span class="token punctuation">.</span><a href="for-each-in-range.html"><span class="token function">forEachInRange</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dateRange<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.ranges/-closed-range/index.html">ClosedRange</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="kotlinx.datetime/LocalDate///PointingToDeclaration/">LocalDate</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>flatIndex<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../../core/com.boswelja.ephemeris.core.model/-calendar-day/index.html">CalendarDay</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Executes the given <a href="for-each-in-range.html">block</a> on each date on this page that exists within <a href="for-each-in-range.html">dateRange</a></p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-531595471%2FFunctions%2F1582525986" anchor-label="getFlatDetailsFor" id="-531595471%2FFunctions%2F1582525986" data-filterable-set=":android:views:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":android:views:dokkaHtmlPartial/release" data-filterable-set=":android:views:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-flat-details-for.html"><span>get</span><wbr><span>Flat</span><wbr><span>Details</span><wbr><span><span>For</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-531595471%2FFunctions%2F1582525986"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":android:views:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../core/com.boswelja.ephemeris.core.model/-calendar-page/index.html">CalendarPage</a><span class="token punctuation">.</span><a href="get-flat-details-for.html"><span class="token function">getFlatDetailsFor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">date<span class="token operator">: </span><span data-unresolved-link="kotlinx.datetime/LocalDate///PointingToDeclaration/">LocalDate</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../../core/com.boswelja.ephemeris.core.model/-calendar-day/index.html">CalendarDay</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Retrieves the "flat" index and CalendarDay for the given <a href="get-flat-details-for.html">date</a>, or null if the date does. not exist on this page</p></div></div></div>
               </div>
             </div>
           </div>

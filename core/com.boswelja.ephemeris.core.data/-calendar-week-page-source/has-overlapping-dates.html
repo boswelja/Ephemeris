@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>loadPageData</title>
+    <title>hasOverlappingDates</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
     <script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
 const savedDarkMode = storage ? JSON.parse(storage) : false
@@ -38,19 +38,19 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="core::com.boswelja.ephemeris.core.data/CalendarMonthPageSource/loadPageData/#kotlin.Int/PointingToDeclaration//-2011752812">
-  <div class="breadcrumbs"><a href="../../index.html">core</a><span class="delimiter">/</span><a href="../index.html">com.boswelja.ephemeris.core.data</a><span class="delimiter">/</span><a href="index.html">CalendarMonthPageSource</a><span class="delimiter">/</span><a href="load-page-data.html">loadPageData</a></div>
+<div class="main-content" id="content" pageids="core::com.boswelja.ephemeris.core.data/CalendarWeekPageSource/hasOverlappingDates/#/PointingToDeclaration//-2011752812">
+  <div class="breadcrumbs"><a href="../../index.html">core</a><span class="delimiter">/</span><a href="../index.html">com.boswelja.ephemeris.core.data</a><span class="delimiter">/</span><a href="index.html">CalendarWeekPageSource</a><span class="delimiter">/</span><a href="has-overlapping-dates.html">hasOverlappingDates</a></div>
   <div class="cover ">
-    <h1 class="cover"><span>load</span><wbr><span>Page</span><wbr><span><span>Data</span></span></h1>
+    <h1 class="cover"><span>has</span><wbr><span>Overlapping</span><wbr><span><span>Dates</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="load-page-data.html"><span class="token function">loadPageData</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">page<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.boswelja.ephemeris.core.model/-calendar-page/index.html">CalendarPage</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Takes a page number and a DisplayDate producer, and returns a set of rows to display in the calendar UI. This should not implement any caching itself, caching is handled by consumers.</p></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="has-overlapping-dates.html">hasOverlappingDates</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Whether this page source has dates that may overlap from one page to the next. Ephemeris may use this to determine whether additional updates are necessary when changing a date.</p></div></div>
   <h2 class="">Sources</h2>
-  <div class="table" data-togglable="Sources"><a data-name="930370911%2FSource%2F-2011752812" anchor-label="https://github.com/boswelja/Ephemeris/blob/main/core/src/commonMain/kotlin/com/boswelja/ephemeris/core/data/CalendarMonthPageSource.kt#L36" id="930370911%2FSource%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
+  <div class="table" data-togglable="Sources"><a data-name="2054211632%2FSource%2F-2011752812" anchor-label="https://github.com/boswelja/Ephemeris/blob/main/core/src/commonMain/kotlin/com/boswelja/ephemeris/core/data/CalendarWeekPageSource.kt#L32" id="2054211632%2FSource%2F-2011752812" data-filterable-set=":core:dokkaHtmlPartial/commonMain"></a>
     <div class="table-row" data-filterable-current=":core:dokkaHtmlPartial/commonMain" data-filterable-set=":core:dokkaHtmlPartial/commonMain">
       <div class="main-subrow keyValue ">
         <div class=""><span class="inline-flex">
-            <div><a href="https://github.com/boswelja/Ephemeris/blob/main/core/src/commonMain/kotlin/com/boswelja/ephemeris/core/data/CalendarMonthPageSource.kt#L36">common source</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="930370911%2FSource%2F-2011752812"></span>
+            <div><a href="https://github.com/boswelja/Ephemeris/blob/main/core/src/commonMain/kotlin/com/boswelja/ephemeris/core/data/CalendarWeekPageSource.kt#L32">common source</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2054211632%2FSource%2F-2011752812"></span>
               <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
             </span></span></div>
         <div></div>
