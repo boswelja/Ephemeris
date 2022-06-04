@@ -1,7 +1,10 @@
 package com.boswelja.ephemeris.sample.ui.theme
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
+import android.view.Window
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -13,7 +16,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -52,11 +55,14 @@ fun EphemerisTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+    // Set the status bar color if needed
     val view = LocalView.current
     if (!view.isInEditMode) {
+        val context = LocalContext.current
         SideEffect {
             (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
-            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(context.findWindow()!!, view).isAppearanceLightStatusBars = darkTheme
         }
     }
 
@@ -66,3 +72,10 @@ fun EphemerisTheme(
         content = content
     )
 }
+
+private tailrec fun Context.findWindow(): Window? =
+    when (this) {
+        is Activity -> window
+        is ContextWrapper -> baseContext.findWindow()
+        else -> null
+    }
