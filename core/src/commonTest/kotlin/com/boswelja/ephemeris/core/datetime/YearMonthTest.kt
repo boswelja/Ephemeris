@@ -89,6 +89,11 @@ class YearMonthTest {
             2021,
             YearMonth(2022, Month.JANUARY).plus(-1).year
         )
+        // Check year of January after decrementing a while back
+        assertEquals(
+            2021,
+            YearMonth(2022, Month.JUNE).plus(-17).year
+        )
         // Check incrementing by a large number
         assertEquals(
             2030,
