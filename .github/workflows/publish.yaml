@@ -32,6 +32,8 @@ jobs:
         with:
           release-branch: main
           log-paths: ./
+          minor-identifier: /^feature/
+          major-identifier: /^breaking/
 
       - name: Publish to Maven
         run: ./gradlew  publishToSonatype --max-workers 1 closeAndReleaseSonatypeStagingRepository
