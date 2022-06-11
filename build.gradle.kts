@@ -25,8 +25,8 @@ nexusPublishing {
 
 tasks.register<Copy>("detektCollateReports") {
     mustRunAfter(
-        ":android:views:detekt",
-        ":android:compose:detekt",
+        ":android-views:detekt",
+        ":android-compose:detekt",
         ":core:detekt"
     )
     from(

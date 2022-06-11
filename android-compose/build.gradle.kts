@@ -11,8 +11,8 @@ plugins {
 }
 
 android {
-    namespace = "com.boswelja.ephemeris.views"
-    buildFeatures.viewBinding = true
+    namespace = "com.boswelja.ephemeris.compose"
+    buildFeatures.compose = true
 
     publishing {
         singleVariant("release") {
@@ -20,26 +20,22 @@ android {
             withJavadocJar()
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
+    }
 }
 
 dependencies {
     api(project(":core"))
-    api(libs.kotlinx.coroutines.core)
-    api(libs.androidx.recyclerview)
-
-    debugImplementation(libs.bundles.androidx.foundation)
-    debugImplementation(libs.androidx.fragment.testing)
-
-    testImplementation("junit:junit:4.13.2")
-
-    androidTestImplementation(libs.androidx.espresso)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+    api(libs.bundles.compose.lib)
+    implementation(libs.compose.snapper)
 }
 
 detekt {
-    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    config = files(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+        "${rootDir.absolutePath}/config/detekt/detekt-compose.yml"
+    )
     basePath = rootDir.absolutePath
 }
 
@@ -50,12 +46,9 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            artifactId = "android-views"
-
             pom {
-                name.set("android-views")
                 description.set("The flexible, multiplatform calendar library!")
-                url.set("https://github.com/boswelja/Ephemeris/tree/main/android/views")
+                url.set("https://github.com/boswelja/Ephemeris/tree/main/android/compose")
                 licenses {
                     license {
                         name.set("GPLv3")
@@ -68,11 +61,6 @@ publishing {
                         name.set("Jack Boswell")
                         email.set("boswelja@outlook.com")
                         url.set("https://github.com/boswelja")
-                    }
-                    developer {
-                        id.set("Iannnr")
-                        name.set("Ian Roberts")
-                        url.set("https://github.com/Iannnr")
                     }
                 }
                 scm {
@@ -89,10 +77,12 @@ publishing {
     }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+}
+
 tasks
-    .matching {
-        it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile && !it.name.contains("test", ignoreCase = true)
-    }
+    .matching { it is org.jetbrains.kotlin.gradle.tasks.KotlinCompile && !it.name.contains("test", ignoreCase = true) }
     .configureEach {
         val kotlinCompile = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
         if ("-Xexplicit-api=strict" !in kotlinCompile.kotlinOptions.freeCompilerArgs) {
@@ -103,21 +93,15 @@ tasks
 tasks.withType<DokkaTaskPartial>().configureEach {
     moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
 
-    // Hide inherited members
-    suppressInheritedMembers.set(true)
-
     dokkaSourceSets {
         named("main") {
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
 
-                remoteUrl.set(URL(
-                    "https://github.com/boswelja/Ephemeris/blob/main/android/views/src/main/kotlin"))
+                remoteUrl.set(
+                    URL("https://github.com/boswelja/Ephemeris/blob/main/android-compose/src/main/kotlin")
+                )
             }
-        }
-        named("debug") {
-            // Hide debug from public API
-            suppress.set(true)
         }
     }
 }
