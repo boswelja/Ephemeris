@@ -45,7 +45,7 @@ jobs:
         run: bash ./gradlew :core:testDebugUnitTest
 
       - name: Run android-views tests
-        run: bash ./gradlew :android:views:test
+        run: bash ./gradlew :android-views:test
 
       - name: Code Coverage
         run: bash ./gradlew koverVerify
