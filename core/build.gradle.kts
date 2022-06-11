@@ -3,11 +3,9 @@ import java.net.URL
 
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
     id("org.jetbrains.kotlinx.kover")
     id("com.ephemeris.library.android")
     id("com.ephemeris.publish.maven")
-    id("dev.petuska.npm.publish") version "2.1.2"
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
 }
@@ -25,26 +23,6 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    // JVM targets
-    jvm()
-
-    // JS targets
-    js(IR) {
-        binaries.library()
-        nodejs()
-    }
-
-    // Windows targets
-    mingwX64()
-
-    // Linux targets
-    linuxX64()
-
-    // Mac targets
-    ios()
-    macosX64()
-    macosArm64()
-
     sourceSets {
         all {
             languageSettings.optIn("kotlin.RequiresOptIn")
@@ -59,16 +37,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
             }
-        }
-    }
-
-    cocoapods {
-        summary = "The flexible, multiplatform calendar library!"
-        homepage = "https://boswelja.github.io/Ephemeris"
-        license = "MIT"
-
-        framework {
-            baseName = "EphemerisCore"
         }
     }
 }
@@ -130,19 +98,6 @@ publishing {
             }
         }
     }
-}
-
-npmPublishing {
-    repositories {
-        repository("npmjs") {
-            val npmToken: String? by project
-            registry = uri("https://registry.npmjs.org")
-            authToken = npmToken
-        }
-    }
-
-    readme = file("README.md")
-    organization = "ephemeris"
 }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
