@@ -24,9 +24,7 @@ nexusPublishing {
 }
 
 tasks.register<Copy>("detektCollateReports") {
-    doFirst {
-        buildDir.resolve("reports/detekt/").deleteRecursively()
-    }
+    // Set up task
     dependsOn(
         "android-views:detekt",
         "android-compose:detekt",
@@ -38,6 +36,11 @@ tasks.register<Copy>("detektCollateReports") {
         rootDir.resolve("core/build/reports/detekt/")
     )
     include("detekt.sarif")
+
+    // Delete any existing contents
+    buildDir.resolve("reports/detekt/").deleteRecursively()
+
+    // Set up copy
     destinationDir = buildDir.resolve("reports/detekt/")
     rename {
         val totalCount = destinationDir.list()?.count()
