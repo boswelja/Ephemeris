@@ -1,6 +1,5 @@
 import java.net.URL
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import org.jetbrains.dokka.utilities.cast
 
 plugins {
     kotlin("android")
@@ -47,6 +46,7 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             pom {
+                name.set("android-compose")
                 description.set("The flexible, multiplatform calendar library!")
                 url.set("https://github.com/boswelja/Ephemeris/tree/main/android/compose")
                 licenses {
@@ -91,8 +91,6 @@ tasks
     }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
-    moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
-
     dokkaSourceSets {
         named("main") {
             sourceLink {

@@ -111,7 +111,5 @@ tasks.withType<DokkaTaskPartial>().configureEach {
                 )
             )
         }
-
-        externalDocumentationLink("https://kotlin.github.io/kotlinx.coroutines/")
     }
 }

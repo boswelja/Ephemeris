@@ -1,6 +1,5 @@
 import java.net.URL
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import org.jetbrains.dokka.utilities.cast
 
 plugins {
     kotlin("android")
@@ -51,6 +50,7 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             pom {
+                name.set("android-views")
                 description.set("The flexible, multiplatform calendar library!")
                 url.set("https://github.com/boswelja/Ephemeris/tree/main/android-views")
                 licenses {
@@ -98,8 +98,6 @@ tasks
     }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
-    moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
-
     // Hide inherited members
     suppressInheritedMembers.set(true)
 
