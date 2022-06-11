@@ -48,8 +48,8 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
-    implementation(project(":android:compose"))
-    implementation(project(":android:views"))
+    implementation(project(":android-compose"))
+    implementation(project(":android-views"))
 
     implementation(libs.bundles.androidx.foundation)
     implementation(libs.bundles.androidx.navigation.views)

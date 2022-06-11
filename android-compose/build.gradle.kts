@@ -1,6 +1,5 @@
 import java.net.URL
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import org.jetbrains.dokka.utilities.cast
 
 plugins {
     kotlin("android")
@@ -46,8 +45,6 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            artifactId = "android-compose"
-
             pom {
                 name.set("android-compose")
                 description.set("The flexible, multiplatform calendar library!")
@@ -94,22 +91,15 @@ tasks
     }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
-    moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
-
     dokkaSourceSets {
         named("main") {
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
 
-                remoteUrl.set(URL(
-                    "https://github.com/boswelja/Ephemeris/blob/main/android/compose/src/main/kotlin"))
+                remoteUrl.set(
+                    URL("https://github.com/boswelja/Ephemeris/blob/main/android-compose/src/main/kotlin")
+                )
             }
-
-            // Workaround for https://github.com/Kotlin/dokka/issues/2455
-            externalDocumentationLink(
-                "https://developer.android.com/reference/kotlin/",
-                "https://developer.android.com/reference/kotlin/androidx/package-list"
-            )
         }
     }
 }

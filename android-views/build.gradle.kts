@@ -1,6 +1,5 @@
 import java.net.URL
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import org.jetbrains.dokka.utilities.cast
 
 plugins {
     kotlin("android")
@@ -50,12 +49,10 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            artifactId = "android-views"
-
             pom {
                 name.set("android-views")
                 description.set("The flexible, multiplatform calendar library!")
-                url.set("https://github.com/boswelja/Ephemeris/tree/main/android/views")
+                url.set("https://github.com/boswelja/Ephemeris/tree/main/android-views")
                 licenses {
                     license {
                         name.set("GPLv3")
@@ -101,8 +98,6 @@ tasks
     }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
-    moduleName.set(publishing.publications["release"].cast<MavenPublication>().artifactId)
-
     // Hide inherited members
     suppressInheritedMembers.set(true)
 
@@ -111,8 +106,9 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
 
-                remoteUrl.set(URL(
-                    "https://github.com/boswelja/Ephemeris/blob/main/android/views/src/main/kotlin"))
+                remoteUrl.set(
+                    URL("https://github.com/boswelja/Ephemeris/blob/main/android-views/src/main/kotlin")
+                )
             }
         }
         named("debug") {

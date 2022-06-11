@@ -4,7 +4,7 @@ name: "Code scanning"
 # The scheduled workflow runs every Thursday at 15:45 UTC.
 on:
   pull_request:
-    branches: 'main'
+    branches: ['main']
   schedule:
     - cron: '30 15 * * 5'
 
