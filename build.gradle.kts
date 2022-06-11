@@ -24,20 +24,23 @@ nexusPublishing {
 }
 
 tasks.register<Copy>("detektCollateReports") {
-    mustRunAfter(
-        ":android-views:detekt",
-        ":android-compose:detekt",
-        ":core:detekt"
+    doFirst {
+        buildDir.resolve("reports/detekt/").deleteRecursively()
+    }
+    dependsOn(
+        "android-views:detekt",
+        "android-compose:detekt",
+        "core:detekt"
     )
     from(
-        rootDir.resolve("android/views/build/reports/detekt/"),
-        rootDir.resolve("android/compose/build/reports/detekt/"),
+        rootDir.resolve("android-views/build/reports/detekt/"),
+        rootDir.resolve("android-compose/build/reports/detekt/"),
         rootDir.resolve("core/build/reports/detekt/")
     )
     include("detekt.sarif")
     destinationDir = buildDir.resolve("reports/detekt/")
     rename {
-        val totalCount = destinationDir.list().count()
+        val totalCount = destinationDir.list()?.count()
         "$totalCount-$it"
     }
 }
