@@ -45,15 +45,6 @@ jobs:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
 
-      - name: Publish to NPM
-        run: ./gradlew publishJsNpmPublicationToNpmjs
-        env:
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
-          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEYID }}
-          ORG_GRADLE_PROJECT_npmToken: ${{ secrets.ORG_GRADLE_PROJECT_npmToken }}
-          ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
-
       - name: Build Android Sample
         run: ./gradlew :android:sample:assembleRelease
 
@@ -65,4 +56,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: ${{ github.event.inputs.prerelease }}
           generateReleaseNotes: true
-          artifacts: 'android/sample/build/outputs/apk/release/sample-release.apk'
+          artifacts: 'android-sample/build/outputs/apk/release/sample-release.apk'
