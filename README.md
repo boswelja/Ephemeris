@@ -1,34 +1,15 @@
 # Ephemeris
 
-The flexible, multiplatform calendar library!
+The flexible Android calendar library!
 
-Ephemeris provides a fast, familiar calendar library framework for you to use across your projects.
+Ephemeris provides a fast, flexible calendar library framework for you to use across your projects.
 
 ## Supported Platforms
 
 ### Core
 
-Ephemeris Core currently runs on the following platforms
-
-| Platform | Supported |
-| -- | -- |
-| Android | ✔️ |
-| iOS | ✔️ |
-| MacOS | ✔️ |
-| JVM | ✔️ |
-| Windows | ✔️ |
-| Linux | ✔️ |
-| JS (Node) | ✔️ |
-| JS (Browser) | ✔️ |
-
-### UI Frameworks
-
-| Platform | Supported |
-| -- | -- |
-| Android (Jetpack Compose) | ✔️ |
-| Android (XML Views) | ✔️ |
-| iOS (SwiftUI) | Coming soon (See [#37](https://github.com/boswelja/Ephemeris/issues/37)) |
-| MacOS (SwiftUI) | Coming soon (See [#37](https://github.com/boswelja/Ephemeris/issues/37)) |
+Ephemeris Core is Kotlin Multiplatform-enabled, meaning you can build it for any Kotlin Multiplatform supported target.
+Core does not provide any UI on its own, but does provide calendar page loading logic.
 
 ## How to Use
 
@@ -36,6 +17,6 @@ Pick your UI library below for platform-specific implementation details. For sha
 
 ### [Core](https://github.com/boswelja/Ephemeris/tree/main/core/README.md)
 
-### [Android (Views)](https://github.com/boswelja/Ephemeris/tree/main/android/views/README.md)
+### [Android Views](https://github.com/boswelja/Ephemeris/tree/main/android-views/README.md)
 
-### [Android (Compose)](https://github.com/boswelja/Ephemeris/tree/main/android/compose/README.md)
+### [Android Compose](https://github.com/boswelja/Ephemeris/tree/main/android-compose/README.md)
