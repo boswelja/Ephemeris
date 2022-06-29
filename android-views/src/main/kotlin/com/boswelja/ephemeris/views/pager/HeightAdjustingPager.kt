@@ -91,10 +91,16 @@ internal class HeightAdjustingPager @JvmOverloads constructor(
         }
 
         // Measure the child
-        val newHeight = viewHolder.itemView.measureForUnboundedHeight()
+        val childHeight = viewHolder.itemView.measureForUnboundedHeight()
 
-        // Apply the new height
-        setHeight(newHeight)
+        // If child height is higher than parent, set child height to its layout params to make sure
+        // it will invalidate properly and not cut
+        if (childHeight > measuredHeight) {
+            viewHolder.itemView.setHeight(childHeight)
+        }
+
+        // Update parent height according to child height
+        setHeight(childHeight)
     }
 
     /**

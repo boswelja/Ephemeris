@@ -54,7 +54,9 @@ public class CalendarWeekPageSource(
         val daysUntil = startDate.daysUntil(date)
         // We need to account for the previous page not being 6 dates away from the start
         return if (daysUntil < 0) {
-            (daysUntil / daysInWeek) - 1
+            // If there is remainder，add a pageOffset 1
+            val pageOffset = if (daysUntil % daysInWeek != 0) 1 else 0
+            (daysUntil / daysInWeek) - pageOffset
         } else {
             daysUntil / daysInWeek
         }
