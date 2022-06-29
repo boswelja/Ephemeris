@@ -33,14 +33,19 @@ internal class CalendarPagerAdapter(
 
         val colNum = getColNum(pageState)
         val rowNum = pageState.rows.size
-        return rowNum * 10 + colNum
+        return rowNum * CALENDAR_ROW_WEIGHT + colNum
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
         return CalendarPageViewHolder.create(parent).apply {
             // We create layout for a viewType in advance, it will improve performance
             // and make adjust view size dynamically possible.
-            createRows(dateBinder, itemView as ViewGroup, viewType / 10, viewType % 10)
+            createRows(
+                dateBinder = dateBinder,
+                parent = itemView as ViewGroup,
+                rowNum = viewType / CALENDAR_ROW_WEIGHT,
+                colNum = viewType % CALENDAR_ROW_WEIGHT
+            )
         }
     }
 
@@ -84,6 +89,10 @@ internal class CalendarPagerAdapter(
 
     // We assume that pageSource is providing same number of days for each row.
     private fun getColNum(pageState: CalendarPage) = if (pageState.rows.isNotEmpty()) pageState.rows[0].days.size else 0
+
+    companion object {
+        internal const val CALENDAR_ROW_WEIGHT = 10
+    }
 }
 
 internal class CalendarPageViewHolder(
