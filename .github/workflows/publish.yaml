@@ -46,7 +46,7 @@ jobs:
           ORG_GRADLE_PROJECT_version: ${{ steps.version.outputs.version }}
 
       - name: Build Android Sample
-        run: ./gradlew :android:sample:assembleRelease
+        run: ./gradlew :android-sample:assembleRelease
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1.9.0
