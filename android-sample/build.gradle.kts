@@ -35,9 +35,7 @@ android {
         viewBinding = true
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
-    }
+    composeOptions.kotlinCompilerExtensionVersion = "1.2.0"
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

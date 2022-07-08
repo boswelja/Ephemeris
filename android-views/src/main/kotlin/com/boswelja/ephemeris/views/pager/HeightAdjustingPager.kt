@@ -50,7 +50,7 @@ internal class HeightAdjustingPager @JvmOverloads constructor(
     override fun onScrolled(dx: Int, dy: Int) {
         super.onScrolled(dx, dy)
         if (scrollState != SCROLL_STATE_DRAGGING) {
-            val snapTarget = snapHelper.findTargetSnapPosition(layoutManager, dx, dy)
+            val snapTarget = snapHelper.findTargetSnapPosition(layoutManager!!, dx, dy)
             if (snapTarget != NO_POSITION) {
                 val snapPage = positionToPage(snapTarget)
                 maybeNotifySnapPositionChange(snapPage)
