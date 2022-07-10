@@ -7,7 +7,7 @@ plugins {
 val isMultiplatform = plugins.hasPlugin("kotlin-multiplatform")
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 23
