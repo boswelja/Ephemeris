@@ -19,7 +19,7 @@ android {
             withJavadocJar()
         }
     }
-    composeOptions.kotlinCompilerExtensionVersion = "1.2.0"
+    composeOptions.kotlinCompilerExtensionVersion = "1.3.0-rc02"
 }
 
 dependencies {
