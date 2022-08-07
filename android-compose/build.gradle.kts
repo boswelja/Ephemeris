@@ -19,9 +19,7 @@ android {
             withJavadocJar()
         }
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
-    }
+    composeOptions.kotlinCompilerExtensionVersion = "1.3.0-rc02"
 }
 
 dependencies {

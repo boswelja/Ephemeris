@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.boswelja.ephemeris.sample"
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.boswelja.ephemeris.sample"
         minSdk = 23
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -35,9 +35,7 @@ android {
         viewBinding = true
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
-    }
+    composeOptions.kotlinCompilerExtensionVersion = "1.3.0-rc02"
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -46,7 +44,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.0")
 
     implementation(project(":android-compose"))
     implementation(project(":android-views"))
