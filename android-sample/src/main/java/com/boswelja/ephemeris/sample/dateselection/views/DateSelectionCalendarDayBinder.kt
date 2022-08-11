@@ -3,40 +3,22 @@ package com.boswelja.ephemeris.sample.dateselection.views
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.databinding.SelectableDayBinding
-import com.boswelja.ephemeris.views.CalendarDateBinder
+import com.boswelja.ephemeris.views.CalendarDayAdapter
 import com.google.android.material.color.MaterialColors
 import kotlinx.datetime.LocalDate
 
 class DateSelectionCalendarDayBinder(
     private val getIsSelected: (LocalDate) -> Boolean,
     private val onDateClicked: (LocalDate) -> Unit
-) : CalendarDateBinder<DateSelectionViewHolder> {
+) : CalendarDayAdapter<SelectableDayBinding> {
 
-    override fun onCreateViewHolder(
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ): DateSelectionViewHolder {
-        return DateSelectionViewHolder(
-            SelectableDayBinding.inflate(inflater, parent, false),
-            getIsSelected,
-            onDateClicked
-        )
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup): SelectableDayBinding {
+        return SelectableDayBinding.inflate(inflater, parent, false)
     }
 
-    override fun onBindView(viewHolder: DateSelectionViewHolder, calendarDay: CalendarDay) {
-        viewHolder.onBind(calendarDay)
-    }
-}
-
-class DateSelectionViewHolder(
-    private val binding: SelectableDayBinding,
-    private val getIsSelected: (LocalDate) -> Boolean,
-    private val onDateClicked: (LocalDate) -> Unit
-) : ViewHolder(binding.root) {
-    fun onBind(day: CalendarDay) {
+    override fun onBindView(binding: SelectableDayBinding, day: CalendarDay) {
         val isSelected = getIsSelected(day.date)
 
         binding.dayNum.apply {

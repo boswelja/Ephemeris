@@ -7,9 +7,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewbinding.ViewBinding
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.collapsing.CollapsingCalendarViewModel
 import com.boswelja.ephemeris.sample.databinding.FragmentCollapsingCalendarBinding
+import com.boswelja.ephemeris.views.CalendarDayAdapter
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,11 +34,7 @@ class CollapsingViewsCalendarFragment : Fragment(R.layout.fragment_collapsing_ca
 
     private fun setupCalendar() {
         binding.switchCalendar.apply {
-            animateHeight = true
-            dateBinder = CollapsingCalendarDayBinder()
-            setOnDisplayedDateRangeChangeListener {
-                viewModel.handlePageChanged(it)
-            }
+            dayAdapter = CollapsingCalendarDayBinder() as CalendarDayAdapter<ViewBinding>
         }
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

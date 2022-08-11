@@ -3,30 +3,18 @@ package com.boswelja.ephemeris.sample.custompagesource.views
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.databinding.DayBinding
-import com.boswelja.ephemeris.views.CalendarDateBinder
+import com.boswelja.ephemeris.views.CalendarDayAdapter
 import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
 
-class CustomSourceCalendarDayBinder : CalendarDateBinder<CalendarDateViewHolder> {
-    override fun onCreateViewHolder(
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ): CalendarDateViewHolder {
-        val view = DayBinding.inflate(inflater, parent, false)
-        return CalendarDateViewHolder(view)
+class CustomSourceCalendarDayBinder : CalendarDayAdapter<DayBinding> {
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup): DayBinding {
+        return DayBinding.inflate(inflater, parent, false)
     }
 
-    override fun onBindView(viewHolder: CalendarDateViewHolder, calendarDay: CalendarDay) {
-        viewHolder.onBind(calendarDay)
-    }
-}
-
-class CalendarDateViewHolder(private val binding: DayBinding) : RecyclerView.ViewHolder(binding.root) {
-
-    fun onBind(calendarDay: CalendarDay) {
+    override fun onBindView(binding: DayBinding, calendarDay: CalendarDay) {
         binding.dayNum.apply {
             text = calendarDay.date.dayOfMonth.toString()
             setTextColor(
