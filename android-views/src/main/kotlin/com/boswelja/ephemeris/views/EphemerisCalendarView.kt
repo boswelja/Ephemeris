@@ -120,7 +120,32 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         // Skip layout if we have no page loader
         if (!::pageLoader.isInitialized) return
 
+        // Layout current page
         layoutCalendarPage(currentPage, left, top, right, bottom)
+
+        // Layout next page, if possible
+        val nextPage = currentPage + 1
+        if (nextPage <= pageSource.maxPageRange.last) {
+            layoutCalendarPage(
+                nextPage,
+                left + right,
+                top,
+                left + (right * 2),
+                bottom
+            )
+        }
+
+        // Layout prev page, if possible
+        val prevPage = currentPage + 1
+        if (prevPage >= pageSource.maxPageRange.first) {
+            layoutCalendarPage(
+                prevPage,
+                left - right,
+                top,
+                left,
+                bottom
+            )
+        }
     }
 
     private fun layoutCalendarPage(page: Int, left: Int, top: Int, right: Int, bottom: Int) {
