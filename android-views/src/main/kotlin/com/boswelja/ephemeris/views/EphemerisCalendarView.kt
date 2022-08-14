@@ -150,12 +150,10 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
     private fun layoutCalendarPage(page: Int, left: Int, top: Int, right: Int, bottom: Int) {
         val pageData = pageLoader.getPageData(page)
-        val maxWidth = right - left
 
         pageData.rows.forEachIndexed { rowIndex, calendarRow ->
-            val maxDateWidth = maxWidth / calendarRow.days.size
             calendarRow.days.forEachIndexed { dayIndex, calendarDay ->
-                val view = getOrCreateBinding(maxDateWidth)
+                val view = getOrCreateBinding()
 
                 val width = view.root.measuredWidth
                 val height = view.root.measuredHeight
@@ -178,17 +176,14 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         }
     }
 
-    private fun getOrCreateBinding(maxWidth: Int): ViewBinding {
-        val binding = recycledBindingPool.removeLastOrNull()
-            ?: dayAdapter.onCreateView(layoutInflater, this)
-        val needsMeasure = binding.root.measuredWidth !in 1..maxWidth
-        if (needsMeasure) {
-            binding.root.measure(
-                dateCellWidthSpec,
-                dateCellHeightSpec
-            )
+    private fun getOrCreateBinding(): ViewBinding {
+        val recycledBinding = recycledBindingPool.removeLastOrNull()
+        if (recycledBinding == null) {
+            val newBinding = dayAdapter.onCreateView(layoutInflater, this)
+            newBinding.root.measure(dateCellWidthSpec, dateCellHeightSpec)
+            return newBinding
         }
-        return binding
+        return recycledBinding
     }
 
     private fun measureRecycledView(): Size {
