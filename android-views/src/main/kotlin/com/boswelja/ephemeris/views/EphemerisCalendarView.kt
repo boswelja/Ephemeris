@@ -2,6 +2,7 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
@@ -43,62 +44,70 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             tryInit()
         }
 
+    public var currentPage: Int = 0
+        private set
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // Skip layout if we have no page loader
         if (!::pageLoader.isInitialized) return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        dateCellWidthSpec = when (MeasureSpec.getMode(widthMeasureSpec)) {
+        // Get the current page to use row/column for measurement
+        val page = pageLoader.getPageData(currentPage)
+
+        when (MeasureSpec.getMode(widthMeasureSpec)) {
             MeasureSpec.EXACTLY -> {
                 // The calendar should be exactly this width. Split it up and measure each date cell
                 // exactly.
                 val exactWidth = MeasureSpec.getSize(widthMeasureSpec)
                 // Sample the calendar page for the row width
-                val page = pageLoader.getPageData(0)
                 val colCount = page.rows.first().days.size
                 val exactDateWidth = exactWidth / colCount
-                MeasureSpec.makeMeasureSpec(exactDateWidth, MeasureSpec.EXACTLY)
+                dateCellWidthSpec = MeasureSpec.makeMeasureSpec(exactDateWidth, MeasureSpec.EXACTLY)
             }
             MeasureSpec.AT_MOST -> {
                 val maxWidth = MeasureSpec.getSize(widthMeasureSpec)
 
                 // Sample the calendar page for the row width
-                val page = pageLoader.getPageData(0)
                 val colCount = page.rows.first().days.size
                 val maxDateWidth = maxWidth / colCount
-                MeasureSpec.makeMeasureSpec(maxDateWidth, MeasureSpec.AT_MOST)
+                dateCellWidthSpec = MeasureSpec.makeMeasureSpec(maxDateWidth, MeasureSpec.AT_MOST)
             }
             else -> {
                 // Assume unspecified
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+                dateCellWidthSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             }
         }
 
-        dateCellHeightSpec = when (MeasureSpec.getMode(heightMeasureSpec)) {
+        when (MeasureSpec.getMode(heightMeasureSpec)) {
             MeasureSpec.EXACTLY -> {
                 // The calendar should be exactly this width. Split it up and measure each date cell
                 // exactly.
                 val exactHeight = MeasureSpec.getSize(heightMeasureSpec)
                 // Sample the calendar page for the row width
-                val page = pageLoader.getPageData(0)
                 val rowCount = page.rows.size
                 val exactDateHeight = exactHeight / rowCount
-                MeasureSpec.makeMeasureSpec(exactDateHeight, MeasureSpec.EXACTLY)
+                dateCellHeightSpec = MeasureSpec.makeMeasureSpec(exactDateHeight, MeasureSpec.EXACTLY)
             }
             MeasureSpec.AT_MOST -> {
                 val maxHeight = MeasureSpec.getSize(widthMeasureSpec)
 
                 // Sample the calendar page for the row width
-                val page = pageLoader.getPageData(0)
                 val rowCount = page.rows.size
                 val maxDateHeight = maxHeight / rowCount
-                MeasureSpec.makeMeasureSpec(maxDateHeight, MeasureSpec.AT_MOST)
+                dateCellHeightSpec = MeasureSpec.makeMeasureSpec(maxDateHeight, MeasureSpec.AT_MOST)
             }
             else -> {
                 // Assume unspecified
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+                dateCellHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             }
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        val cellSize = measureRecycledView()
+
+        val calendarWidth = cellSize.width * page.rows.first().days.count()
+        val calendarHeight = cellSize.height * page.rows.count()
+
+        setMeasuredDimension(calendarWidth, calendarHeight)
     }
 
     override fun onLayout(
@@ -111,7 +120,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         // Skip layout if we have no page loader
         if (!::pageLoader.isInitialized) return
 
-        layoutCalendarPage(0, left, top, right, bottom)
+        layoutCalendarPage(currentPage, left, top, right, bottom)
     }
 
     private fun layoutCalendarPage(page: Int, left: Int, top: Int, right: Int, bottom: Int) {
@@ -155,6 +164,13 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             )
         }
         return binding
+    }
+
+    private fun measureRecycledView(): Size {
+        // Measure a recycled cell view
+        val binding = recycledBindingPool.firstOrNull() ?: dayAdapter.onCreateView(layoutInflater, this)
+        binding.root.measure(dateCellWidthSpec, dateCellHeightSpec)
+        return Size(binding.root.measuredWidth, binding.root.measuredHeight)
     }
 
     private fun tryInit() {
