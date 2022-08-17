@@ -34,7 +34,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     private var internalPaddingRight: Int = 0
     private var internalClipToPadding: Boolean = false
 
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private var coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     private val currentPager: HeightAdjustingPager?
         get() = getChildAt(0) as? HeightAdjustingPager
@@ -82,7 +82,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         set(value) {
             @Suppress("UNCHECKED_CAST")
             _dateBinder = value as CalendarDateBinder<RecyclerView.ViewHolder>
-            if (_dateBinder != null && _pageLoader != null) {
+            if (_pageLoader != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
                 initView()
             }
@@ -99,7 +99,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
                 coroutineScope,
                 value
             )
-            if (_dateBinder != null && _pageLoader != null) {
+            if (_dateBinder != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
                 initView()
             }
