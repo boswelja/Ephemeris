@@ -174,21 +174,21 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         right: Int,
         bottom: Int
     ) {
+        // Skip layout if nothing changed
+        if (!changed) return
         // Skip layout if we have no page loader
         if (!::pageLoader.isInitialized) return
 
         // Layout current page
-        layoutCalendarPage(currentPage, left, top, right, bottom)
+        layoutCalendarPage(currentPage, 0, 0)
 
         // Layout next page, if possible
         val nextPage = currentPage + 1
         if (nextPage <= pageSource.maxPageRange.last) {
             layoutCalendarPage(
                 nextPage,
-                left + right,
-                top,
-                left + (right * 2),
-                bottom
+                width,
+                0
             )
         }
 
@@ -197,10 +197,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         if (prevPage >= pageSource.maxPageRange.first) {
             layoutCalendarPage(
                 prevPage,
-                left - right,
-                top,
-                left,
-                bottom
+                -width,
+                0
             )
         }
     }
@@ -209,7 +207,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         return gestureDetector.onTouchEvent(event)
     }
 
-    private fun layoutCalendarPage(page: Int, left: Int, top: Int, right: Int, bottom: Int) {
+    private fun layoutCalendarPage(page: Int, leftOffset: Int, topOffset: Int) {
         val pageData = pageLoader.getPageData(page)
 
         pageData.rows.forEachIndexed { rowIndex, calendarRow ->
@@ -227,12 +225,12 @@ public class EphemerisCalendarView @JvmOverloads constructor(
                 )
 
                 view.root.layout(
-                    left + (width * dayIndex),
-                    top + (height * rowIndex),
-                    width * (dayIndex + 1),
-                    height * (rowIndex + 1)
+                    leftOffset + (width * dayIndex),
+                    topOffset + (height * rowIndex),
+                    leftOffset + (width * (dayIndex + 1)),
+                    topOffset + (height * (rowIndex + 1))
                 )
-                dayAdapter.onBindView(view, calendarDay)
+                view.root.post { dayAdapter.onBindView(view, calendarDay) }
             }
         }
     }
