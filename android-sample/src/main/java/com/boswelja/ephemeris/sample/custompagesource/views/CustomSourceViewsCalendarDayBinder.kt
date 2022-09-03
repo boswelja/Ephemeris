@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.databinding.DayBinding
-import com.boswelja.ephemeris.views.CalendarDayAdapter
+import com.boswelja.ephemeris.views.recycling.RecyclingAdapter
 import com.google.android.material.R
 import com.google.android.material.color.MaterialColors
 
-class CustomSourceCalendarDayBinder : CalendarDayAdapter<DayBinding> {
+class CustomSourceCalendarDayBinder : RecyclingAdapter<DayBinding, CalendarDay> {
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup): DayBinding {
         return DayBinding.inflate(inflater, parent, false)
     }

@@ -7,10 +7,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
+import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.databinding.FragmentDateSelectionCalendarBinding
 import com.boswelja.ephemeris.sample.dateselection.DateSelectionViewModel
-import com.boswelja.ephemeris.views.CalendarDayAdapter
+import com.boswelja.ephemeris.views.recycling.RecyclingAdapter
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,10 +28,12 @@ class DateSelectionViewsCalendarFragment : Fragment(R.layout.fragment_date_selec
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.calendarView.apply {
             pageSource = CalendarMonthPageSource(DayOfWeek.SUNDAY)
-            dayAdapter = DateSelectionCalendarDayBinder(
-                getIsSelected = { it == viewModel.selectedDate.value },
-                onDateClicked = { viewModel.selectDate(it) }
-            ) as CalendarDayAdapter<ViewBinding>
+            setAdapter(
+                DateSelectionCalendarDayBinder(
+                    getIsSelected = { it == viewModel.selectedDate.value },
+                    onDateClicked = { viewModel.selectDate(it) }
+                ) as RecyclingAdapter<ViewBinding, CalendarDay>
+            )
         }
         lifecycleScope.launch {
             viewModel.selectedDate

@@ -2,15 +2,14 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Size
 import android.view.GestureDetector
-import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ViewGroup
 import android.widget.OverScroller
 import androidx.viewbinding.ViewBinding
 import com.boswelja.ephemeris.core.data.CalendarPageSource
+import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
+import com.boswelja.ephemeris.views.recycling.RecyclingViewGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.LocalDate
@@ -18,9 +17,7 @@ import kotlin.properties.Delegates
 
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ViewGroup(context, attrs, defStyleAttr) {
-
-    private val layoutInflater = LayoutInflater.from(context)
+) : RecyclingViewGroup<ViewBinding, CalendarDay>(context, attrs, defStyleAttr) {
 
     private val scroller = OverScroller(context)
     private val gestureListener = object : GestureDetector.OnGestureListener {
@@ -77,28 +74,21 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     private val gestureDetector = GestureDetector(context, gestureListener)
 
     private val boundViewPool = mutableMapOf<LocalDate, ViewBinding>()
-    private val recycledBindingPool = mutableListOf<ViewBinding>()
 
     private var dateCellWidthSpec by Delegates.notNull<Int>()
     private var dateCellHeightSpec by Delegates.notNull<Int>()
 
     private lateinit var pageLoader: CalendarPageLoader
 
-    private var _pageSource: CalendarPageSource? = null
     public var pageSource: CalendarPageSource
-        get() = _pageSource!!
+        get() = pageLoader.calendarPageSource
         set(value) {
-            _pageSource = value
-            tryInit()
-        }
-
-    private var _dayAdapter: CalendarDayAdapter<ViewBinding>? = null
-    public var dayAdapter: CalendarDayAdapter<ViewBinding>
-        get() = _dayAdapter!!
-        set(value) {
-            _dayAdapter = value
-            invalidateAll()
-            tryInit()
+            // TODO Don't use an orphaned CoroutineScope here
+            pageLoader = CalendarPageLoader(
+                CoroutineScope(Dispatchers.Default),
+                value
+            )
+            invalidate()
         }
 
     public var currentPage: Int = 0
@@ -159,7 +149,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             }
         }
 
-        val cellSize = measureRecycledView()
+        val cellSize = measureRecycledBinding(dateCellWidthSpec, dateCellHeightSpec)
 
         val calendarWidth = cellSize.width * page.rows.first().days.count()
         val calendarHeight = cellSize.height * page.rows.count()
@@ -212,17 +202,11 @@ public class EphemerisCalendarView @JvmOverloads constructor(
 
         pageData.rows.forEachIndexed { rowIndex, calendarRow ->
             calendarRow.days.forEachIndexed { dayIndex, calendarDay ->
-                val view = getOrCreateBinding()
+                val view = getOrCreateBinding(dateCellWidthSpec, dateCellHeightSpec)
 
                 val width = view.root.measuredWidth
                 val height = view.root.measuredHeight
                 boundViewPool[calendarDay.date] = view
-                addViewInLayout(
-                    view.root,
-                    -1,
-                    view.root.layoutParams ?: generateDefaultLayoutParams(),
-                    true
-                )
 
                 view.root.layout(
                     leftOffset + (width * dayIndex),
@@ -230,41 +214,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
                     leftOffset + (width * (dayIndex + 1)),
                     topOffset + (height * (rowIndex + 1))
                 )
-                view.root.post { dayAdapter.onBindView(view, calendarDay) }
+                view.root.post { adapter.onBindView(view, calendarDay) }
             }
         }
-    }
-
-    private fun getOrCreateBinding(): ViewBinding {
-        val recycledBinding = recycledBindingPool.removeLastOrNull()
-        if (recycledBinding == null) {
-            val newBinding = dayAdapter.onCreateView(layoutInflater, this)
-            newBinding.root.measure(dateCellWidthSpec, dateCellHeightSpec)
-            return newBinding
-        }
-        return recycledBinding
-    }
-
-    private fun measureRecycledView(): Size {
-        // Measure a recycled cell view
-        val binding = recycledBindingPool.firstOrNull() ?: dayAdapter.onCreateView(layoutInflater, this)
-        binding.root.measure(dateCellWidthSpec, dateCellHeightSpec)
-        return Size(binding.root.measuredWidth, binding.root.measuredHeight)
-    }
-
-    private fun tryInit() {
-        if (_pageSource == null || _dayAdapter == null) return
-
-        pageLoader = CalendarPageLoader(
-            CoroutineScope(Dispatchers.Default),
-            pageSource
-        )
-        invalidate()
-    }
-
-    private fun invalidateAll() {
-        recycledBindingPool.clear()
-        boundViewPool.clear()
-        removeAllViews()
     }
 }

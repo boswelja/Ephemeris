@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.custompagesource.CustomCalendarPageSource
 import com.boswelja.ephemeris.sample.databinding.FragmentCustomSourceCalendarBinding
-import com.boswelja.ephemeris.views.CalendarDayAdapter
+import com.boswelja.ephemeris.views.recycling.RecyclingAdapter
 import com.zhuinden.fragmentviewbindingdelegatekt.viewBinding
 
 class CustomSourceViewsCalendarFragment : Fragment(R.layout.fragment_custom_source_calendar) {
@@ -22,7 +23,7 @@ class CustomSourceViewsCalendarFragment : Fragment(R.layout.fragment_custom_sour
     private fun setupCalendar() {
         binding.switchCalendar.apply {
             pageSource = CustomCalendarPageSource()
-            dayAdapter = CustomSourceCalendarDayBinder() as CalendarDayAdapter<ViewBinding>
+            setAdapter(CustomSourceCalendarDayBinder() as RecyclingAdapter<ViewBinding, CalendarDay>)
         }
     }
 }
