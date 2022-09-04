@@ -2,9 +2,6 @@ package com.boswelja.ephemeris.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.widget.OverScroller
 import androidx.viewbinding.ViewBinding
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.model.CalendarDay
@@ -18,60 +15,6 @@ import kotlin.properties.Delegates
 public class EphemerisCalendarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclingViewGroup<ViewBinding, CalendarDay>(context, attrs, defStyleAttr) {
-
-    private val scroller = OverScroller(context)
-    private val gestureListener = object : GestureDetector.OnGestureListener {
-        override fun onDown(event: MotionEvent): Boolean {
-            return true
-        }
-
-        override fun onShowPress(event: MotionEvent) {
-        }
-
-        override fun onSingleTapUp(event: MotionEvent): Boolean {
-            return false
-        }
-
-        override fun onScroll(
-            initialEvent: MotionEvent,
-            moveEvent: MotionEvent,
-            distanceX: Float,
-            distanceY: Float
-        ): Boolean {
-            scroller.startScroll(
-                initialEvent.x.toInt(),
-                initialEvent.y.toInt(),
-                distanceX.toInt(),
-                distanceY.toInt()
-            )
-            postInvalidate()
-            return true
-        }
-
-        override fun onLongPress(event: MotionEvent) {
-        }
-
-        override fun onFling(
-            firstEvent: MotionEvent,
-            moveEvent: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            scroller.fling(
-                firstEvent.x.toInt(),
-                firstEvent.y.toInt(),
-                velocityX.toInt(),
-                velocityY.toInt(),
-                0,
-                Int.MAX_VALUE,
-                0,
-                Int.MAX_VALUE
-            )
-            return true
-        }
-
-    }
-    private val gestureDetector = GestureDetector(context, gestureListener)
 
     private val boundViewPool = mutableMapOf<LocalDate, ViewBinding>()
 
@@ -164,11 +107,8 @@ public class EphemerisCalendarView @JvmOverloads constructor(
         right: Int,
         bottom: Int
     ) {
-        // Skip layout if nothing changed
         if (!changed) return
-        // Skip layout if we have no page loader
         if (!::pageLoader.isInitialized) return
-
         // Layout current page
         layoutCalendarPage(currentPage, 0, 0)
 
@@ -191,10 +131,6 @@ public class EphemerisCalendarView @JvmOverloads constructor(
                 0
             )
         }
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        return gestureDetector.onTouchEvent(event)
     }
 
     private fun layoutCalendarPage(page: Int, leftOffset: Int, topOffset: Int) {
