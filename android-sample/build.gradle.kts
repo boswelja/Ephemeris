@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.boswelja.ephemeris.sample"
-    compileSdk = 33
+    compileSdk = SdkVersions.targetSdk
 
     defaultConfig {
         applicationId = "com.boswelja.ephemeris.sample"
-        minSdk = 23
-        targetSdk = 33
+        minSdk = SdkVersions.minSdk
+        targetSdk = SdkVersions.targetSdk
         versionCode = 1
         versionName = "1.0"
 

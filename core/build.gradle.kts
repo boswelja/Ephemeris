@@ -4,7 +4,7 @@ import java.net.URL
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlinx.kover")
-    id("com.ephemeris.library.android")
+    id("com.android.library")
     id("com.ephemeris.publish.maven")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -43,6 +43,14 @@ kotlin {
 
 android {
     namespace = "com.boswelja.ephemeris.core"
+
+    compileSdk = SdkVersions.targetSdk
+
+    defaultConfig {
+        minSdk = SdkVersions.minSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     publishing {
         singleVariant("release") {
             withSourcesJar()

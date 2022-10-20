@@ -1,9 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
+    id("com.android.library") version "7.3.1" apply false
+    id("org.jetbrains.kotlin.multiplatform") version "1.7.20" apply false
     id("org.jetbrains.kotlinx.kover") version "0.5.1" apply false
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.20.0"
-    id("org.jetbrains.dokka")
+    id("org.jetbrains.dokka") version "1.7.20"
 }
 
 group = "io.github.boswelja.ephemeris"
