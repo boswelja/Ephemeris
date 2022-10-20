@@ -7,7 +7,6 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
-import android.widget.OverScroller
 import androidx.annotation.CallSuper
 import androidx.core.view.children
 import androidx.viewbinding.ViewBinding
@@ -18,10 +17,9 @@ public abstract class RecyclingViewGroup<V: ViewBinding, T> @JvmOverloads constr
 
     private var currentScrollX: Float = 0f
     private var currentScrollY: Float = 0f
-    protected val hasScrolled: Boolean
-        get() = (currentScrollX != 0f && currentScrollY != 0f) || scroller.computeScrollOffset()
 
-    protected val scroller: OverScroller = OverScroller(context)
+    protected var flingDispatcher: FlingDispatcher? = null
+
     private val gestureListener = object : GestureDetector.OnGestureListener {
         override fun onDown(event: MotionEvent): Boolean {
             return true
@@ -55,18 +53,16 @@ public abstract class RecyclingViewGroup<V: ViewBinding, T> @JvmOverloads constr
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            scroller.fling(
-                firstEvent.x.toInt(),
-                firstEvent.y.toInt(),
-                velocityX.toInt(),
-                velocityY.toInt(),
-                0,
-                Int.MAX_VALUE,
-                0,
-                Int.MAX_VALUE
-            )
-            postInvalidateOnAnimation()
-            return true
+            return flingDispatcher?.let {
+                it.fling(
+                    firstEvent.x.toInt(),
+                    firstEvent.y.toInt(),
+                    velocityX.toInt(),
+                    velocityY.toInt()
+                )
+                postInvalidateOnAnimation()
+                true
+            } ?: false
         }
     }
     private val gestureDetector = GestureDetector(context, gestureListener)
@@ -93,15 +89,27 @@ public abstract class RecyclingViewGroup<V: ViewBinding, T> @JvmOverloads constr
     }
 
     override fun computeScroll() {
-        val scrollX = currentScrollX.toInt()
-        currentScrollX = 0f
-        children.forEach {
-            it.layout(
-                it.left + scrollX,
-                it.top,
-                it.right + scrollX,
-                it.bottom
-            )
+        if (flingDispatcher?.computeScrollDelta() == true) {
+            val scrollX = flingDispatcher!!.deltaX
+            children.forEach {
+                it.layout(
+                    (it.left + scrollX).toInt(),
+                    it.top,
+                    (it.right + scrollX).toInt(),
+                    it.bottom
+                )
+            }
+        } else if (currentScrollX != 0f) {
+            val scrollX = currentScrollX.toInt()
+            currentScrollX = 0f
+            children.forEach {
+                it.layout(
+                    it.left + scrollX,
+                    it.top,
+                    it.right + scrollX,
+                    it.bottom
+                )
+            }
         }
     }
 
