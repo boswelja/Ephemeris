@@ -69,11 +69,13 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
     reports.sarif.required.set(true)
 }
 
-tasks.koverVerify {
-    rule {
-        name = "Code line coverage"
-        bound {
-            minValue = 90
+kover {
+    verify {
+        rule {
+            name = "Code line coverage"
+            bound {
+                minValue = 90
+            }
         }
     }
 }
