@@ -12,13 +12,13 @@ import kotlinx.datetime.daysUntil
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import kotlinx.datetime.todayAt
+import kotlinx.datetime.todayIn
 
 /**
  * An implementation of [CalendarPageSource] that loads one week per page.
  */
 class CustomCalendarPageSource(
-    startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault())
+    startDate: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
 ) : CalendarPageSource {
 
     private val startDate = startDate.startOfRow(DayOfWeek.MONDAY)

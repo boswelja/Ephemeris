@@ -3,7 +3,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     kotlin("android")
-    id("com.ephemeris.library.android")
+    id("com.android.library")
     id("com.ephemeris.publish.maven")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -11,6 +11,14 @@ plugins {
 
 android {
     namespace = "com.boswelja.ephemeris.views"
+
+    compileSdk = SdkVersions.targetSdk
+
+    defaultConfig {
+        minSdk = SdkVersions.minSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     buildFeatures.viewBinding = true
 
     publishing {

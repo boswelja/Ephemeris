@@ -3,7 +3,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     kotlin("android")
-    id("com.ephemeris.library.android")
+    id("com.android.library")
     id("com.ephemeris.publish.maven")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -11,6 +11,12 @@ plugins {
 
 android {
     namespace = "com.boswelja.ephemeris.compose"
+    compileSdk = SdkVersions.targetSdk
+
+    defaultConfig {
+        minSdk = SdkVersions.minSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
     buildFeatures.compose = true
 
     publishing {
@@ -19,7 +25,7 @@ android {
             withJavadocJar()
         }
     }
-    composeOptions.kotlinCompilerExtensionVersion = "1.3.0-rc02"
+    composeOptions.kotlinCompilerExtensionVersion = "1.3.2"
 }
 
 dependencies {

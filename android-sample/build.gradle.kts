@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.boswelja.ephemeris.sample"
-    compileSdk = 33
+    compileSdk = SdkVersions.targetSdk
 
     defaultConfig {
         applicationId = "com.boswelja.ephemeris.sample"
-        minSdk = 23
-        targetSdk = 33
+        minSdk = SdkVersions.minSdk
+        targetSdk = SdkVersions.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -35,7 +35,7 @@ android {
         viewBinding = true
         compose = true
     }
-    composeOptions.kotlinCompilerExtensionVersion = "1.3.0-rc02"
+    composeOptions.kotlinCompilerExtensionVersion = "1.3.2"
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
