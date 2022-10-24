@@ -27,6 +27,8 @@ public class CalendarPageView @JvmOverloads constructor(
         set(value) {
             if (field != value) {
                 field = value
+                dayViewHolderMap.clear()
+                removeAllViews()
                 if (field != null && calendarPage != null) invalidate()
             }
         }
@@ -112,10 +114,8 @@ public class CalendarPageView @JvmOverloads constructor(
                         width * (dayIndex + 1),
                         height * (rowIndex + 1)
                     )
-                    view.itemView.post {
-                        @Suppress("UNCHECKED_CAST")
-                        (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
-                    }
+                    @Suppress("UNCHECKED_CAST")
+                    (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
                 }
             }
         } else {
@@ -135,10 +135,10 @@ public class CalendarPageView @JvmOverloads constructor(
                     val height = view.itemView.measuredHeight
 
                     view.itemView.layout(
-                        l + (width * dayIndex),
-                        t + (height * rowIndex),
-                        l + (width * (dayIndex + 1)),
-                        t + (height * (rowIndex + 1))
+                        (width * dayIndex),
+                        (height * rowIndex),
+                        (width * (dayIndex + 1)),
+                        (height * (rowIndex + 1))
                     )
                     view.itemView.post {
                         @Suppress("UNCHECKED_CAST")
