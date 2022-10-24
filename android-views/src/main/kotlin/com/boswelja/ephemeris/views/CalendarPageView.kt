@@ -89,7 +89,7 @@ public class CalendarPageView @JvmOverloads constructor(
             }
         }
 
-        val scrapView = (calendarDateBinder as? CalendarDateBinder<ViewHolder>)!!.onCreateViewHolder(layoutInflater, this)
+        val scrapView = calendarDateBinder!!.onCreateViewHolder(layoutInflater, this)
         scrapView.itemView.measure(dateCellWidthSpec, dateCellHeightSpec)
 
         val calendarWidth = scrapView.itemView.measuredWidth * calendarPage!!.rows.first().days.count()
@@ -101,50 +101,44 @@ public class CalendarPageView @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         if (!changed) return
         if (dayViewHolderMap.isNotEmpty()) {
-            calendarPage!!.rows.forEachIndexed { rowIndex, calendarRow ->
-                calendarRow.days.forEachIndexed { dayIndex, calendarDay ->
-                    val view = dayViewHolderMap[rowIndex * dayIndex + dayIndex]!!
+            calendarPage!!.forEach { rowIndex, colIndex, calendarDay ->
+                val view = dayViewHolderMap[rowIndex * colIndex + colIndex]!!
 
-                    val width = view.itemView.measuredWidth
-                    val height = view.itemView.measuredHeight
+                val width = view.itemView.measuredWidth
+                val height = view.itemView.measuredHeight
 
-                    view.itemView.layout(
-                        width * dayIndex,
-                        height * rowIndex,
-                        width * (dayIndex + 1),
-                        height * (rowIndex + 1)
-                    )
-                    @Suppress("UNCHECKED_CAST")
-                    (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
-                }
+                view.itemView.layout(
+                    width * colIndex,
+                    height * rowIndex,
+                    width * (colIndex + 1),
+                    height * (rowIndex + 1)
+                )
+                @Suppress("UNCHECKED_CAST")
+                (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
             }
         } else {
-            calendarPage!!.rows.forEachIndexed { rowIndex, calendarRow ->
-                calendarRow.days.forEachIndexed { dayIndex, calendarDay ->
-                    val view = (calendarDateBinder as? CalendarDateBinder<ViewHolder>)!!.onCreateViewHolder(layoutInflater, this)
-                    view.itemView.measure(dateCellWidthSpec, dateCellHeightSpec)
-                    addViewInLayout(
-                        view.itemView,
-                        -1,
-                        view.itemView.layoutParams ?: generateDefaultLayoutParams(),
-                        true
-                    )
-                    dayViewHolderMap[rowIndex * dayIndex + dayIndex] = view
+            calendarPage!!.forEach { rowIndex, colIndex, calendarDay ->
+                val view = calendarDateBinder!!.onCreateViewHolder(layoutInflater, this)
+                view.itemView.measure(dateCellWidthSpec, dateCellHeightSpec)
+                addViewInLayout(
+                    view.itemView,
+                    -1,
+                    view.itemView.layoutParams ?: generateDefaultLayoutParams(),
+                    true
+                )
+                dayViewHolderMap[rowIndex * colIndex + colIndex] = view
 
-                    val width = view.itemView.measuredWidth
-                    val height = view.itemView.measuredHeight
+                val width = view.itemView.measuredWidth
+                val height = view.itemView.measuredHeight
 
-                    view.itemView.layout(
-                        (width * dayIndex),
-                        (height * rowIndex),
-                        (width * (dayIndex + 1)),
-                        (height * (rowIndex + 1))
-                    )
-                    view.itemView.post {
-                        @Suppress("UNCHECKED_CAST")
-                        (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
-                    }
-                }
+                view.itemView.layout(
+                    (width * colIndex),
+                    (height * rowIndex),
+                    (width * (colIndex + 1)),
+                    (height * (rowIndex + 1))
+                )
+                @Suppress("UNCHECKED_CAST")
+                (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
             }
         }
     }

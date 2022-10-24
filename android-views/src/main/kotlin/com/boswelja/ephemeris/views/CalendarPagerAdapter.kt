@@ -22,14 +22,12 @@ internal class CalendarPagerAdapter(
 
     override fun getItemCount(): Int = pageLoader.calendarPageSource.maxPageRange.count()
 
-    // ViewType is returned as rowNum * 10 + colNum, which is the calendar matrix [rowNum x colNum]
     override fun getItemViewType(position: Int): Int {
+        // ViewType is returned as rowNum * colNum, which is the calendar matrix [rowNum x colNum]
+        // This is so we can optimise page creation in that non-unique pages do not bind UI
         val page = positionToPage(position)
         val pageState = pageLoader.getPageData(page)
-
-        val colNum = pageState.rows.first().days.size
-        val rowNum = pageState.rows.size
-        return rowNum * colNum
+        return pageState.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {

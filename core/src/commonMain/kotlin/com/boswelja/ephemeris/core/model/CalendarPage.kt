@@ -6,4 +6,14 @@ package com.boswelja.ephemeris.core.model
  */
 public data class CalendarPage internal constructor(
     val rows: List<CalendarRow>
-)
+) {
+    public val size: Int = rows.size * rows.first().days.size
+
+    public fun forEach(block: (row: Int, column: Int, date: CalendarDay) -> Unit) {
+        rows.forEachIndexed { rowIndex, calendarRow ->
+            calendarRow.days.forEachIndexed { colIndex, calendarDay ->
+                block(rowIndex, colIndex, calendarDay)
+            }
+        }
+    }
+}
