@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boswelja.ephemeris.core.model.CalendarPage
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.until
 import kotlin.properties.Delegates
 
 public class CalendarPageView @JvmOverloads constructor(
@@ -101,8 +104,10 @@ public class CalendarPageView @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         if (!changed) return
         if (dayViewHolderMap.isNotEmpty()) {
+            var index = 0
             calendarPage!!.forEach { rowIndex, colIndex, calendarDay ->
-                val view = dayViewHolderMap[rowIndex * colIndex + colIndex]!!
+                val view = dayViewHolderMap[index]!!
+                index++
 
                 val width = view.itemView.measuredWidth
                 val height = view.itemView.measuredHeight
@@ -117,6 +122,7 @@ public class CalendarPageView @JvmOverloads constructor(
                 (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
             }
         } else {
+            var index = 0
             calendarPage!!.forEach { rowIndex, colIndex, calendarDay ->
                 val view = calendarDateBinder!!.onCreateViewHolder(layoutInflater, this)
                 view.itemView.measure(dateCellWidthSpec, dateCellHeightSpec)
@@ -126,7 +132,8 @@ public class CalendarPageView @JvmOverloads constructor(
                     view.itemView.layoutParams ?: generateDefaultLayoutParams(),
                     true
                 )
-                dayViewHolderMap[rowIndex * colIndex + colIndex] = view
+                dayViewHolderMap[index] = view
+                index++
 
                 val width = view.itemView.measuredWidth
                 val height = view.itemView.measuredHeight
@@ -140,6 +147,21 @@ public class CalendarPageView @JvmOverloads constructor(
                 @Suppress("UNCHECKED_CAST")
                 (calendarDateBinder as? CalendarDateBinder<ViewHolder>)?.onBindView(view, calendarDay)
             }
+        }
+    }
+
+    public fun rebindDates(dates: ClosedRange<LocalDate>) {
+        if (dayViewHolderMap.isEmpty()) return
+        val startIndex = calendarPage!!.firstDate.until(dates.start, DateTimeUnit.DAY)
+            .coerceAtLeast(0)
+        val endIndex = calendarPage!!.firstDate.until(dates.endInclusive, DateTimeUnit.DAY)
+            .coerceAtMost(childCount - 1)
+        for (index in startIndex..endIndex) {
+            @Suppress("UNCHECKED_CAST")
+            (calendarDateBinder as? CalendarDateBinder<ViewHolder>)!!.onBindView(
+                dayViewHolderMap[index]!!,
+                calendarPage!!.get(index)
+            )
         }
     }
 }
