@@ -11,14 +11,14 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.until
 import kotlin.properties.Delegates
 
-public class CalendarPageView @JvmOverloads constructor(
+internal class CalendarPageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
     private val dayViewHolderMap = mutableMapOf<Int, ViewHolder>()
     private val layoutInflater = LayoutInflater.from(context)
 
-    public var calendarPage: CalendarPage? = null
+    var calendarPage: CalendarPage? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -26,7 +26,7 @@ public class CalendarPageView @JvmOverloads constructor(
             }
         }
 
-    public var calendarDateBinder: CalendarDateBinder<*>? = null
+    var calendarDateBinder: CalendarDateBinder<*>? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -150,7 +150,7 @@ public class CalendarPageView @JvmOverloads constructor(
         }
     }
 
-    public fun rebindDates(dates: ClosedRange<LocalDate>) {
+    fun rebindDates(dates: ClosedRange<LocalDate>) {
         if (dayViewHolderMap.isEmpty()) return
         val startIndex = calendarPage!!.firstDate.until(dates.start, DateTimeUnit.DAY)
             .coerceAtLeast(0)
