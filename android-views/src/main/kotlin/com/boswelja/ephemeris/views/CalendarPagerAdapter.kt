@@ -31,7 +31,7 @@ internal class CalendarPagerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
-        return CalendarPageViewHolder.create(parent)
+        return CalendarPageViewHolder.create(parent, dateBinder)
     }
 
     override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
@@ -39,7 +39,7 @@ internal class CalendarPagerAdapter(
         val page = positionToPage(position)
         val pageState = pageLoader.getPageData(page)
 
-        holder.fullBindDisplayRows(dateBinder, pageState)
+        holder.fullBindDisplayRows(pageState)
     }
 
     override fun onBindViewHolder(
@@ -69,30 +69,31 @@ internal class CalendarPagerAdapter(
 }
 
 internal class CalendarPageViewHolder(
-    private val view: CalendarPageView
+    private val view: CalendarPageView,
+    dateBinder: CalendarDateBinder<ViewHolder>
 ) : ViewHolder(view) {
+
+    init {
+        view.calendarDateBinder = dateBinder
+    }
 
     fun updateBoundDisplayRows(dates: ClosedRange<LocalDate>) {
         view.rebindDates(dates)
     }
 
-    fun fullBindDisplayRows(
-        dateBinder: CalendarDateBinder<ViewHolder>,
-        page: CalendarPage
-    ) {
+    fun fullBindDisplayRows(page: CalendarPage) {
         view.calendarPage = page
-        view.calendarDateBinder = dateBinder
     }
 
     companion object {
-        fun create(parent: ViewGroup): CalendarPageViewHolder {
+        fun create(parent: ViewGroup, dateBinder: CalendarDateBinder<ViewHolder>): CalendarPageViewHolder {
             val view = CalendarPageView(parent.context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
             }
-            return CalendarPageViewHolder(view)
+            return CalendarPageViewHolder(view, dateBinder)
         }
     }
 }
