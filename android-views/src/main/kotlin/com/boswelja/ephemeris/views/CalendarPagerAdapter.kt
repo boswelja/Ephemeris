@@ -1,13 +1,9 @@
 package com.boswelja.ephemeris.views
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.boswelja.ephemeris.core.model.CalendarPage
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
-import com.boswelja.ephemeris.views.databinding.CalendarPageBinding
-import com.boswelja.ephemeris.views.databinding.CalendarRowBinding
 import com.boswelja.ephemeris.views.pager.InfinitePagerAdapter
 import kotlinx.datetime.LocalDate
 
@@ -26,27 +22,16 @@ internal class CalendarPagerAdapter(
 
     override fun getItemCount(): Int = pageLoader.calendarPageSource.maxPageRange.count()
 
-    // ViewType is returned as rowNum * 10 + colNum, which is the calendar matrix [rowNum x colNum]
     override fun getItemViewType(position: Int): Int {
+        // ViewType is returned as rowNum * colNum, which is the calendar matrix [rowNum x colNum]
+        // This is so we can optimise page creation in that non-unique pages do not bind UI
         val page = positionToPage(position)
         val pageState = pageLoader.getPageData(page)
-
-        val colNum = getColNum(pageState)
-        val rowNum = pageState.rows.size
-        return rowNum * CALENDAR_ROW_WEIGHT + colNum
+        return pageState.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarPageViewHolder {
-        return CalendarPageViewHolder.create(parent).apply {
-            // We create layout for a viewType in advance, it will improve performance
-            // and make adjust view size dynamically possible.
-            createRows(
-                dateBinder = dateBinder,
-                parent = itemView as ViewGroup,
-                rowNum = viewType / CALENDAR_ROW_WEIGHT,
-                colNum = viewType % CALENDAR_ROW_WEIGHT
-            )
-        }
+        return CalendarPageViewHolder.create(parent, dateBinder)
     }
 
     override fun onBindViewHolder(holder: CalendarPageViewHolder, position: Int) {
@@ -54,7 +39,7 @@ internal class CalendarPagerAdapter(
         val page = positionToPage(position)
         val pageState = pageLoader.getPageData(page)
 
-        holder.fullBindDisplayRows(dateBinder, pageState, getColNum(pageState))
+        holder.fullBindDisplayRows(pageState)
     }
 
     override fun onBindViewHolder(
@@ -78,99 +63,37 @@ internal class CalendarPagerAdapter(
                     endDate = it.endInclusive
                 }
             }
-            val page = positionToPage(position)
-            holder.updateBoundDisplayRows(
-                pageLoader.getPageData(page),
-                dateBinder,
-                (startDate!!..endDate!!)
-            )
+            holder.updateBoundDisplayRows(startDate!!..endDate!!)
         }
-    }
-
-    // We assume that pageSource is providing same number of days for each row.
-    private fun getColNum(pageState: CalendarPage) = if (pageState.rows.isNotEmpty()) pageState.rows[0].days.size else 0
-
-    companion object {
-        internal const val CALENDAR_ROW_WEIGHT = 10
     }
 }
 
 internal class CalendarPageViewHolder(
-    binding: CalendarPageBinding
-) : ViewHolder(binding.root) {
+    private val view: CalendarPageView,
+    dateBinder: CalendarDateBinder<ViewHolder>
+) : ViewHolder(view) {
 
-    private val inflater = LayoutInflater.from(itemView.context)
-
-    private val dayViewHolderMap = mutableMapOf<Int, ViewHolder>()
-
-    fun updateBoundDisplayRows(
-        page: CalendarPage,
-        dateBinder: CalendarDateBinder<ViewHolder>,
-        dates: ClosedRange<LocalDate>
-    ) {
-        if (dates.start == dates.endInclusive) {
-            // Single date, optimize work
-            page.getFlatDetailsFor(dates.start)?.let { (index, calendarDate) ->
-                dayViewHolderMap[index]?.run {
-                    dateBinder.onBindView(
-                        this,
-                        calendarDate
-                    )
-                }
-            }
-        } else {
-            // Multiple dates, optimize work
-            page.forEachInRange(dates) { index, calendarDate ->
-                dayViewHolderMap[index]?.run {
-                    dateBinder.onBindView(
-                        this,
-                        calendarDate
-                    )
-                }
-            }
-        }
+    init {
+        view.calendarDateBinder = dateBinder
     }
 
-    fun fullBindDisplayRows(
-        dateBinder: CalendarDateBinder<ViewHolder>,
-        page: CalendarPage,
-        colNum: Int
-    ) {
-        page.rows.forEachIndexed { rowIndex, calendarRow ->
-            calendarRow.days.forEachIndexed { dayIndex, calendarDay ->
-                dayViewHolderMap[rowIndex * colNum + dayIndex]?.let {
-                    dateBinder.onBindView(it, calendarDay) }
-            }
-        }
+    fun updateBoundDisplayRows(dates: ClosedRange<LocalDate>) {
+        view.rebindDates(dates)
     }
 
-    // Create a rowNum by colNum view matrix
-    internal fun createRows(dateBinder: CalendarDateBinder<ViewHolder>, parent: ViewGroup, rowNum: Int, colNum: Int) {
-        for (rowIndex in 0 until rowNum) {
-            val rowBinding = CalendarRowBinding.inflate(inflater, parent, false).apply {
-                for (dayIndex in 0 until colNum) {
-                    val dayViewHolder = dateBinder.onCreateViewHolder(inflater, root)
-                    dayViewHolderMap[rowIndex * colNum + dayIndex] = dayViewHolder
-                    root.addView(
-                        dayViewHolder.itemView,
-                        (dayViewHolder.itemView.layoutParams as LinearLayout.LayoutParams).apply {
-                            weight = 1f // Ensures a row of date cells will fill the view width
-                        }
-                    )
-                }
-            }
-            parent.addView(rowBinding.root)
-        }
+    fun fullBindDisplayRows(page: CalendarPage) {
+        view.calendarPage = page
     }
 
     companion object {
-        fun create(parent: ViewGroup): CalendarPageViewHolder {
-            val view = CalendarPageBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            return CalendarPageViewHolder(view)
+        fun create(parent: ViewGroup, dateBinder: CalendarDateBinder<ViewHolder>): CalendarPageViewHolder {
+            val view = CalendarPageView(parent.context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            return CalendarPageViewHolder(view, dateBinder)
         }
     }
 }
