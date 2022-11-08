@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.model.CalendarDay
@@ -36,9 +35,8 @@ public fun EphemerisCalendar(
     contentPadding: PaddingValues = PaddingValues(),
     dayContent: @Composable BoxScope.(CalendarDay) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val pageLoader = remember(coroutineScope, pageSource) {
-        CalendarPageLoader(coroutineScope, pageSource)
+    val pageLoader = remember(pageSource) {
+        CalendarPageLoader(pageSource)
     }
 
     // Pass page source changes on to the calendar state

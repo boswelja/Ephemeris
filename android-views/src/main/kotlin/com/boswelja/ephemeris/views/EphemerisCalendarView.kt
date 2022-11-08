@@ -9,10 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 import com.boswelja.ephemeris.views.pager.HeightAdjustingPager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.datetime.LocalDate
 
 /**
@@ -33,8 +29,6 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     private var internalPaddingLeft: Int = 0
     private var internalPaddingRight: Int = 0
     private var internalClipToPadding: Boolean = false
-
-    private var coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     private val currentPager: HeightAdjustingPager?
         get() = getChildAt(0) as? HeightAdjustingPager
@@ -95,10 +89,7 @@ public class EphemerisCalendarView @JvmOverloads constructor(
     public var pageSource: CalendarPageSource
         get() = checkNotNull(_pageLoader?.calendarPageSource) { MissingPageSourceException }
         set(value) {
-            _pageLoader = CalendarPageLoader(
-                coroutineScope,
-                value
-            )
+            _pageLoader = CalendarPageLoader(value)
             if (_dateBinder != null) {
                 calendarAdapter = CalendarPagerAdapter(_pageLoader!!, _dateBinder!!)
                 initView()
@@ -125,16 +116,6 @@ public class EphemerisCalendarView @JvmOverloads constructor(
             LAYOUT_DIRECTION_RTL -> setPadding(end, top, start, bottom)
             else -> setPadding(start, top, end, bottom)
         }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        // TODO Move start logic to here
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        coroutineScope.cancel()
     }
 
     override fun getPaddingStart(): Int {
