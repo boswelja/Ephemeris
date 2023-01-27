@@ -15,7 +15,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
-import kotlinx.datetime.todayAt
+import kotlinx.datetime.todayIn
 
 /**
  * An implementation of [CalendarPageSource] that loads full months. Total rows are dynamic, and
@@ -24,7 +24,7 @@ import kotlinx.datetime.todayAt
  */
 public class CalendarMonthPageSource(
     private val firstDayOfWeek: DayOfWeek,
-    private val startYearMonth: YearMonth = Clock.System.todayAt(TimeZone.currentSystemDefault()).yearMonth,
+    private val startYearMonth: YearMonth = Clock.System.todayIn(TimeZone.currentSystemDefault()).yearMonth,
     private val focusMode: FocusMode = FocusMode.MONTH,
     override val maxPageRange: IntRange = IntRange(-6000, 6000)
 ) : CalendarPageSource {
