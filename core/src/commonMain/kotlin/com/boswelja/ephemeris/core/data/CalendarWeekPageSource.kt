@@ -10,7 +10,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
-import kotlinx.datetime.todayAt
+import kotlinx.datetime.todayIn
 
 /**
  * An implementation of [CalendarPageSource] that loads one week per page. The default range for the
@@ -19,7 +19,7 @@ import kotlinx.datetime.todayAt
  */
 public class CalendarWeekPageSource(
     firstDayOfWeek: DayOfWeek,
-    startDate: LocalDate = Clock.System.todayAt(TimeZone.currentSystemDefault()),
+    startDate: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     private val focusMode: FocusMode = FocusMode.WEEKDAYS,
     override val maxPageRange: IntRange = IntRange(-26000, 26000)
 ) : CalendarPageSource {

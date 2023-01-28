@@ -57,6 +57,10 @@ android {
             withJavadocJar()
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 }
 
 detekt {
@@ -123,4 +127,8 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             )
         }
     }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
 }
