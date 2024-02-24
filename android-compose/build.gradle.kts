@@ -25,14 +25,11 @@ android {
             withJavadocJar()
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {

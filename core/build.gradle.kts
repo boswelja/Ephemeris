@@ -16,6 +16,8 @@ version = findProperty("version")?.let {
 } ?: "0.1.0"
 
 kotlin {
+    jvmToolchain(17)
+
     explicitApi()
 
     // Android targets
@@ -56,10 +58,6 @@ android {
             withSourcesJar()
             withJavadocJar()
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 

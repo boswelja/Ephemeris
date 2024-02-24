@@ -41,13 +41,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
