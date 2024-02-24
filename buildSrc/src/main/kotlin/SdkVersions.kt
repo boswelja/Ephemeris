@@ -1,4 +1,4 @@
 object SdkVersions {
     val minSdk = 23
-    val targetSdk = 33
+    val targetSdk = 34
 }
