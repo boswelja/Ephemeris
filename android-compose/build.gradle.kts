@@ -35,7 +35,6 @@ kotlin {
 dependencies {
     api(project(":core"))
     api(libs.bundles.compose.lib)
-    implementation(libs.compose.snapper)
 }
 
 detekt {
