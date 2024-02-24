@@ -53,7 +53,9 @@ dependencies {
 }
 
 detekt {
-    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    config.setFrom(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+    )
     basePath = rootDir.absolutePath
 }
 

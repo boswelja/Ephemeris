@@ -32,7 +32,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    composeOptions.kotlinCompilerExtensionVersion = "1.4.0"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
 }
 
 dependencies {
@@ -42,7 +42,7 @@ dependencies {
 }
 
 detekt {
-    config = files(
+    config.setFrom(
         "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
         "${rootDir.absolutePath}/config/detekt/detekt-compose.yml"
     )

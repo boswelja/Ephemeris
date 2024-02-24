@@ -19,7 +19,7 @@ kotlin {
     explicitApi()
 
     // Android targets
-    android {
+    androidTarget {
         publishLibraryVariants("release")
     }
 
@@ -64,8 +64,9 @@ android {
 }
 
 detekt {
-    source.setFrom("commonMain/kotlin")
-    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    config.setFrom(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+    )
     basePath = rootDir.absolutePath
 }
 
