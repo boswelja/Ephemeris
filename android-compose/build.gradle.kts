@@ -25,24 +25,20 @@ android {
             withJavadocJar()
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    composeOptions.kotlinCompilerExtensionVersion = "1.4.0"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
     api(project(":core"))
     api(libs.bundles.compose.lib)
-    implementation(libs.compose.snapper)
 }
 
 detekt {
-    config = files(
+    config.setFrom(
         "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
         "${rootDir.absolutePath}/config/detekt/detekt-compose.yml"
     )

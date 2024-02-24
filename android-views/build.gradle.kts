@@ -27,13 +27,10 @@ android {
             withJavadocJar()
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -53,7 +50,9 @@ dependencies {
 }
 
 detekt {
-    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    config.setFrom(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+    )
     basePath = rootDir.absolutePath
 }
 

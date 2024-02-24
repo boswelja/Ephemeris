@@ -16,10 +16,12 @@ version = findProperty("version")?.let {
 } ?: "0.1.0"
 
 kotlin {
+    jvmToolchain(17)
+
     explicitApi()
 
     // Android targets
-    android {
+    androidTarget {
         publishLibraryVariants("release")
     }
 
@@ -57,15 +59,12 @@ android {
             withJavadocJar()
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
 }
 
 detekt {
-    source.setFrom("commonMain/kotlin")
-    config = files("${rootDir.absolutePath}/config/detekt/detekt-base.yml")
+    config.setFrom(
+        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
+    )
     basePath = rootDir.absolutePath
 }
 
@@ -73,10 +72,9 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
     reports.sarif.required.set(true)
 }
 
-kover {
+koverReport {
     verify {
-        rule {
-            name = "Code line coverage"
+        rule("Code line coverage") {
             bound {
                 minValue = 90
             }
@@ -130,5 +128,5 @@ tasks.withType<DokkaTaskPartial>().configureEach {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "17"
 }

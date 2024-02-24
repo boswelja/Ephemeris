@@ -35,23 +35,20 @@ android {
         viewBinding = true
         compose = true
     }
-    composeOptions.kotlinCompilerExtensionVersion = "1.4.0"
-    packagingOptions {
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation(project(":android-compose"))
     implementation(project(":android-views"))

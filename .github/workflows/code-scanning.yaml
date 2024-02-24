@@ -13,22 +13,19 @@ jobs:
     name: Static Code Analysis
     runs-on: ubuntu-latest
     steps:
-      # This step checks out a copy of your repository.
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: 11
-          cache: 'gradle'
-
+          java-version: 17
+          distribution: temurin
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
       - name: Detekt Report
         run: ./gradlew detekt detektCollateReports --continue
-
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           # Path to SARIF file relative to the root of the repository

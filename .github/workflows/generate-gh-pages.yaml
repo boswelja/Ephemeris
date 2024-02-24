@@ -9,25 +9,18 @@ jobs:
     name: Build module and publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Setup Java JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
-          distribution: 'adopt'
-          cache: 'gradle'
-
+          java-version: 17
+          distribution: temurin
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
       - name: Generate Dokka Page
         run: ./gradlew dokkaHtmlMultiModule
-
-      - name: Publish Page
-        uses: crazy-max/ghaction-github-pages@v2
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          build_dir: build/dokka/htmlMultiModule
-          keep_history: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+          path: "build/dokka/htmlMultiModule/"
