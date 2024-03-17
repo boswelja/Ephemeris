@@ -25,24 +25,3 @@ nexusPublishing {
         }
     }
 }
-
-tasks.register<Copy>("detektCollateReports") {
-    // Set up task
-    dependsOn(
-        "core:detekt"
-    )
-    from(
-        rootDir.resolve("core/build/reports/detekt/")
-    )
-    include("detekt.sarif")
-
-    // Delete any existing contents
-    buildDir.resolve("reports/detekt/").deleteRecursively()
-
-    // Set up copy
-    destinationDir = buildDir.resolve("reports/detekt/")
-    rename {
-        val totalCount = destinationDir.list()?.count()
-        "$totalCount-$it"
-    }
-}
