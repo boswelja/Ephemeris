@@ -17,6 +17,4 @@ Pick your UI library below for platform-specific implementation details. For sha
 
 ### [Core](https://github.com/boswelja/Ephemeris/tree/main/core/README.md)
 
-### [Android Views](https://github.com/boswelja/Ephemeris/tree/main/android-views/README.md)
-
 ### [Android Compose](https://github.com/boswelja/Ephemeris/tree/main/android-compose/README.md)
