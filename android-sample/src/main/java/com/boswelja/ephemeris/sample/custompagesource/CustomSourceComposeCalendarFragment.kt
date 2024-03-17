@@ -1,9 +1,5 @@
 package com.boswelja.ephemeris.sample.custompagesource
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,36 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import com.boswelja.ephemeris.core.ui.EphemerisCalendar
 import com.boswelja.ephemeris.core.ui.rememberCalendarState
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
-import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
-
-class CustomSourceComposeCalendarFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                EphemerisTheme {
-                    CalendarScreen()
-                }
-            }
-        }
-    }
-}
 
 @Composable
-fun CalendarScreen(
+fun CustomSourceCalendarScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp)
 ) {
@@ -101,10 +78,11 @@ internal fun CollapsingCalendarDate(
     Text(
         modifier = modifier,
         text = calendarDay.date.dayOfMonth.toString(),
-        color = if (calendarDay.isFocusedDate)
+        color = if (calendarDay.isFocusedDate) {
             MaterialTheme.colorScheme.primary
-        else
-            MaterialTheme.colorScheme.onSurface,
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        },
         fontWeight = if (calendarDay.isFocusedDate) FontWeight.Bold else FontWeight.Normal
     )
 }

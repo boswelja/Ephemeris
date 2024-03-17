@@ -2,13 +2,13 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URL
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.multiplatform)
     id("org.jetbrains.kotlinx.kover")
-    id("com.android.library")
-    id("org.jetbrains.compose")
     id("com.ephemeris.publish.maven")
-    id("io.gitlab.arturbosch.detekt")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka)
 }
 
 version = findProperty("version")?.let {
@@ -27,9 +27,6 @@ kotlin {
     }
 
     sourceSets {
-        all {
-            languageSettings.optIn("kotlin.RequiresOptIn")
-        }
         commonMain {
             dependencies {
                 api(libs.kotlinx.datetime)
@@ -42,7 +39,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(libs.kotlin.test)
             }
         }
     }

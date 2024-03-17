@@ -1,9 +1,5 @@
 package com.boswelja.ephemeris.sample.dateselection
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,40 +18,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.ephemeris.core.ui.EphemerisCalendar
 import com.boswelja.ephemeris.core.ui.rememberCalendarState
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.sample.R
-import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-
-class DateSelectionComposeCalendarFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                EphemerisTheme {
-                    DateSelectionCalendarScreen(
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun DateSelectionCalendarScreen(
@@ -104,7 +79,14 @@ internal fun DateSelectionCalendarCell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val surfaceColor by animateColorAsState(if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+    val surfaceColor by animateColorAsState(
+        if (isSelected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        label = "Cell Background"
+    )
     Surface(
         onClick = onClick,
         enabled = isFocused,
@@ -118,10 +100,11 @@ internal fun DateSelectionCalendarCell(
         ) {
             Text(
                 text = date.dayOfMonth.toString(),
-                color = if (isFocused)
+                color = if (isFocused) {
                     LocalContentColor.current
-                else
-                    LocalContentColor.current.copy(alpha = 0.4f),
+                } else {
+                    LocalContentColor.current.copy(alpha = 0.4f)
+                },
                 fontWeight = if (isFocused) FontWeight.Bold else FontWeight.Normal
             )
         }
