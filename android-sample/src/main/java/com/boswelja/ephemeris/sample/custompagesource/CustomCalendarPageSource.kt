@@ -61,7 +61,7 @@ class CustomCalendarPageSource(
     }
 
     private fun DayOfWeek.minusDays(days: Long): DayOfWeek {
-        val daysInWeek = DayOfWeek.values().size
+        val daysInWeek = DayOfWeek.entries.size
         val newNumber = (this.isoDayNumber - days) % daysInWeek
         return if (newNumber > 0) {
             DayOfWeek(newNumber.toInt())
