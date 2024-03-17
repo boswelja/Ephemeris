@@ -28,12 +28,10 @@ nexusPublishing {
 tasks.register<Copy>("detektCollateReports") {
     // Set up task
     dependsOn(
-        "android-views:detekt",
         "android-compose:detekt",
         "core:detekt"
     )
     from(
-        rootDir.resolve("android-views/build/reports/detekt/"),
         rootDir.resolve("android-compose/build/reports/detekt/"),
         rootDir.resolve("core/build/reports/detekt/")
     )
