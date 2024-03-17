@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/collapsingComposeCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.collapsing.compose.CollapsingComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.collapsing.CollapsingComposeCalendarFragment"
         android:label="ComposeCalendarFragment" />
     <fragment
         android:id="@+id/collapsingViewsCalendarFragment"
@@ -41,11 +41,11 @@
         android:label="CustomSourceViewsCalendarFragment" />
     <fragment
         android:id="@+id/customSourceComposeCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.custompagesource.compose.CustomSourceComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.custompagesource.CustomSourceComposeCalendarFragment"
         android:label="CustomSourceComposeCalendarFragment" />
     <fragment
         android:id="@+id/dateSelectionCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.dateselection.compose.DateSelectionComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.dateselection.DateSelectionComposeCalendarFragment"
         android:label="DateSelectionCalendarFragment" />
     <fragment
         android:id="@+id/dateSelectionViewsCalendarFragment"
