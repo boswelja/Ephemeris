@@ -12,43 +12,22 @@
             android:id="@+id/action_mainFragment_to_collapsingComposeCalendarFragment"
             app:destination="@id/collapsingComposeCalendarFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_collapsingViewsCalendarFragment"
-            app:destination="@id/collapsingViewsCalendarFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_customSourceViewsCalendarFragment"
-            app:destination="@id/customSourceViewsCalendarFragment" />
-        <action
             android:id="@+id/action_mainFragment_to_customSourceComposeCalendarFragment"
             app:destination="@id/customSourceComposeCalendarFragment" />
         <action
             android:id="@+id/action_mainFragment_to_dateSelectionComposeCalendarFragment"
             app:destination="@id/dateSelectionCalendarFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_dateSelectionViewsCalendarFragment"
-            app:destination="@id/dateSelectionViewsCalendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/collapsingComposeCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.collapsing.compose.CollapsingComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.collapsing.CollapsingComposeCalendarFragment"
         android:label="ComposeCalendarFragment" />
     <fragment
-        android:id="@+id/collapsingViewsCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.collapsing.views.CollapsingViewsCalendarFragment"
-        android:label="ViewsCalendarFragment" />
-    <fragment
-        android:id="@+id/customSourceViewsCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.custompagesource.views.CustomSourceViewsCalendarFragment"
-        android:label="CustomSourceViewsCalendarFragment" />
-    <fragment
         android:id="@+id/customSourceComposeCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.custompagesource.compose.CustomSourceComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.custompagesource.CustomSourceComposeCalendarFragment"
         android:label="CustomSourceComposeCalendarFragment" />
     <fragment
         android:id="@+id/dateSelectionCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.dateselection.compose.DateSelectionComposeCalendarFragment"
+        android:name="com.boswelja.ephemeris.sample.dateselection.DateSelectionComposeCalendarFragment"
         android:label="DateSelectionCalendarFragment" />
-    <fragment
-        android:id="@+id/dateSelectionViewsCalendarFragment"
-        android:name="com.boswelja.ephemeris.sample.dateselection.views.DateSelectionViewsCalendarFragment"
-        android:label="DateSelectionViewsCalendarFragment" />
 </navigation>

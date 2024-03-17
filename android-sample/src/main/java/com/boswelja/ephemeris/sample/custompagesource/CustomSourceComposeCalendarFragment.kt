@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.custompagesource.compose
+package com.boswelja.ephemeris.sample.custompagesource
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,7 +24,6 @@ import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
-import com.boswelja.ephemeris.sample.custompagesource.CustomCalendarPageSource
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 
 class CustomSourceComposeCalendarFragment : Fragment() {

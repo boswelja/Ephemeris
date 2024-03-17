@@ -2,7 +2,6 @@
     <string name="app_name">Ephemeris Sample</string>
 
     <string name="compose_sample">Compose</string>
-    <string name="views_sample">Views</string>
 
     <string name="header_collapsing">Collapsing Calendar</string>
     <string name="toggle_calendar_view">Switch</string>

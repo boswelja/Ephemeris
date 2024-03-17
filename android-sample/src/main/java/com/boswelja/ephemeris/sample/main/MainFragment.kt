@@ -28,27 +28,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 navAction = R.id.action_mainFragment_to_collapsingComposeCalendarFragment,
                 text = getString(R.string.compose_sample)
             ),
-            Sample(
-                navAction = R.id.action_mainFragment_to_collapsingViewsCalendarFragment,
-                text = getString(R.string.views_sample)
-            ),
             Header(getString(R.string.header_custom_source)),
             Sample(
                 navAction = R.id.action_mainFragment_to_customSourceComposeCalendarFragment,
                 text = getString(R.string.compose_sample)
-            ),
-            Sample(
-                navAction = R.id.action_mainFragment_to_customSourceViewsCalendarFragment,
-                text = getString(R.string.views_sample)
             ),
             Header(getString(R.string.header_date_selection)),
             Sample(
                 navAction = R.id.action_mainFragment_to_dateSelectionComposeCalendarFragment,
                 text = getString(R.string.compose_sample)
             ),
-            Sample(
-                navAction = R.id.action_mainFragment_to_dateSelectionViewsCalendarFragment,
-                text = getString(R.string.views_sample)
-            )
         )
 }

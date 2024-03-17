@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.collapsing.compose
+package com.boswelja.ephemeris.sample.collapsing
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,7 +26,6 @@ import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
-import com.boswelja.ephemeris.sample.collapsing.CollapsingCalendarViewModel
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 
 class CollapsingComposeCalendarFragment : Fragment() {

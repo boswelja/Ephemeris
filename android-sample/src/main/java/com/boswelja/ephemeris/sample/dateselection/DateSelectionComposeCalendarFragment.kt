@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.sample.dateselection.compose
+package com.boswelja.ephemeris.sample.dateselection
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,7 +32,6 @@ import com.boswelja.ephemeris.compose.EphemerisCalendar
 import com.boswelja.ephemeris.compose.rememberCalendarState
 import com.boswelja.ephemeris.core.data.CalendarMonthPageSource
 import com.boswelja.ephemeris.sample.R
-import com.boswelja.ephemeris.sample.dateselection.DateSelectionViewModel
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
