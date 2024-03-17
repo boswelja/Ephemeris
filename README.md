@@ -16,5 +16,3 @@ Core does not provide any UI on its own, but does provide calendar page loading 
 Pick your UI library below for platform-specific implementation details. For shared code or building your own UI library, check out the core.
 
 ### [Core](https://github.com/boswelja/Ephemeris/tree/main/core/README.md)
-
-### [Android Compose](https://github.com/boswelja/Ephemeris/tree/main/android-compose/README.md)

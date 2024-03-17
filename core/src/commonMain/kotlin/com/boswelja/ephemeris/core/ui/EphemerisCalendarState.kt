@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.compose
+package com.boswelja.ephemeris.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

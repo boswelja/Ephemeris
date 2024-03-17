@@ -5,6 +5,7 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlinx.kover")
     id("com.android.library")
+    id("org.jetbrains.compose")
     id("com.ephemeris.publish.maven")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -33,6 +34,10 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.datetime)
                 api(libs.kotlinx.coroutines.core)
+
+                implementation(compose.animation)
+                implementation(compose.foundation)
+                implementation(compose.ui)
             }
         }
         commonTest {

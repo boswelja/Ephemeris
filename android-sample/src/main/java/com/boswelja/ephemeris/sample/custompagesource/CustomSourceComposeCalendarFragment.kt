@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.boswelja.ephemeris.compose.EphemerisCalendar
-import com.boswelja.ephemeris.compose.rememberCalendarState
+import com.boswelja.ephemeris.core.ui.EphemerisCalendar
+import com.boswelja.ephemeris.core.ui.rememberCalendarState
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.sample.R
 import com.boswelja.ephemeris.sample.ui.theme.EphemerisTheme
