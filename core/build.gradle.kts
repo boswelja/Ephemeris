@@ -67,14 +67,9 @@ android {
 }
 
 detekt {
-    config.setFrom(
-        "${rootDir.absolutePath}/config/detekt/detekt-base.yml",
-    )
+    buildUponDefaultConfig = true
+    config.setFrom("$rootDir/config/detekt.yml")
     basePath = rootDir.absolutePath
-}
-
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
-    reports.sarif.required.set(true)
 }
 
 koverReport {
@@ -130,8 +125,4 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             )
         }
     }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
 }
