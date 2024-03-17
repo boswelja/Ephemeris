@@ -1,7 +1,6 @@
-package com.boswelja.ephemeris.compose
+package com.boswelja.ephemeris.core.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.ui.Modifier
 import com.boswelja.ephemeris.core.data.CalendarPageSource
 import com.boswelja.ephemeris.core.model.CalendarDay
 import com.boswelja.ephemeris.core.model.CalendarPage
-import com.boswelja.ephemeris.core.ui.CalendarPageLoader
 
 /**
  * EphemerisCalendar displays a calendar Composable that takes configuration from [calendarState].
@@ -26,7 +24,6 @@ import com.boswelja.ephemeris.core.ui.CalendarPageLoader
  * clipped to the padding when using this.
  * @param dayContent A Composable that takes a [CalendarDay] and renders a date cell on the calendar.
  */
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun EphemerisCalendar(
     pageSource: CalendarPageSource,
@@ -44,7 +41,7 @@ public fun EphemerisCalendar(
         calendarState.pageSource = pageSource
     }
 
-    AnimatedContent(targetState = pageLoader) { targetPageLoader ->
+    AnimatedContent(targetState = pageLoader, label = "Calendar page source") { targetPageLoader ->
         val pagerState = rememberInfinitePagerState(
             pageCount = pageSource.maxPageRange.count(),
             calculatePageFromPosition = pageSource::mapInternalPositionToPage,

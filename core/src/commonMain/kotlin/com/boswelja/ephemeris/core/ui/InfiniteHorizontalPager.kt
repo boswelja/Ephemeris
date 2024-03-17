@@ -1,4 +1,4 @@
-package com.boswelja.ephemeris.compose
+package com.boswelja.ephemeris.core.ui
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
