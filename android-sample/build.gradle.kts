@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    alias(libs.plugins.compose.multiplatform)
 }
 
 android {
@@ -31,11 +32,6 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }
-    buildFeatures {
-        viewBinding = true
-        compose = true
-    }
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -52,14 +48,8 @@ dependencies {
 
     implementation(project(":core"))
 
-    implementation(libs.bundles.androidx.foundation)
-    implementation(libs.bundles.androidx.navigation.views)
-    implementation(libs.bundles.compose.mobile)
-    implementation(libs.androidx.fragment)
-    implementation(libs.binding.delegate)
-    implementation(libs.google.material)
-}
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.navigation.compose)
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+    implementation(compose.material3)
 }
